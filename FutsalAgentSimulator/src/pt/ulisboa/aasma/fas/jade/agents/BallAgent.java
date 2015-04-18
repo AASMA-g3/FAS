@@ -1,15 +1,14 @@
 package pt.ulisboa.aasma.fas.jade.agents;
 
 import jade.core.Agent;
-import jade.core.behaviours.Behaviour;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.lang.acl.ACLMessage;
-import pt.ulisboa.aasma.fas.jade.agents.StrikerAgent.MainCycle;
 import pt.ulisboa.aasma.fas.jade.game.Ball;
 import pt.ulisboa.aasma.fas.jade.game.Game;
 
 public class BallAgent extends Agent{
 	
+	private static final long serialVersionUID = 1L;
 	private Game match;
 	private Ball ball;
 	
@@ -35,6 +34,7 @@ public class BallAgent extends Agent{
 	}
 	
 	protected class MainCycle extends CyclicBehaviour{
+		private static final long serialVersionUID = 1L;
 		private BallAgent agent;
 		
 		public MainCycle(Agent agent) {

@@ -7,6 +7,7 @@ import pt.ulisboa.aasma.fas.jade.game.Player;
 
 public class PlayerAgent extends Agent {
 	
+	private static final long serialVersionUID = 1L;
 	private Game match;
 	private Player player;
 	

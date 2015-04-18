@@ -52,7 +52,7 @@ public class RunJade {
 	}
 
 	protected void runMainJade(boolean cuInterfata){
-		p.setParameter(p.LOCAL_PORT, PORT);
+		p.setParameter(Profile.LOCAL_PORT, PORT);
 		home= runtime.createMainContainer(p);
 
 		if(cuInterfata){
@@ -69,11 +69,11 @@ public class RunJade {
 
 	protected void runAuxJade(String host, String hostPort){
 		if(checkIP(host)){
-			p.setParameter(p.MAIN, "false"); 
-			p.setParameter(p.LOCAL_PORT, PORT); 
+			p.setParameter(Profile.MAIN, "false"); 
+			p.setParameter(Profile.LOCAL_PORT, PORT); 
 			if(checkPort(hostPort,"host"))
-				p.setParameter(p.MAIN_PORT, hostPort); 
-			p.setParameter(p.MAIN_HOST, host);  
+				p.setParameter(Profile.MAIN_PORT, hostPort); 
+			p.setParameter(Profile.MAIN_HOST, host);  
 			home = runtime.createAgentContainer(p);
 		}
 	}

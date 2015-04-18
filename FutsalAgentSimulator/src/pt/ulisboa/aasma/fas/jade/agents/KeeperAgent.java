@@ -4,12 +4,10 @@ import jade.core.Agent;
 import jade.core.behaviours.Behaviour;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.lang.acl.ACLMessage;
-import pt.ulisboa.aasma.fas.jade.agents.StrikerAgent.MainCycle;
-import pt.ulisboa.aasma.fas.jade.agents.StrikerAgent.StartGame;
-import pt.ulisboa.aasma.fas.jade.game.Game;
 
 public class KeeperAgent extends PlayerAgent {
 	
+	private static final long serialVersionUID = 1L;
 	private StartGame startGame;
 	private MainCycle mainCycle;
 	
@@ -24,6 +22,7 @@ public class KeeperAgent extends PlayerAgent {
 	
 	
 	protected class StartGame extends Behaviour {
+		private static final long serialVersionUID = 1L;
 		private KeeperAgent agent;
 		private ACLMessage msg;
 		
@@ -51,6 +50,7 @@ public class KeeperAgent extends PlayerAgent {
 	}
 	
 	protected class MainCycle extends CyclicBehaviour {
+		private static final long serialVersionUID = 1L;
 		private KeeperAgent agent;
 		
 		public MainCycle(Agent agent) {

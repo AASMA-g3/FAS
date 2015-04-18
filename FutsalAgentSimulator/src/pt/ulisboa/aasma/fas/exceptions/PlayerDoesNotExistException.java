@@ -3,6 +3,8 @@ package pt.ulisboa.aasma.fas.exceptions;
 public class PlayerDoesNotExistException extends
 		FutsalAgentSimulatorException {
 	
+
+	private static final long serialVersionUID = 1L;
 	private String playerName;
 	
 	

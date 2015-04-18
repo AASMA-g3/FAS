@@ -4,38 +4,31 @@ import jade.core.Agent;
 import jade.core.behaviours.Behaviour;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.lang.acl.ACLMessage;
-import pt.ulisboa.aasma.fas.jade.agents.StrikerAgent.MainCycle;
-import pt.ulisboa.aasma.fas.jade.agents.StrikerAgent.StartGame;
-import pt.ulisboa.aasma.fas.jade.game.Game;
 
 public class DefenderAgent extends PlayerAgent {
 	
-	private StartGame startGame;
-	private MainCycle mainCycle;
+	private static final long serialVersionUID = 1L;
 	
 	@Override
 	protected void setup() {
 		super.setup();
-		startGame = new StartGame(this);
-		mainCycle = new MainCycle(this);
+		StartGame startGame = new StartGame();
 		
 		this.addBehaviour(startGame);
 	}
 	
 	protected class StartGame extends Behaviour {
-		private DefenderAgent agent;
+		private static final long serialVersionUID = 1L;
 		private ACLMessage msg;
-		
-		public StartGame(Agent agent) {
-			super(agent);
-			this.agent = (DefenderAgent) agent;
-		}
 		
 		@Override
 		public void action() {
 			msg = this.myAgent.receive();
-			if (msg != null && msg.getContent().equals(AgentMessages.START_GAME))				
-				 this.myAgent.addBehaviour(mainCycle);
+			if (msg != null && msg.getContent().equals(AgentMessages.START_GAME)){
+				MainCycle b = new MainCycle();
+				 this.myAgent.addBehaviour(b);
+			}
+				
 			else 
 				block();
 		}
@@ -50,16 +43,11 @@ public class DefenderAgent extends PlayerAgent {
 	}
 	
 	protected class MainCycle extends CyclicBehaviour {
-		private DefenderAgent agent;
-		
-		public MainCycle(Agent agent) {
-			super(agent);
-			this.agent = (DefenderAgent) agent;
-		}
+		private static final long serialVersionUID = 1L;
 
 		@Override
 		public void action() {
-	
+			
 		}
 	}
 }

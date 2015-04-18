@@ -20,7 +20,7 @@ public class GameRunner extends JFrame implements LoopSteps {
 	/**
 	 * @author Ode
 	 */
-
+	private static final long serialVersionUID = 1L;
 	private MainLoop loop = new MainLoop(this, 60);
 
 	private long previous = System.currentTimeMillis();

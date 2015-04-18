@@ -11,6 +11,8 @@ import pt.ulisboa.aasma.fas.jade.game.Player;
 
 public class ReporterAgent extends Agent{
 	
+	private static final long serialVersionUID = 1L;
+
 	private Game match;
 	
 	private StartGame startGame;
@@ -40,6 +42,7 @@ public class ReporterAgent extends Agent{
 	}
 	
 	protected class StartGame extends WakerBehaviour{
+		private static final long serialVersionUID = 1L;
 		private ReporterAgent agent;
 
 		public StartGame(Agent agent, long timeToStart) {
@@ -67,8 +70,8 @@ public class ReporterAgent extends Agent{
 	}
 	
 	protected class Timer extends TickerBehaviour{
+		private static final long serialVersionUID = 1L;
 		private ReporterAgent agent;
-		
 		private static final long GAME_TIME = 300;
 		
 		public Timer(Agent agent, long tickTime) {
@@ -87,6 +90,7 @@ public class ReporterAgent extends Agent{
 	}
 	
 	protected class UpdateScreen extends TickerBehaviour {
+		private static final long serialVersionUID = 1L;
 		private ReporterAgent agent;
 		
 		public UpdateScreen(Agent agent, long tickTime) {
@@ -102,6 +106,7 @@ public class ReporterAgent extends Agent{
 	}
 	
 	protected class TerminateGame extends OneShotBehaviour{
+		private static final long serialVersionUID = 1L;
 		private ReporterAgent agent;
 		
 		public TerminateGame(Agent agent) {
