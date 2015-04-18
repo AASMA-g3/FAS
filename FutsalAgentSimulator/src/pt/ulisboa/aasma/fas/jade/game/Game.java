@@ -15,6 +15,8 @@ public class Game {
 	
 	private int playerNumberCounter = 1;
 	
+	private int gameTime = 0;
+	
 	public Game(int shootingRatio, int defendingRatio, int goalKeepingRatio, int passingRatio, int dribblingRatio) {
 
 		this.ball = new Ball();
@@ -128,6 +130,14 @@ public class Game {
 				return player;
 		}
 		throw new PlayerDoesNotExistException(playerName);
+	}
+
+	public int getGameTime() {
+		return gameTime;
+	}
+
+	public void setGameTime(int gameTime) {
+		this.gameTime = gameTime;
 	}
 	
 }

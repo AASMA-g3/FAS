@@ -25,7 +25,6 @@ public class GameRunner extends JFrame implements LoopSteps {
 	
 	private MainLoop loop = new MainLoop(this, 60);
 
-	private long previous = System.currentTimeMillis();
 	private Scorer scorer;
 	private BallGraphic ball;
 	private FutsalPitch pitch;
@@ -84,12 +83,14 @@ public class GameRunner extends JFrame implements LoopSteps {
 	}
 
 	public void processLogics() {
-		long time = System.currentTimeMillis() - previous;
+		long time = game.getGameTime();
 
 		ball.update(time);
 		scorer.update(time);
+		for (PlayerGraphic pl : playerList){
+			pl.update(time);
+		}
 
-		previous = System.currentTimeMillis();
 	}
 
 	public void renderGraphics() {
@@ -160,14 +161,6 @@ public class GameRunner extends JFrame implements LoopSteps {
 
 	public void setLoop(MainLoop loop) {
 		this.loop = loop;
-	}
-
-	public long getPrevious() {
-		return previous;
-	}
-
-	public void setPrevious(long previous) {
-		this.previous = previous;
 	}
 
 	public Scorer getScorer() {

@@ -31,7 +31,7 @@ public class Scorer implements Sprite {
 
 	@Override
 	public void update(long time) {
-	//	this.time = System.currentTimeMillis() - initialTime;
+		this.time = time;
 	}
 	
 	public String timeToString(long time){

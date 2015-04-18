@@ -13,7 +13,7 @@ import pt.ulisboa.aasma.fas.jade.game.Player;
 public class ReporterAgent extends Agent{
 	
 	private static final long serialVersionUID = 1L;
-
+	
 	private Game match;
 	private GameRunner engine;
 	
@@ -72,7 +72,7 @@ public class ReporterAgent extends Agent{
 	protected class Timer extends TickerBehaviour{
 		private static final long serialVersionUID = 1L;
 		private ReporterAgent agent;
-		private static final long GAME_TIME = 3;
+		private static final long GAME_TIME = 300;
 		
 		public Timer(Agent agent, long tickTime) {
 			super(agent, tickTime);
@@ -81,11 +81,11 @@ public class ReporterAgent extends Agent{
 
 		@Override
 		protected void onTick() {
-			if(this.getTickCount() == GAME_TIME){
+			if(this.getTickCount()== GAME_TIME){
 				this.myAgent.addBehaviour(terminateGame);
 				this.stop();
 			}
-			engine.getScorer().setTime(this.getTickCount()*1000);
+			match.setGameTime(this.getTickCount()*1000);
 		}
 		
 	}
