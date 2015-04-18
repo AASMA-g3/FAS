@@ -28,8 +28,5 @@ public class PlayerAgent extends Agent {
 			System.out.println(f.getMessage());
 			return;
 		}
-
 	}
-
-
 }
