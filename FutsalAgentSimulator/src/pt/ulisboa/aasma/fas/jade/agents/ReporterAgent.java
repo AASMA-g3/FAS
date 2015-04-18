@@ -6,6 +6,7 @@ import jade.core.behaviours.OneShotBehaviour;
 import jade.core.behaviours.TickerBehaviour;
 import jade.core.behaviours.WakerBehaviour;
 import jade.lang.acl.ACLMessage;
+import pt.ulisboa.aasma.fas.j2d.GameRunner;
 import pt.ulisboa.aasma.fas.jade.game.Game;
 import pt.ulisboa.aasma.fas.jade.game.Player;
 
@@ -14,6 +15,7 @@ public class ReporterAgent extends Agent{
 	private static final long serialVersionUID = 1L;
 
 	private Game match;
+	private GameRunner engine;
 	
 	private StartGame startGame;
 	private Timer timer;
@@ -30,6 +32,7 @@ public class ReporterAgent extends Agent{
 		}
 		else{
 			match = (Game) args[0];
+			engine = (GameRunner) args[1];
 		}
 		
 		startGame = new StartGame(this, 1000);
@@ -85,6 +88,7 @@ public class ReporterAgent extends Agent{
 				this.myAgent.addBehaviour(terminateGame);
 				this.stop();
 			}
+			engine.getScorer().setTime(this.getTickCount()*1000);
 		}
 		
 	}

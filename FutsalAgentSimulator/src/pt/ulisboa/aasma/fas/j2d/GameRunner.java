@@ -127,14 +127,45 @@ public class GameRunner extends JFrame implements LoopSteps {
 		scorer = null;
 	}
 
-	public static void main(String[] args) {
-
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				GameRunner bf = new GameRunner();
-				bf.setVisible(true);
-				bf.startMainLoop();
-			}
-		});
+	public MainLoop getLoop() {
+		return loop;
 	}
+
+	public void setLoop(MainLoop loop) {
+		this.loop = loop;
+	}
+
+	public long getPrevious() {
+		return previous;
+	}
+
+	public void setPrevious(long previous) {
+		this.previous = previous;
+	}
+
+	public Scorer getScorer() {
+		return scorer;
+	}
+
+	public void setScorer(Scorer scorer) {
+		this.scorer = scorer;
+	}
+
+	public Ball getBall() {
+		return ball;
+	}
+
+	public void setBall(Ball ball) {
+		this.ball = ball;
+	}
+
+	public FutsalPitch getPitch() {
+		return pitch;
+	}
+
+	public void setPitch(FutsalPitch pitch) {
+		this.pitch = pitch;
+	}
+
+
 }

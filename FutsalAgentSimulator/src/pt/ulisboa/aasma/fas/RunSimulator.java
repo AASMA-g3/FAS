@@ -1,9 +1,12 @@
 package pt.ulisboa.aasma.fas;
 
+import java.awt.EventQueue;
+
 import jade.wrapper.AgentController;
 import jade.wrapper.ContainerController;
 import jade.wrapper.StaleProxyException;
 import pt.ulisboa.aasma.fas.bootstrap.RunJade;
+import pt.ulisboa.aasma.fas.j2d.GameRunner;
 import pt.ulisboa.aasma.fas.jade.agents.BallAgent;
 import pt.ulisboa.aasma.fas.jade.agents.ReporterAgent;
 import pt.ulisboa.aasma.fas.jade.game.Game;
@@ -21,14 +24,20 @@ public class RunSimulator {
 		 home = r.getHome();
 		 
 		 Game game = new Game(70, 50, 90, 70, 70);
+
+		GameRunner bf = new GameRunner();
+		bf.setVisible(true);
+		bf.startMainLoop();
+
 		 
 		 Object[] agentParams = {game};
+		 Object[] reporterParams = {game,bf};
 		  
 		 
 		try {
 			AgentController a;
 			
-			a = home.createNewAgent("Reporter", ReporterAgent.class.getName(), agentParams);
+			a = home.createNewAgent("Reporter", ReporterAgent.class.getName(), reporterParams);
 			a.start();
 			
 			for (Player player : game.getTeamA()){
