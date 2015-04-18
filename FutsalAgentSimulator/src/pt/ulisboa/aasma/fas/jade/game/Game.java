@@ -16,6 +16,8 @@ public class Game {
 	private int playerNumberCounter = 1;
 	
 	public Game(int shootingRatio, int defendingRatio, int goalKeepingRatio, int passingRatio, int dribblingRatio) {
+
+		this.ball = new Ball();
 		this.teamA = new ArrayList<Player>();
 		this.teamB = new ArrayList<Player>();
 		
@@ -41,7 +43,6 @@ public class Game {
 		playerNumberCounter++;
 		this.teamB.add(new Player(names.get(9), 100, shootingRatio, defendingRatio, goalKeepingRatio, passingRatio, dribblingRatio, Player.STRIKER,Player.TEAM_B,playerNumberCounter));
 		
-		this.ball = new Ball();
 		
 	}
 

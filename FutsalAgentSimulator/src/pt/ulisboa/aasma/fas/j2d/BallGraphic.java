@@ -61,11 +61,11 @@ public class BallGraphic implements Sprite {
 		g.dispose();
 	}
 
-	public float getDrawableY() {
-		return (ball.getxCoord()*GameRunner.SCREEN_RATIO_X)+GameRunner.SCREEN_OFFSET_Y;
+	public float getDrawableX() {
+		return (ball.getxCoord()*GameRunner.SCREEN_RATIO_X)+GameRunner.SCREEN_OFFSET_X;
 	}
 
-	public float getDrawableX() {
+	public float getDrawableY() {
 		return (ball.getyCoord()*GameRunner.SCREEN_RATIO_Y)+GameRunner.SCREEN_OFFSET_Y;
 	}
 	

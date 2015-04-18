@@ -19,7 +19,6 @@ public class ReporterAgent extends Agent{
 	
 	private StartGame startGame;
 	private Timer timer;
-	private UpdateScreen updateScreen;
 	private TerminateGame terminateGame;
 	
 	@Override
@@ -37,7 +36,6 @@ public class ReporterAgent extends Agent{
 		
 		startGame = new StartGame(this, 1000);
 		timer = new Timer(this, 1000);
-		updateScreen = new UpdateScreen(this, 10);
 		terminateGame = new TerminateGame(this);
 				
 		this.addBehaviour(startGame);
@@ -56,7 +54,6 @@ public class ReporterAgent extends Agent{
 		@Override
 		protected void handleElapsedTimeout() {
 			this.myAgent.addBehaviour(timer);
-			this.myAgent.addBehaviour(updateScreen);
 			
 			ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
 			for(Player player : match.getTeamA()){
@@ -75,7 +72,7 @@ public class ReporterAgent extends Agent{
 	protected class Timer extends TickerBehaviour{
 		private static final long serialVersionUID = 1L;
 		private ReporterAgent agent;
-		private static final long GAME_TIME = 300;
+		private static final long GAME_TIME = 3;
 		
 		public Timer(Agent agent, long tickTime) {
 			super(agent, tickTime);
@@ -93,22 +90,6 @@ public class ReporterAgent extends Agent{
 		
 	}
 	
-	protected class UpdateScreen extends TickerBehaviour {
-		private static final long serialVersionUID = 1L;
-		private ReporterAgent agent;
-		
-		public UpdateScreen(Agent agent, long tickTime) {
-			super(agent, tickTime);
-			this.agent = (ReporterAgent) agent;
-		}
-
-		@Override
-		protected void onTick() {
-	
-		}
-		
-	}
-	
 	protected class TerminateGame extends OneShotBehaviour{
 		private static final long serialVersionUID = 1L;
 		private ReporterAgent agent;
@@ -120,7 +101,15 @@ public class ReporterAgent extends Agent{
 		
 		@Override
 		public void action() {
-			this.myAgent.removeBehaviour(timer);
+			ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
+			for(Player player : match.getTeamA()){
+				msg.addReceiver(new AID(player.getName(), AID.ISLOCALNAME));
+			}
+			for(Player player : match.getTeamB()){
+				msg.addReceiver(new AID(player.getName(), AID.ISLOCALNAME));
+			}
+			msg.setContent(AgentMessages.END_GAME);
+			this.myAgent.send(msg);
 		}
 		
 	}
