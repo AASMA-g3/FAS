@@ -11,11 +11,12 @@ public class Ball {
 
 	public Ball() {
 		super();
-		this.xCoord=1;
-		this.yCoord=(float) 0.5;
+		this.xCoord=1.0f;
+		this.yCoord=0.5f;
 		this.dribled = false;
 		this.passed = false;
 		this.shoted = false;
+
 	}
 	
 	public float getxCoord() {

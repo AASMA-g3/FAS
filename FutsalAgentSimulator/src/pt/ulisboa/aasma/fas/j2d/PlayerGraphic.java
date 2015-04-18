@@ -47,10 +47,10 @@ public class PlayerGraphic implements Sprite {
 	}
 	
 	public float getDrawableX(){
-		return player.getxCoord();
+		return (player.getxCoord()*GameRunner.SCREEN_RATIO_X)+GameRunner.SCREEN_OFFSET_X;
 	}
 	
 	public float getDrawableY(){
-		return player.getyCoord();
+		return (player.getyCoord()*GameRunner.SCREEN_RATIO_Y)+GameRunner.SCREEN_OFFSET_Y;
 	}
 }

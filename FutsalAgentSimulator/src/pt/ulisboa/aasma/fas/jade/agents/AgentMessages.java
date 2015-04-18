@@ -2,7 +2,8 @@ package pt.ulisboa.aasma.fas.jade.agents;
 
 public class AgentMessages {
 
-	public static final int START_GAME =  123123454; // "Start Game"
+	public static final String START_GAME = "Start Game";
+	public static final String END_GAME = "End Game";
 	
 	public static final String BALL_SHOTED = "Was the ball shoted?";
 	public static final String BALL_PASSED = "Was the ball passed?";

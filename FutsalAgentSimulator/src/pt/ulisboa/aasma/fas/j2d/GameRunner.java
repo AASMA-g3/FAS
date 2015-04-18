@@ -5,24 +5,31 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
 
 import javax.swing.JFrame;
 
 import pt.ulisboa.aasma.fas.jade.game.Game;
+import pt.ulisboa.aasma.fas.jade.game.Player;
 
 public class GameRunner extends JFrame implements LoopSteps {
 	/**
 	 * @author Ode
 	 */
 	private static final long serialVersionUID = 1L;
+	public static final long SCREEN_RATIO_X = 287;
+	public static final long SCREEN_RATIO_Y = 280;
+	
+	public static final long SCREEN_OFFSET_X = 8;
+	public static final long SCREEN_OFFSET_Y = 57; 
+	
 	private MainLoop loop = new MainLoop(this, 60);
 
-	private long previous = System.currentTimeMillis();
 	private Scorer scorer;
 	private BallGraphic ball;
 	private FutsalPitch pitch;
 	private Game game;
-	
+	private ArrayList<PlayerGraphic> playerList;
 	
 	public GameRunner() {
 		super("FutsalAgentSimulator");
@@ -60,16 +67,30 @@ public class GameRunner extends JFrame implements LoopSteps {
 		this.game = game;
 		
 		ball = new BallGraphic(game.getBall());
-		ball.init();	
+		ball.init();
+		
+		playerList = new ArrayList<PlayerGraphic>();
+		
+		for(Player player : game.getTeamA()){
+			PlayerGraphic playerGraphic = new PlayerGraphic(player);
+			playerList.add(playerGraphic);
+		}
+		for(Player player : game.getTeamB()){
+			PlayerGraphic playerGraphic = new PlayerGraphic(player);
+			playerList.add(playerGraphic);
+		}
+		
 	}
 
 	public void processLogics() {
-		long time = System.currentTimeMillis() - previous;
+		long time = game.getGameTime();
 
 		ball.update(time);
 		scorer.update(time);
+		for (PlayerGraphic pl : playerList){
+			pl.update(time);
+		}
 
-		previous = System.currentTimeMillis();
 	}
 
 	public void renderGraphics() {
@@ -90,6 +111,9 @@ public class GameRunner extends JFrame implements LoopSteps {
 		if (ball != null)
 			ball.draw((Graphics2D) g2);
 		
+		for(PlayerGraphic pl : playerList){
+			pl.draw((Graphics2D) g2);
+		}
 
 		g.dispose();
 		g2.dispose();
@@ -111,6 +135,9 @@ public class GameRunner extends JFrame implements LoopSteps {
 		if (ball != null)
 			ball.draw((Graphics2D) g);
 
+		for(PlayerGraphic pl : playerList){
+			pl.draw((Graphics2D) g);
+		}
 
 		g.dispose();
 	}
@@ -134,14 +161,6 @@ public class GameRunner extends JFrame implements LoopSteps {
 
 	public void setLoop(MainLoop loop) {
 		this.loop = loop;
-	}
-
-	public long getPrevious() {
-		return previous;
-	}
-
-	public void setPrevious(long previous) {
-		this.previous = previous;
 	}
 
 	public Scorer getScorer() {

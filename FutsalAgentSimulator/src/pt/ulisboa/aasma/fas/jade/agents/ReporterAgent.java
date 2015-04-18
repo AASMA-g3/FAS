@@ -13,13 +13,12 @@ import pt.ulisboa.aasma.fas.jade.game.Player;
 public class ReporterAgent extends Agent{
 	
 	private static final long serialVersionUID = 1L;
-
+	
 	private Game match;
 	private GameRunner engine;
 	
 	private StartGame startGame;
 	private Timer timer;
-	private UpdateScreen updateScreen;
 	private TerminateGame terminateGame;
 	
 	@Override
@@ -37,7 +36,6 @@ public class ReporterAgent extends Agent{
 		
 		startGame = new StartGame(this, 1000);
 		timer = new Timer(this, 1000);
-		updateScreen = new UpdateScreen(this, 10);
 		terminateGame = new TerminateGame(this);
 				
 		this.addBehaviour(startGame);
@@ -56,7 +54,6 @@ public class ReporterAgent extends Agent{
 		@Override
 		protected void handleElapsedTimeout() {
 			this.myAgent.addBehaviour(timer);
-			this.myAgent.addBehaviour(updateScreen);
 			
 			ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
 			for(Player player : match.getTeamA()){
@@ -84,27 +81,11 @@ public class ReporterAgent extends Agent{
 
 		@Override
 		protected void onTick() {
-			if(this.getTickCount() == GAME_TIME){
+			if(this.getTickCount()== GAME_TIME){
 				this.myAgent.addBehaviour(terminateGame);
 				this.stop();
 			}
-			engine.getScorer().setTime(this.getTickCount()*1000);
-		}
-		
-	}
-	
-	protected class UpdateScreen extends TickerBehaviour {
-		private static final long serialVersionUID = 1L;
-		private ReporterAgent agent;
-		
-		public UpdateScreen(Agent agent, long tickTime) {
-			super(agent, tickTime);
-			this.agent = (ReporterAgent) agent;
-		}
-
-		@Override
-		protected void onTick() {
-	
+			match.setGameTime(this.getTickCount()*1000);
 		}
 		
 	}
@@ -120,7 +101,15 @@ public class ReporterAgent extends Agent{
 		
 		@Override
 		public void action() {
-			this.myAgent.removeBehaviour(timer);
+			ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
+			for(Player player : match.getTeamA()){
+				msg.addReceiver(new AID(player.getName(), AID.ISLOCALNAME));
+			}
+			for(Player player : match.getTeamB()){
+				msg.addReceiver(new AID(player.getName(), AID.ISLOCALNAME));
+			}
+			msg.setContent(AgentMessages.END_GAME);
+			this.myAgent.send(msg);
 		}
 		
 	}

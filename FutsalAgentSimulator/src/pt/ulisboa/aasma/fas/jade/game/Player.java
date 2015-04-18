@@ -1,5 +1,7 @@
 package pt.ulisboa.aasma.fas.jade.game;
 
+import java.util.Random;
+
 import pt.ulisboa.aasma.fas.jade.agents.DefenderAgent;
 import pt.ulisboa.aasma.fas.jade.agents.KeeperAgent;
 import pt.ulisboa.aasma.fas.jade.agents.StrikerAgent;
@@ -31,8 +33,8 @@ public class Player {
 	private int passingRatio;
 	private int dribblingRatio;
 	
-	private int xCoord;
-	private int yCoord;
+	private float xCoord;
+	private float yCoord;
 	
 	private String name;
 	
@@ -52,39 +54,66 @@ public class Player {
 		this.team = team;
 		this.playerNumber = playerNumber;
 		
+		this.xCoord = getRandomXCoord();
+		this.yCoord = getRandomYCoord();
+		
 		if(position.equals(KEEPER)){
 			this.shootingRatio = shootingRatio + (shootingRatio*KEEPER_SR)/100;
 			this.defendingRatio = defendingRatio + (defendingRatio*KEEPER_DR)/100;
 			this.goalKeepingRatio = goalKeepingRatio;
-			
-			this.xCoord = getRandomXCoord();
-			this.yCoord = getRandomYCoord();
-			
 		} else if (position.equals(DEFENDER)){
 			this.shootingRatio = shootingRatio + (shootingRatio*DEFENDER_SR)/100;
 			this.defendingRatio = defendingRatio;
 			this.goalKeepingRatio = 0;
-			
-			this.xCoord = getRandomXCoord();
-			this.yCoord = getRandomYCoord();
-			
 		} else if (position.equals(STRIKER)) {
 			this.shootingRatio = shootingRatio;
 			this.defendingRatio = defendingRatio + (defendingRatio*STRIKER_DR)/100;
 			this.goalKeepingRatio = 0;
-			
-			this.xCoord = getRandomXCoord();
-			this.yCoord = getRandomYCoord();
 		}
-			
+		
+		if (this.team == TEAM_B){
+			this.xCoord += (1 - this.xCoord)*2;
+		}
 	}
 	
-	public int getRandomXCoord(){
-		return 0;
+	public float getRandomXCoord(){
+		if(position.equals(KEEPER)){
+			float minX = 0.0f;
+			float maxX = 0.2f;
+			Random rand = new Random();
+			return rand.nextFloat() * (maxX - minX) + minX;
+		} else if (position.equals(DEFENDER)){
+			float minX = 0.4f;
+			float maxX = 0.6f;
+			Random rand = new Random();
+			return rand.nextFloat() * (maxX - minX) + minX;
+		} else if (position.equals(STRIKER)) {
+			float minX = 0.8f;
+			float maxX = 0.9f;
+			Random rand = new Random();
+			return rand.nextFloat() * (maxX - minX) + minX;
+		}
+		return -1;
 	}
 	
-	public int getRandomYCoord(){
-		return 0;
+	public float getRandomYCoord(){
+		if(position.equals(KEEPER)){
+			float minY = 0.4f;
+			float maxY = 0.6f;
+			Random rand = new Random();
+			return rand.nextFloat() * (maxY - minY) + minY;
+		} else if (position.equals(DEFENDER)){
+			float minY = 0.1f;
+			float maxY = 0.9f;
+			Random rand = new Random();
+			return rand.nextFloat() * (maxY - minY) + minY;
+		} else if (position.equals(STRIKER)) {
+			float minY = 0.1f;
+			float maxY = 0.9f;
+			Random rand = new Random();
+			return rand.nextFloat() * (maxY - minY) + minY;
+		}
+		return -1;
 	}
 	
 	public int getStamina() {
@@ -103,19 +132,19 @@ public class Player {
 		this.shootingRatio = shootingRatio;
 	}
 
-	public int getxCoord() {
+	public float getxCoord() {
 		return xCoord;
 	}
 
-	public void setxCoord(int xCoord) {
+	public void setxCoord(float xCoord) {
 		this.xCoord = xCoord;
 	}
 
-	public int getyCoord() {
+	public float getyCoord() {
 		return yCoord;
 	}
 
-	public void setyCoord(int yCoord) {
+	public void setyCoord(float yCoord) {
 		this.yCoord = yCoord;
 	}
 
