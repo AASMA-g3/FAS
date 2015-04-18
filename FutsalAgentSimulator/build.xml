@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="FutsalAgentSimulator" default="run" basedir=".">
+  <description>FutsalAgentSimulator</description>
+
+  <property name="ant.build.javac.source" value="1.7"/>
+  <property name="ant.build.javac.target" value="1.7"/>
+
+  <property name="javac.encoding" value="ISO-8859-1"/>
+  <property name="java.file.encoding" value="ISO-8859-1"/>
+  
+  <property name="src.dir" value="src"/>
+  <property name="build.dir" value="build"/>
+
+  <property name="build.classes.dir" value="${build.dir}/classes"/>
+	
+  <property name="lib.dir" value="lib"/>
+
+  <property name="main-class" value="pt.ulisboa.aasma.fas.RunSimulator"/>
+	
+	<path id="classpath">
+        <fileset dir="${lib.dir}" includes="**/*.jar"/>
+    </path>	
+	
+  <target name="init" >
+    <echo message="Preparing the project for build..."/>
+    <mkdir dir="${build.dir}"/>
+  	<mkdir dir="${build.classes.dir}"/>
+  </target>
+
+	
+  <target name="compile" depends="init">
+  	<echo message="Compiling sources..." />
+  	    <javac srcdir="${src.dir}" destdir="${build.classes.dir}" classpathref="classpath" encoding="${java.file.encoding}"/>
+  </target>
+
+    <target name="jar" depends="compile">
+        <jar destfile="${build.dir}/${ant.project.name}.jar" basedir="${build.classes.dir}" encoding="${java.file.encoding}">
+            <manifest>
+                <attribute name="Main-Class" value="${main-class}"/>
+            </manifest>
+        </jar>
+    </target>	
+	
+  <target name="run" depends="jar">
+  	 <java classname="${main-class}" fork="true">
+  	  	<classpath>
+             <path refid="classpath"/>
+             <path location="${build.dir}/${ant.project.name}.jar"/>
+        </classpath>
+  	 </java>
+  </target>
+	
+  
+  <target name="clean">
+    <delete dir="${build.dir}"/>
+  	
+ </target>
+
+</project>
