@@ -2,25 +2,25 @@ package pt.ulisboa.aasma.fas.jade.game;
 
 public class Ball {
 
-	private int xCoord;
-	private int yCoord;
+	private float xCoord;
+	private float yCoord;
 
 	public Ball() {
 		super();
-		this.xCoord=0;
-		this.yCoord=0;
+		this.xCoord=1;
+		this.yCoord=(float) 0.5;
 	}
 	
-	public int getxCoord() {
+	public float getxCoord() {
 		return xCoord;
 	}
-	public void setxCoord(int xCoord) {
+	public void setxCoord(float xCoord) {
 		this.xCoord = xCoord;
 	}
-	public int getyCoord() {
+	public float getyCoord() {
 		return yCoord;
 	}
-	public void setyCoord(int yCoord) {
+	public void setyCoord(float yCoord) {
 		this.yCoord = yCoord;
 	}
 	

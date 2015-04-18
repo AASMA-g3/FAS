@@ -1,0 +1,56 @@
+package pt.ulisboa.aasma.fas.j2d;
+
+
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.geom.Ellipse2D;
+
+import pt.ulisboa.aasma.fas.jade.game.Player;
+
+
+public class PlayerGraphic implements Sprite {
+	private static final float SPEED = 200; //Velocidade em 20 pixels / segundo
+	private static final int SIZE = 20;
+	
+	private Player player;
+	
+	private float vx = SPEED;
+	private float vy = SPEED / 2;
+
+	
+	public PlayerGraphic(Player player) {
+		this.player = player;
+	}
+	
+	
+	public void update(long time) {
+
+	}
+	
+	public void draw(Graphics2D g2d) {
+		Graphics2D g = (Graphics2D) g2d.create();
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		g.setColor(Color.BLACK);
+		g.fill(new Ellipse2D.Float(getDrawableX(), getDrawableY(), SIZE + 5, SIZE + 5));
+		
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		if(player.getTeam() == Player.TEAM_A)
+			g.setColor(Color.RED);
+		else g.setColor(Color.BLUE);
+		g.fill(new Ellipse2D.Float(getDrawableX() + (float) 2.5, getDrawableY() + (float)2.5, SIZE, SIZE));
+		
+		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+		g.setColor(Color.WHITE);
+		g.drawString(Integer.toString(player.getPlayerNumber()),getDrawableX() + 9, getDrawableY() + 17);
+		g.dispose();
+	}
+	
+	public float getDrawableX(){
+		return player.getxCoord();
+	}
+	
+	public float getDrawableY(){
+		return player.getyCoord();
+	}
+}

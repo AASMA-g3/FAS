@@ -41,6 +41,8 @@ public class Game {
 		playerNumberCounter++;
 		this.teamB.add(new Player(names.get(9), 100, shootingRatio, defendingRatio, goalKeepingRatio, passingRatio, dribblingRatio, Player.STRIKER,Player.TEAM_B,playerNumberCounter));
 		
+		this.ball = new Ball();
+		
 	}
 
 	public static ArrayList<String> getRandomNames(){

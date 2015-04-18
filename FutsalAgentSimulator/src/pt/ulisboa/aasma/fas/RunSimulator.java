@@ -23,12 +23,15 @@ public class RunSimulator {
 
 		 home = r.getHome();
 		 
+
+			GameRunner bf = new GameRunner();
+			bf.setVisible(true);
+			bf.startMainLoop();
+		 
+		 //WAIT FOR RUN PRESS
+		 
 		 Game game = new Game(70, 50, 90, 70, 70);
-
-		GameRunner bf = new GameRunner();
-		bf.setVisible(true);
-		bf.startMainLoop();
-
+		 bf.startGame(game);
 		 
 		 Object[] agentParams = {game};
 		 Object[] reporterParams = {game,bf};

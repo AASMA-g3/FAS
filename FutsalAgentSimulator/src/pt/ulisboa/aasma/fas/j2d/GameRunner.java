@@ -1,20 +1,14 @@
 package pt.ulisboa.aasma.fas.j2d;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.EventQueue;
-import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLayeredPane;
-import javax.swing.JPanel;
-import javax.swing.JSlider;
-import javax.swing.event.ChangeListener;
+
+import pt.ulisboa.aasma.fas.jade.game.Game;
 
 public class GameRunner extends JFrame implements LoopSteps {
 	/**
@@ -25,9 +19,11 @@ public class GameRunner extends JFrame implements LoopSteps {
 
 	private long previous = System.currentTimeMillis();
 	private Scorer scorer;
-	private Ball ball;
+	private BallGraphic ball;
 	private FutsalPitch pitch;
-
+	private Game game;
+	
+	
 	public GameRunner() {
 		super("FutsalAgentSimulator");
 
@@ -55,11 +51,16 @@ public class GameRunner extends JFrame implements LoopSteps {
 		pitch = new FutsalPitch();
 		scorer = new Scorer();
 		pitch.init();
-		ball = new Ball(getWidth() - getInsets().left - getInsets().right,
-				getHeight() - getInsets().top - getInsets().bottom);
-		ball.init();
+		
 
 
+	}
+	
+	public void startGame(Game game){
+		this.game = game;
+		
+		ball = new BallGraphic(game.getBall());
+		ball.init();	
 	}
 
 	public void processLogics() {
@@ -151,11 +152,11 @@ public class GameRunner extends JFrame implements LoopSteps {
 		this.scorer = scorer;
 	}
 
-	public Ball getBall() {
+	public BallGraphic getBall() {
 		return ball;
 	}
 
-	public void setBall(Ball ball) {
+	public void setBall(BallGraphic ball) {
 		this.ball = ball;
 	}
 
