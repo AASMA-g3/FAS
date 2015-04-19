@@ -55,11 +55,11 @@ public class BallGraphic implements Sprite {
 	}
 
 	public double getDrawableX() {
-		return (ball.getCurrentMovement().x()*GameRunner.SCREEN_RATIO_X)+GameRunner.SCREEN_OFFSET_X;
+		return ((ball.x())*GameRunner.SCREEN_RATIO_X)+GameRunner.SCREEN_OFFSET_X;
 	}
 
 	public double getDrawableY() {
-		return (ball.getCurrentMovement().y()*GameRunner.SCREEN_RATIO_Y)+GameRunner.SCREEN_OFFSET_Y;
+		return ((20-ball.y())*GameRunner.SCREEN_RATIO_Y)+GameRunner.SCREEN_OFFSET_Y;
 	}
 	
 	

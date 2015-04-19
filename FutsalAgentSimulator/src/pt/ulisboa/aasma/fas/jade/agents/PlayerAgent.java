@@ -189,7 +189,7 @@ public class PlayerAgent extends Agent {
 			ACLMessage msg = this.myAgent.receive(MessageTemplate.MatchPerformative(ACLMessage.REFUSE));
 			if (msg != null) {
 				switch (msg.getOntology()) {
-				case AgentMessages.TRY_CATCH:
+		case AgentMessages.TRY_CATCH:
 					tryCatchBehaviour = PlayerAgent.FAILED;
 				case AgentMessages.TRY_RECEIVE:
 					tryReceiveBehaviour = PlayerAgent.FAILED;

@@ -51,6 +51,6 @@ public class PlayerGraphic implements Sprite {
 	}
 	
 	public double getDrawableY(){
-		return (player.y()*GameRunner.SCREEN_RATIO_Y)+GameRunner.SCREEN_OFFSET_Y;
+		return ((20-player.y())*GameRunner.SCREEN_RATIO_Y)+GameRunner.SCREEN_OFFSET_Y;
 	}
 }

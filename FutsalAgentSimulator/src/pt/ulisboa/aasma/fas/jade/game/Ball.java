@@ -12,8 +12,8 @@ public class Ball {
 
 	public Ball() {
 		super();
-		int prob = (int)(Math.random());
-		double direction = 90.0f;
+		long prob = Math.round(Math.random());
+		double direction = 0.0f;
 		if (prob == 0) direction = 180.0f;
 		
 		currentMovement = new BallMovement(0, direction, 20.0f, 10.0f, 0.0f);
