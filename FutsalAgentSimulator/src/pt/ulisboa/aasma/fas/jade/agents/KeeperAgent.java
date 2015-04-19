@@ -58,28 +58,32 @@ public class KeeperAgent extends PlayerAgent {
 		
 		public MainCycle(Agent agent) {
 			super(agent);
+			
+			if (player.getTeam() == Player.TEAM_A)
+				player.getPlayerMovement().setGoal(0.2, Game.GOAL_Y_MED);
+			else
+				player.getPlayerMovement().setGoal(38.8, Game.GOAL_Y_MED);
 		}
 
 		@Override
 		public void action() {
 			Ball ball = match.getBall();
-			double distance = ball.getDistanceToBall(player);
+			double distance = player.getDistanceToBall(ball);
 
 			if (hasBall){
-				Player p1;
+				/*Player p1;
 				if(player.getTeam() == Player.TEAM_A){
-					for (Player p : match.getTeamA()) {
-						if()
-					}
+					p1 = match.getTeamA().get(0);
 				} else {				
-					for (Player p : match.getTeamB()) {
-						
-					}
+					p1 = match.getTeamB().get(0);
 				}
-
-				addBehaviour(new MoveBallBehaviour(this.myAgent, 4,  player.getDirectionToPlayer(p1)));
+				addBehaviour(new MoveBallBehaviour(this.myAgent, Ball.INTENSITY_LONG_PASS,  player.getDirectionToPlayer(p1)));
+				*/
 			}else if (ball.getCurrentMovement().getOriginalIntensity() == Ball.INTENSITY_SHOOT){
-				addBehaviour(new TryCatchBehaviour(this.myAgent));
+				if(distance < 1.0 || (tryCatchBehaviour == PlayerAgent.WAITING_ANSWER)){
+					addBehaviour(new TryCatchBehaviour(this.myAgent));
+					tryCatchBehaviour = PlayerAgent.WAITING_ANSWER;
+				}
 			}else {
 				/*double ref_x;
 				double ref_y = Game.GOAL_Y_MED;
@@ -104,9 +108,9 @@ public class KeeperAgent extends PlayerAgent {
 				}*/
 				
 				if (player.getTeam() == Player.TEAM_A)
-					player.getPlayerMovement().setGoal(0.2, 10.0);
+					player.getPlayerMovement().setGoal(0.2, Game.GOAL_Y_MED);
 				else
-					player.getPlayerMovement().setGoal(39.8, 10.0);
+					player.getPlayerMovement().setGoal(38.8, Game.GOAL_Y_MED);
 				/*
 				if((distance < 1.0f) && !(hasBall) && (tryCatchBehaviour == null)){
 						tryCatchBehaviour = new TryCatchBehaviour(this.myAgent);

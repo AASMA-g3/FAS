@@ -38,10 +38,11 @@ public class BallAgent extends Agent{
 		}
 		
 		ball = match.getBall();
+		owner = "";
 		
 		this.addBehaviour(new ReceiveRequestBehaviour(this));
 		this.addBehaviour(new EndGameBehaviour());
-		ball.setCurrentMovement(new BallMovement(8, 30.0f, 20, 10, match.getGameTime()/1000.0f));
+		ball.setCurrentMovement(new BallMovement(10, 180.0f, 20, 10, match.getGameTime()/1000.0f));
 	}
 	
 	

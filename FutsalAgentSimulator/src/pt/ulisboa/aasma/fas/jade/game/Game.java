@@ -9,16 +9,16 @@ public class Game {
 
 	public static final double GAME_TIME = 500000.0f;
 	
-	public static final int LIMIT_X = 40;
+	public static final int LIMIT_X = 39;
 	public static final int LIMIT_Y = 20;
 	
 	public static final long TICK_TIME = 10;
 	public static final int PLAYERS_PER_TEAM = 5;
 	
-	public static final int GOAL_Y_MIN = 9;
-	public static final int GOAL_Y_MAX = 11;
+	public static final int GOAL_Y_MIN = 10;
+	public static final int GOAL_Y_MAX = 12;
 	
-	public static final int GOAL_Y_MED = 10;
+	public static final int GOAL_Y_MED = 11;
 	
 	private ArrayList<Player> teamA;
 	private ArrayList<Player> teamB;
