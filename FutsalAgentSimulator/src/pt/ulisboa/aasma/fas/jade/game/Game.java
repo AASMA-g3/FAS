@@ -6,8 +6,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import pt.ulisboa.aasma.fas.exceptions.PlayerDoesNotExistException;
 
 public class Game {
-	
+
 	public static final long GAME_TIME = 5000;
+
 	public static final long TICK_TIME = 10;
 	public static final int PLAYERS_PER_TEAM = 5;
 	
