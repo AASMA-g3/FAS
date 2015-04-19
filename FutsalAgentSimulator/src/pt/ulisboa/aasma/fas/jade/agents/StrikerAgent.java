@@ -10,8 +10,7 @@ public class StrikerAgent extends PlayerAgent {
 	
 	private static final long serialVersionUID = 1L;
 	private Boolean moving = false;
-	private double goal_x;
-	private double goal_y;
+
 	@Override
 	protected void setup() {
 		super.setup();
@@ -36,8 +35,6 @@ public class StrikerAgent extends PlayerAgent {
 					break;
 				}
 			}
-			goal_x = player.getPlayerMovement().getGoalX();
-			goal_y = player.getPlayerMovement().getGoalY();
 		}
 
 		@Override
@@ -52,19 +49,17 @@ public class StrikerAgent extends PlayerAgent {
 		@Override
 		public void action() {
 			
-			Ball ball = match.getBall();
-			if(moving && (goal_x - player.x()) < 0.5 
-					&& (goal_y - player.y()) < 0.5){
+			/*Ball ball = match.getBall();
+			if(moving && (player.getPlayerMovement().getGoalX() - player.x()) < 0.8
+					&& (player.getPlayerMovement().getGoalY() - player.y()) < 0.8){
 				moving = false;
 				
 			}else if(!moving){
 				player.resetCoords();
-				goal_x = player.getPlayerMovement().getGoalX();
-				goal_y = player.getPlayerMovement().getGoalY();
 				moving = true;
-			}
+			}*/
 			
-			
+			player.getPlayerMovement().setGoal(ball.x(), ball.y());
 			
 			/*Ball ball = match.getBall();
 
