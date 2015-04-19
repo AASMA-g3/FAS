@@ -1,7 +1,5 @@
 package pt.ulisboa.aasma.fas.jade.agents;
 
-import pt.ulisboa.aasma.fas.jade.agents.PlayerAgent.TryCatchBehaviour;
-import pt.ulisboa.aasma.fas.jade.game.Ball;
 import jade.core.behaviours.Behaviour;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.lang.acl.ACLMessage;

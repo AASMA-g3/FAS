@@ -6,9 +6,6 @@ import jade.core.behaviours.CyclicBehaviour;
 import jade.core.behaviours.OneShotBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
-
-import java.util.Random;
-
 import pt.ulisboa.aasma.fas.jade.game.Ball;
 import pt.ulisboa.aasma.fas.jade.game.BallMovement;
 import pt.ulisboa.aasma.fas.jade.game.Game;
@@ -95,8 +92,14 @@ public class BallAgent extends Agent{
 		}
 	}
 	
-	
+	/**
+	 * Behaviour that processes the request of catching the ball
+	 * It will signal the requester player with a message
+	 * @author Fábio
+	 *
+	 */
 	protected class TryCatchBehaviour extends OneShotBehaviour{
+		private static final long serialVersionUID = 1L;
 		private Player player;
 		
 		public TryCatchBehaviour(Agent agent, Player player) {
@@ -106,26 +109,33 @@ public class BallAgent extends Agent{
 
 		@Override
 		public void action() {
+			if (owner.equals("")){
 				int prob = (int)(Math.random()*100);
-				if(prob > player.getGoalKeepingRatio()){
-					ACLMessage msg = new ACLMessage(ACLMessage.REFUSE);
-					msg.addReceiver(new AID(player.getName(), AID.ISLOCALNAME));
-					msg.setOntology(AgentMessages.FAILED_CATCH);
-					send(msg);
-					return;
-				} else {
+				if(prob < player.getGoalKeepingRatio()){
 					ball.setCurrentMovement(new BallMovement(0, 0.0f, player.x(), player.y(), match.getGameTime()/1000.0f));
 					owner = player.getName();
 					ACLMessage msg = new ACLMessage(ACLMessage.AGREE);
 					msg.addReceiver(new AID(player.getName(), AID.ISLOCALNAME));
-					msg.setOntology(AgentMessages.SUCESS_CATCH);
+					msg.setOntology(AgentMessages.TRY_CATCH);
 					send(msg);
 					return;
 				}
+			}
+			ACLMessage msg = new ACLMessage(ACLMessage.REFUSE);
+			msg.addReceiver(new AID(player.getName(), AID.ISLOCALNAME));
+			msg.setOntology(AgentMessages.TRY_CATCH);
+			send(msg);
 		}
 	}
-	
+
+	/**
+	 * Behaviour that processes the request of receiving the ball
+	 * It will signal the requester player with a message
+	 * @author Fábio
+	 *
+	 */
 	protected class TryReceiveBehaviour extends OneShotBehaviour{
+		private static final long serialVersionUID = 1L;
 		private Player player;
 		
 		public TryReceiveBehaviour(Agent agent, Player player) {
@@ -135,26 +145,33 @@ public class BallAgent extends Agent{
 
 		@Override
 		public void action() {
-			int prob = (int)(Math.random()*100);
-			if(prob > player.getPassingRatio()){
-				ACLMessage msg = new ACLMessage(ACLMessage.REFUSE);
-				msg.addReceiver(new AID(player.getName(), AID.ISLOCALNAME));
-				msg.setOntology(AgentMessages.FAILED_RECEIVE);
-				send(msg);
-				return;
-			} else {
-				ball.setCurrentMovement(new BallMovement(0, 0.0f, player.x(), player.y(), match.getGameTime()/1000.0f));
-				owner = player.getName();
-				ACLMessage msg = new ACLMessage(ACLMessage.AGREE);
-				msg.addReceiver(new AID(player.getName(), AID.ISLOCALNAME));
-				msg.setOntology(AgentMessages.SUCESS_RECEIVE);
-				send(msg);
-				return;
+			if (owner.equals("")){
+				int prob = (int)(Math.random()*100);
+				if(prob < player.getPassingRatio()){
+					ball.setCurrentMovement(new BallMovement(0, 0.0f, player.x(), player.y(), match.getGameTime()/1000.0f));
+					owner = player.getName();
+					ACLMessage msg = new ACLMessage(ACLMessage.AGREE);
+					msg.addReceiver(new AID(player.getName(), AID.ISLOCALNAME));
+					msg.setOntology(AgentMessages.TRY_RECEIVE);
+					send(msg);
+					return;
+				}
 			}
+			ACLMessage msg = new ACLMessage(ACLMessage.REFUSE);
+			msg.addReceiver(new AID(player.getName(), AID.ISLOCALNAME));
+			msg.setOntology(AgentMessages.TRY_RECEIVE);
+			send(msg);
 		}
 	}
 
+	/**
+	 * Behaviour that processes the request of stealing the ball from the current owner
+	 * It will signal the requester player with a message
+	 * @author Fábio
+	 *
+	 */
 	protected class TryTackleBehaviour extends OneShotBehaviour{
+		private static final long serialVersionUID = 1L;
 		private Player player;
 		
 		public TryTackleBehaviour(Agent agent, Player player) {
@@ -168,7 +185,7 @@ public class BallAgent extends Agent{
 			if(prob > player.getDribblingRatio()){
 				ACLMessage msg = new ACLMessage(ACLMessage.REFUSE);
 				msg.addReceiver(new AID(player.getName(), AID.ISLOCALNAME));
-				msg.setOntology(AgentMessages.FAILED_TACKLE);
+				msg.setOntology(AgentMessages.TRY_TACKLE);
 				send(msg);
 				return;
 			} else {
@@ -176,14 +193,20 @@ public class BallAgent extends Agent{
 				owner = player.getName();
 				ACLMessage msg = new ACLMessage(ACLMessage.AGREE);
 				msg.addReceiver(new AID(player.getName(), AID.ISLOCALNAME));
-				msg.setOntology(AgentMessages.SUCESS_TACKLE);
+				msg.setOntology(AgentMessages.TRY_TACKLE);
 				send(msg);
 				return;
 			}
 		}
 	}
 	
+	/**
+	 * 
+	 * @author Fábio
+	 *
+	 */
 	protected class TryInterceptBehaviour extends OneShotBehaviour{
+		private static final long serialVersionUID = 1L;
 		private Player player;
 		
 		public TryInterceptBehaviour(Agent agent, Player player) {
@@ -197,7 +220,7 @@ public class BallAgent extends Agent{
 			if(prob > player.getDefendingRatio()){
 				ACLMessage msg = new ACLMessage(ACLMessage.REFUSE);
 				msg.addReceiver(new AID(player.getName(), AID.ISLOCALNAME));
-				msg.setOntology(AgentMessages.FAILED_INTERCEPT);
+				msg.setOntology(AgentMessages.TRY_INTERCEPT);
 				send(msg);
 				return;
 			} else {
@@ -205,7 +228,7 @@ public class BallAgent extends Agent{
 				owner = player.getName();
 				ACLMessage msg = new ACLMessage(ACLMessage.AGREE);
 				msg.addReceiver(new AID(player.getName(), AID.ISLOCALNAME));
-				msg.setOntology(AgentMessages.SUCESS_INTERCEPT);
+				msg.setOntology(AgentMessages.TRY_INTERCEPT);
 				send(msg);
 				return;
 			}

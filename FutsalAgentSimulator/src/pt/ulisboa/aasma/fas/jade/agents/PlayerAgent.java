@@ -20,21 +20,29 @@ import pt.ulisboa.aasma.fas.jade.game.Player;
 public class PlayerAgent extends Agent {
 	
 	private static final long serialVersionUID = 1L;
-	static AID ballAgent = new AID("Ball", AID.ISLOCALNAME);
-	Game match;
+	
+	protected static final int NOT_TRYING_BEHAVIOUR = 0;
+	protected static final int WAITING_ANSWER = 1;
+	protected static final int SUCCEDED = 2;
+	protected static final int FAILED = 3;
+	
+	protected static AID ballAgent = new AID("Ball", AID.ISLOCALNAME);
+	protected Game match;
 	Player player;
-	Boolean gameStarted = false;
+	protected Boolean gameStarted = false;
 	
 	protected Boolean hasBall = false;
 	
-	protected TryCatchBehaviour tryCatchBehaviour;
-	protected TryReceiveBehaviour tryReceiveBehaviour;
-	protected TryTackleBehaviour tryTackleBehaviour;
-	protected TryInterceptBehaviour tryInterceptBehaviour;
-	
-	protected MoveBallBehaviour moveBallBehaviour;
+	protected int tryCatchBehaviour = NOT_TRYING_BEHAVIOUR;
+	protected int tryReceiveBehaviour = NOT_TRYING_BEHAVIOUR;
+	protected int tryTackleBehaviour = NOT_TRYING_BEHAVIOUR;
+	protected int tryInterceptBehaviour = NOT_TRYING_BEHAVIOUR;
+	protected int moveBallBehaviour = NOT_TRYING_BEHAVIOUR;
 
-	
+	/**
+	 * Set's up the agents, checking the existence of the Agent in the game structure
+	 * Also adds the behaviour to listen to the END_GAME message
+	 */
 	@Override
 	protected void setup() {
 		super.setup();
@@ -59,7 +67,6 @@ public class PlayerAgent extends Agent {
 		this.addBehaviour(b);
 	}
 	
-	
 	/**
 	 * Behaviour to listen to the END_GAME message sent by the ReporterAgent that kills
 	 * the Agent
@@ -82,122 +89,160 @@ public class PlayerAgent extends Agent {
 		}
 	}
 	
+	/**
+	 * Try to catch the ball by sending a message to the ball
+	 * @author Fábio
+	 *
+	 */
 	protected class TryCatchBehaviour extends OneShotBehaviour{
+		private static final long serialVersionUID = 1L;
+		
 		public TryCatchBehaviour(Agent agent) {
 			super(agent);
 		}
+		
 		@Override
 		public void action() {
 			ACLMessage msg = new ACLMessage(ACLMessage.REQUEST);
-			msg.addReceiver(new AID("Ball", AID.ISLOCALNAME));
+			msg.addReceiver(ballAgent);
 			msg.setOntology(AgentMessages.TRY_CATCH);	
 			send(msg);
+			tryCatchBehaviour = PlayerAgent.WAITING_ANSWER;
 		}
 	}
 	
+	/**
+	 * Try to dominate the ball by sending a message to the ball
+	 * @author Fábio
+	 *
+	 */
 	protected class TryReceiveBehaviour extends OneShotBehaviour{
+		private static final long serialVersionUID = 1L;
 		public TryReceiveBehaviour(Agent agent) {
 			super(agent);
 		}
 		@Override
 		public void action() {
 			ACLMessage msg = new ACLMessage(ACLMessage.REQUEST);
-			msg.addReceiver(new AID("Ball", AID.ISLOCALNAME));
+			msg.addReceiver(ballAgent);
 			msg.setOntology(AgentMessages.TRY_RECEIVE);	
 			send(msg);
+			tryReceiveBehaviour = PlayerAgent.WAITING_ANSWER;
 		}
 	}
 	
+	/**
+	 * Try to steal the ball from other player by sending a message to the ball
+	 * @author Fábio
+	 *
+	 */
 	protected class TryTackleBehaviour extends OneShotBehaviour{
+		private static final long serialVersionUID = 1L;
 		public TryTackleBehaviour(Agent agent) {
 			super(agent);
 		}
 		@Override
 		public void action() {
 			ACLMessage msg = new ACLMessage(ACLMessage.REQUEST);
-			msg.addReceiver(new AID("Ball", AID.ISLOCALNAME));
+			msg.addReceiver(ballAgent);
 			msg.setOntology(AgentMessages.TRY_TACKLE);	
 			send(msg);
+			tryTackleBehaviour = PlayerAgent.WAITING_ANSWER;
 		}
 	}
-	
+
+	/**
+	 * Try to intercept the ball by sending a message to the player
+	 * @author Fábio
+	 *
+	 */
 	protected class TryInterceptBehaviour extends OneShotBehaviour{
+		private static final long serialVersionUID = 1L;
 		public TryInterceptBehaviour(Agent agent) {
 			super(agent);
 		}
 		@Override
 		public void action() {
 			ACLMessage msg = new ACLMessage(ACLMessage.REQUEST);
-			msg.addReceiver(new AID("Ball", AID.ISLOCALNAME));
+			msg.addReceiver(ballAgent);
 			msg.setOntology(AgentMessages.TRY_INTERCEPT);	
 			send(msg);
+			tryInterceptBehaviour = PlayerAgent.WAITING_ANSWER;
 		}
 	}
 	
-	protected class ReceiveFailureBehaviour extends CyclicBehaviour{
+	/**
+	 * Receive the messages of success or refusal from the ball when trying to execute some behaviour
+	 * @author Fábio
+	 *
+	 */
+	protected class ReceiveBehaviour extends CyclicBehaviour{
 		private static final long serialVersionUID = 1L;
-		public ReceiveFailureBehaviour(Agent agent) {
+		
+		public ReceiveBehaviour(Agent agent) {
 			super(agent);
 		}
+		
 		@Override
 		public void action() {
-			ACLMessage msg = this.myAgent.receive(MessageTemplate.MatchPerformative(ACLMessage.FAILURE));
+			Boolean block = false;
+			ACLMessage msg = this.myAgent.receive(MessageTemplate.MatchPerformative(ACLMessage.REFUSE));
 			if (msg != null) {
 				switch (msg.getOntology()) {
-				case AgentMessages.FAILED_CATCH:
-					tryCatchBehaviour = null;
-					System.out.println("Ball not catched");
-				case AgentMessages.FAILED_RECEIVE:
-					tryReceiveBehaviour = null;
-				case AgentMessages.FAILED_TACKLE:
-					tryTackleBehaviour = null;
-				case AgentMessages.FAILED_INTERCEPT:
-					tryInterceptBehaviour = null;
+		case AgentMessages.TRY_CATCH:
+					tryCatchBehaviour = PlayerAgent.FAILED;
+				case AgentMessages.TRY_RECEIVE:
+					tryReceiveBehaviour = PlayerAgent.FAILED;
+				case AgentMessages.TRY_TACKLE:
+					tryTackleBehaviour = PlayerAgent.FAILED;
+				case AgentMessages.TRY_INTERCEPT:
+					tryInterceptBehaviour = PlayerAgent.FAILED;
+				case AgentMessages.MOVE_TO:
+					moveBallBehaviour = PlayerAgent.FAILED;
 				default:
 					break;
 				}
 			} else {
-				block();
+				block = true;
 			}
-		}
-	}
-	
-	protected class ReceiveAgreeBehaviour extends CyclicBehaviour{
-		private static final long serialVersionUID = 1L;
-		public ReceiveAgreeBehaviour(Agent agent) {
-			super(agent);
-		}
-		@Override
-		public void action() {
-			ACLMessage msg = this.myAgent.receive(MessageTemplate.MatchPerformative(ACLMessage.AGREE));
+			msg = this.myAgent.receive(MessageTemplate.MatchPerformative(ACLMessage.AGREE));
 			if (msg != null) {
 				switch (msg.getOntology()) {
-				case AgentMessages.SUCESS_CATCH:
+				case AgentMessages.TRY_CATCH:
 					hasBall = true;
-					tryCatchBehaviour = null;
-					player.getPlayerMovement().setGoal(player.x(), player.y());
-					System.out.println("Ball Catched");
-				case AgentMessages.SUCESS_RECEIVE:
+					tryCatchBehaviour = PlayerAgent.SUCCEDED;
+				case AgentMessages.TRY_RECEIVE:
 					hasBall = true;
-					tryReceiveBehaviour = null;
-				case AgentMessages.SUCESS_TACKLE:
+					tryReceiveBehaviour = PlayerAgent.SUCCEDED;
+				case AgentMessages.TRY_TACKLE:
 					hasBall = true;
-					tryTackleBehaviour = null;
-				case AgentMessages.SUCESS_INTERCEPT:
+					tryTackleBehaviour = PlayerAgent.SUCCEDED;
+				case AgentMessages.TRY_INTERCEPT:
 					hasBall = true;
-					tryInterceptBehaviour = null;
+					tryInterceptBehaviour = PlayerAgent.SUCCEDED;
+				case AgentMessages.MOVE_TO:
+					moveBallBehaviour = PlayerAgent.SUCCEDED;
 				default:
 					break;
 				}
 			} else {
-				block();
+				block = true;
 			}
+			if (block) block();
 		}
 	}
 	
+	/**
+	 * Behaviour to manipulate the ball
+	 * @author Fábio
+	 *
+	 */
 	protected class MoveBallBehaviour extends OneShotBehaviour{
+		private static final long serialVersionUID = 1L;
+		
 		private int intensity;
 		private double direction;
+		
 		public MoveBallBehaviour(Agent agent, int intensity, double direction) {
 			super(agent);
 			this.intensity = intensity;
@@ -221,13 +266,14 @@ public class PlayerAgent extends Agent {
 				}
 				
 				ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
-				msg.addReceiver(new AID("Ball", AID.ISLOCALNAME));
+				msg.addReceiver(ballAgent);
 				msg.setOntology(AgentMessages.MOVE_TO);
 				msg.setContent(intensity + " " + direction);
 				send(msg);
-				} 
-			moveBallBehaviour = null;
+				moveBallBehaviour = PlayerAgent.WAITING_ANSWER;
+			} else {
+				moveBallBehaviour = PlayerAgent.FAILED;
+			}
 		}
-		
 	}
 }
