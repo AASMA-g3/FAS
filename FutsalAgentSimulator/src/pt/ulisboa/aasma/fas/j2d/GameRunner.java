@@ -17,11 +17,11 @@ public class GameRunner extends JFrame implements LoopSteps {
 	 * @author Ode
 	 */
 	private static final long serialVersionUID = 1L;
-	public static final long SCREEN_RATIO_X = 287;
-	public static final long SCREEN_RATIO_Y = 280;
+	public static final float SCREEN_RATIO_X = 14.35f;
+	public static final float SCREEN_RATIO_Y = 14.0f;
 	
-	public static final long SCREEN_OFFSET_X = 8;
-	public static final long SCREEN_OFFSET_Y = 57; 
+	public static final float SCREEN_OFFSET_X = 8.0f;
+	public static final float SCREEN_OFFSET_Y = 57.0f; 
 	
 	private MainLoop loop = new MainLoop(this, 60);
 
@@ -84,9 +84,12 @@ public class GameRunner extends JFrame implements LoopSteps {
 
 	public void processLogics() {
 		long time = game.getGameTime();
-
-		ball.update(time);
+		
+		if (ball != null)
+			ball.update(time);
+		
 		scorer.update(time);
+		
 		for (PlayerGraphic pl : playerList){
 			pl.update(time);
 		}

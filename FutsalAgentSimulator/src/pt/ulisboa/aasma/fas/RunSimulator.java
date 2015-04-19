@@ -31,6 +31,7 @@ public class RunSimulator {
 		 //WAIT FOR RUN PRESS
 		 
 		 Game game = new Game(70, 50, 90, 70, 70);
+		 
 		 bf.startGame(game);
 		 
 		 Object[] agentParams = {game};

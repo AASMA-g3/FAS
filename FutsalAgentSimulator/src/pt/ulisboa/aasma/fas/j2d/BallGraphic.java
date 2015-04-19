@@ -16,19 +16,16 @@ import pt.ulisboa.aasma.fas.jade.game.Ball;
 
 
 public class BallGraphic implements Sprite {
-	private static final float SPEED = 200; //Velocidade em 20 pixels / segundo
+
 	private static final int SIZE = 10;
-	private static final float INITIAL_X = (float) 299;
-	private static final float INITIAL_Y = 173;
 	private  BufferedImage ball_texture = null;
 	
 	private Ball ball;
 	
-	private float vx = SPEED;
-	private float vy = SPEED / 2;
-	
 	private int screenWidth;
 	private int screenHeight;
+	
+	
 	
 	public BallGraphic(Ball ball) {
 		this.ball = ball;
@@ -44,11 +41,7 @@ public class BallGraphic implements Sprite {
 	}
 	
 	public void update(long time) {
-		//O tempo é em milis. Para obter em segundos, precisamos dividi-lo por 1000.
-		//TODO: Comportamento da bola -> físicas
-		/*x += (time * vx) / 1000;
-		y += (time * vy) / 1000;
-		checkCollision();*/
+		ball.getCurrentMovement().updateT((float)time/1000.0f);
 	}
 	
 	
@@ -62,11 +55,11 @@ public class BallGraphic implements Sprite {
 	}
 
 	public float getDrawableX() {
-		return (ball.getxCoord()*GameRunner.SCREEN_RATIO_X)+GameRunner.SCREEN_OFFSET_X;
+		return (ball.getCurrentMovement().x()*GameRunner.SCREEN_RATIO_X)+GameRunner.SCREEN_OFFSET_X;
 	}
 
 	public float getDrawableY() {
-		return (ball.getyCoord()*GameRunner.SCREEN_RATIO_Y)+GameRunner.SCREEN_OFFSET_Y;
+		return (ball.getCurrentMovement().y()*GameRunner.SCREEN_RATIO_Y)+GameRunner.SCREEN_OFFSET_Y;
 	}
 	
 	

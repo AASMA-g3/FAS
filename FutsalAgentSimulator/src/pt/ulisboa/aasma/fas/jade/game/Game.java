@@ -5,7 +5,9 @@ import java.util.ArrayList;
 import pt.ulisboa.aasma.fas.exceptions.PlayerDoesNotExistException;
 
 public class Game {
-
+	
+	public static final long GAME_TIME = 300000;
+	public static final long TICK_TIME = 10;
 	public static final int PLAYERS_PER_TEAM = 5;
 	
 	private ArrayList<Player> teamA;
@@ -15,7 +17,7 @@ public class Game {
 	
 	private int playerNumberCounter = 1;
 	
-	private int gameTime = 0;
+	private long gameTime = 0;
 	
 	public Game(int shootingRatio, int defendingRatio, int goalKeepingRatio, int passingRatio, int dribblingRatio) {
 
@@ -132,11 +134,11 @@ public class Game {
 		throw new PlayerDoesNotExistException(playerName);
 	}
 
-	public int getGameTime() {
+	public long getGameTime() {
 		return gameTime;
 	}
 
-	public void setGameTime(int gameTime) {
+	public void setGameTime(long gameTime) {
 		this.gameTime = gameTime;
 	}
 	

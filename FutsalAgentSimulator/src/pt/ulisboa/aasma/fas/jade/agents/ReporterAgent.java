@@ -35,7 +35,7 @@ public class ReporterAgent extends Agent{
 		}
 		
 		startGame = new StartGame(this, 1000);
-		timer = new Timer(this, 1000);
+		timer = new Timer(this, Game.TICK_TIME);
 		terminateGame = new TerminateGame(this);
 				
 		this.addBehaviour(startGame);
@@ -69,10 +69,10 @@ public class ReporterAgent extends Agent{
 		
 	}
 	
+	
 	protected class Timer extends TickerBehaviour{
 		private static final long serialVersionUID = 1L;
 		private ReporterAgent agent;
-		private static final long GAME_TIME = 300;
 		
 		public Timer(Agent agent, long tickTime) {
 			super(agent, tickTime);
@@ -81,11 +81,11 @@ public class ReporterAgent extends Agent{
 
 		@Override
 		protected void onTick() {
-			if(this.getTickCount()== GAME_TIME){
+			if(match.getGameTime()== Game.GAME_TIME){
 				this.myAgent.addBehaviour(terminateGame);
 				this.stop();
 			}
-			match.setGameTime(this.getTickCount()*1000);
+			match.setGameTime(match.getGameTime()+Game.TICK_TIME);
 		}
 		
 	}
