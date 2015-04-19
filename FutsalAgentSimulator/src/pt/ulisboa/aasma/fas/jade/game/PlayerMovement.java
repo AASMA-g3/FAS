@@ -31,29 +31,29 @@ public class PlayerMovement {
 		this.t = time - this.lastT;
 		this.lastT = time;
 		updateStamina();
-		if (lastX != goalX && lastY != goalY)
+//		if (lastX != goalX && lastY != goalY)
 			// System.out.println(lastX + "  " + lastY);
-			System.out
-					.println((stamina / 100.0f)
-							+ "  "
-							+ lastX
-							+ "  "
-							+ lastY
-							+ "  "
-							+ t
-							+ "  "
-							+ Math.cos(Math
-									.toRadians(getDirectionToGoal()))
-							+ "  "
-							+ Math.sin(Math
-									.toRadians(getDirectionToGoal()))
-							+ "  "
-							+ Math.cos(Math
-									.toRadians(getDirectionToGoal()))*t*(stamina / 100.0f)		
-							+ "  "
-							+ (Double.sum(Math.cos(Math
-									.toRadians(getDirectionToGoal()))*t*(stamina / 100.0f),lastX))	
-							);
+//			System.out
+//					.println((stamina / 100.0f)
+//							+ "  "
+//							+ lastX
+//							+ "  "
+//							+ lastY
+//							+ "  "
+//							+ t
+//							+ "  "
+//							+ Math.cos(Math
+//									.toRadians(getDirectionToGoal()))
+//							+ "  "
+//							+ Math.sin(Math
+//									.toRadians(getDirectionToGoal()))
+//							+ "  "
+//							+ Math.cos(Math
+//									.toRadians(getDirectionToGoal()))*t*(stamina / 100.0f)		
+//							+ "  "
+//							+ (Double.sum(Math.cos(Math
+//									.toRadians(getDirectionToGoal()))*t*(stamina / 100.0f),lastX))	
+//							);
 	}
 
 	public double getGoalX() {
