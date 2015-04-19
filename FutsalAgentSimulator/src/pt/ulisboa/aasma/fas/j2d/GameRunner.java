@@ -25,15 +25,14 @@ public class GameRunner extends JFrame implements LoopSteps {
 	 * @author Ode
 	 */
 	private static final long serialVersionUID = 1L;
-	public static final long SCREEN_RATIO_X = 287;
-	public static final long SCREEN_RATIO_Y = 280;
+	public static final float SCREEN_RATIO_X = 14.35f;
+	public static final float SCREEN_RATIO_Y = 14.0f;
 	
-	public static final long SCREEN_OFFSET_X = 8;
-	public static final long SCREEN_OFFSET_Y = 57; 
+	public static final float SCREEN_OFFSET_X = 8.0f;
+	public static final float SCREEN_OFFSET_Y = 57.0f; 
 	
 	private MainLoop loop = new MainLoop(this, 60);
 
-	private long previous = System.currentTimeMillis();
 	private Scorer scorer;
 	private BallGraphic ball;
 	private FutsalPitch pitch;
@@ -95,12 +94,17 @@ public class GameRunner extends JFrame implements LoopSteps {
 	}
 
 	public void processLogics() {
-		long time = System.currentTimeMillis() - previous;
-
-		ball.update(time);
+		long time = game.getGameTime();
+		
+		if (ball != null)
+			ball.update(time);
+		
 		scorer.update(time);
+		
+		for (PlayerGraphic pl : playerList){
+			pl.update(time);
+		}
 
-		previous = System.currentTimeMillis();
 	}
 
 	public void renderGraphics() {
@@ -172,14 +176,6 @@ public class GameRunner extends JFrame implements LoopSteps {
 
 	public void setLoop(MainLoop loop) {
 		this.loop = loop;
-	}
-
-	public long getPrevious() {
-		return previous;
-	}
-
-	public void setPrevious(long previous) {
-		this.previous = previous;
 	}
 
 	public Scorer getScorer() {

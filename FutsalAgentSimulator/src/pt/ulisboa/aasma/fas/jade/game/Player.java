@@ -72,44 +72,44 @@ public class Player {
 		}
 		
 		if (this.team == TEAM_B){
-			this.xCoord += (1 - this.xCoord)*2;
+			this.xCoord += (20 - this.xCoord)*2;
 		}
 	}
 	
-	public float getRandomXCoord(){
+	private float getRandomXCoord(){
 		if(position.equals(KEEPER)){
 			float minX = 0.0f;
-			float maxX = 0.2f;
+			float maxX = 5.0f;
 			Random rand = new Random();
 			return rand.nextFloat() * (maxX - minX) + minX;
 		} else if (position.equals(DEFENDER)){
-			float minX = 0.4f;
-			float maxX = 0.6f;
+			float minX = 9.0f;
+			float maxX = 11.0f;
 			Random rand = new Random();
 			return rand.nextFloat() * (maxX - minX) + minX;
 		} else if (position.equals(STRIKER)) {
-			float minX = 0.8f;
-			float maxX = 0.9f;
+			float minX = 13.0f;
+			float maxX = 17.0f;
 			Random rand = new Random();
 			return rand.nextFloat() * (maxX - minX) + minX;
 		}
 		return -1;
 	}
 	
-	public float getRandomYCoord(){
+	private float getRandomYCoord(){
 		if(position.equals(KEEPER)){
-			float minY = 0.4f;
-			float maxY = 0.6f;
+			float minY = 8.0f;
+			float maxY = 12.0f;
 			Random rand = new Random();
 			return rand.nextFloat() * (maxY - minY) + minY;
 		} else if (position.equals(DEFENDER)){
-			float minY = 0.1f;
-			float maxY = 0.9f;
+			float minY = 1.0f;
+			float maxY = 19.0f;
 			Random rand = new Random();
 			return rand.nextFloat() * (maxY - minY) + minY;
 		} else if (position.equals(STRIKER)) {
-			float minY = 0.1f;
-			float maxY = 0.9f;
+			float minY = 1.0f;
+			float maxY = 19.0f;
 			Random rand = new Random();
 			return rand.nextFloat() * (maxY - minY) + minY;
 		}
@@ -212,7 +212,5 @@ public class Player {
 	public void setPlayerNumber(int playerNumber) {
 		this.playerNumber = playerNumber;
 	}
-	
-	
 	
 }
