@@ -22,9 +22,9 @@ public class Player {
 	
 	public static final int STRIKER_DR = -20;
 	
-	private int team;
+	public static final int RATIO_MULTIPLIER = 20;
 	
-	private int stamina;
+	private int team;
 
 	private int shootingRatio;
 	private int defendingRatio;
@@ -33,20 +33,19 @@ public class Player {
 	private int passingRatio;
 	private int dribblingRatio;
 	
-	private float xCoord;
-	private float yCoord;
-	
 	private String name;
+	
+	private PlayerMovement playerMovement;
 	
 	private String position;
 	private int playerNumber;
 
-	public Player(String name, int stamina, int shootingRatio, int defendingRatio,
+	public Player(String name, int shootingRatio, int defendingRatio,
 			int goalKeepingRatio, int passingRatio, int dribblingRatio, String position, int team, int playerNumber) {
 		super();
-		this.stamina = stamina;
-		this.passingRatio = passingRatio;
-		this.dribblingRatio = dribblingRatio;
+		
+		this.passingRatio = passingRatio*RATIO_MULTIPLIER;
+		this.dribblingRatio = dribblingRatio*RATIO_MULTIPLIER;
 		
 		this.name = name;
 		this.position = position;
@@ -54,8 +53,17 @@ public class Player {
 		this.team = team;
 		this.playerNumber = playerNumber;
 		
-		this.xCoord = getRandomXCoord();
-		this.yCoord = getRandomYCoord();
+		
+		double x = getRandomXCoord();
+		double y = getRandomYCoord();
+		if (this.team == TEAM_B){
+			x += (20.0f - x)*2.0f;
+		}
+		this.playerMovement = new PlayerMovement(x, y);
+		
+		shootingRatio = shootingRatio*RATIO_MULTIPLIER;
+		defendingRatio = defendingRatio*RATIO_MULTIPLIER;
+		goalKeepingRatio = goalKeepingRatio*RATIO_MULTIPLIER;
 		
 		if(position.equals(KEEPER)){
 			this.shootingRatio = shootingRatio + (shootingRatio*KEEPER_SR)/100;
@@ -71,146 +79,114 @@ public class Player {
 			this.goalKeepingRatio = 0;
 		}
 		
-		if (this.team == TEAM_B){
-			this.xCoord += (20 - this.xCoord)*2;
-		}
+		
 	}
 	
-	private float getRandomXCoord(){
+	private double getRandomXCoord(){
 		if(position.equals(KEEPER)){
-			float minX = 0.0f;
-			float maxX = 5.0f;
+			double minX = 0.0f;
+			double maxX = 5.0f;
 			Random rand = new Random();
-			return rand.nextFloat() * (maxX - minX) + minX;
+			return rand.nextDouble() * (maxX - minX) + minX;
 		} else if (position.equals(DEFENDER)){
-			float minX = 9.0f;
-			float maxX = 11.0f;
+			double minX = 9.0f;
+			double maxX = 11.0f;
 			Random rand = new Random();
-			return rand.nextFloat() * (maxX - minX) + minX;
+			return rand.nextDouble() * (maxX - minX) + minX;
 		} else if (position.equals(STRIKER)) {
-			float minX = 13.0f;
-			float maxX = 17.0f;
+			double minX = 13.0f;
+			double maxX = 17.0f;
 			Random rand = new Random();
-			return rand.nextFloat() * (maxX - minX) + minX;
+			return rand.nextDouble() * (maxX - minX) + minX;
 		}
 		return -1;
 	}
 	
-	private float getRandomYCoord(){
+	private double getRandomYCoord(){
 		if(position.equals(KEEPER)){
-			float minY = 8.0f;
-			float maxY = 12.0f;
+			double minY = 8.0f;
+			double maxY = 12.0f;
 			Random rand = new Random();
-			return rand.nextFloat() * (maxY - minY) + minY;
+			return rand.nextDouble() * (maxY - minY) + minY;
 		} else if (position.equals(DEFENDER)){
-			float minY = 1.0f;
-			float maxY = 19.0f;
+			double minY = 1.0f;
+			double maxY = 19.0f;
 			Random rand = new Random();
-			return rand.nextFloat() * (maxY - minY) + minY;
+			return rand.nextDouble() * (maxY - minY) + minY;
 		} else if (position.equals(STRIKER)) {
-			float minY = 1.0f;
-			float maxY = 19.0f;
+			double minY = 1.0f;
+			double maxY = 19.0f;
 			Random rand = new Random();
-			return rand.nextFloat() * (maxY - minY) + minY;
+			return rand.nextDouble() * (maxY - minY) + minY;
 		}
 		return -1;
-	}
-	
-	public int getStamina() {
-		return stamina;
-	}
-
-	public void setStamina(int stamina) {
-		this.stamina = stamina;
 	}
 
 	public int getShootingRatio() {
 		return shootingRatio;
 	}
 
-	public void setShootingRatio(int shootingRatio) {
-		this.shootingRatio = shootingRatio;
-	}
-
-	public float getxCoord() {
-		return xCoord;
-	}
-
-	public void setxCoord(float xCoord) {
-		this.xCoord = xCoord;
-	}
-
-	public float getyCoord() {
-		return yCoord;
-	}
-
-	public void setyCoord(float yCoord) {
-		this.yCoord = yCoord;
-	}
-
 	public String getName() {
 		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
 	}
 
 	public String getPosition() {
 		return position;
 	}
 
-	public void setPosition(String position) {
-		this.position = position;
-	}
-
 	public int getTeam() {
 		return team;
-	}
-
-	public void setTeam(int team) {
-		this.team = team;
 	}
 
 	public int getDefendingRatio() {
 		return defendingRatio;
 	}
 
-	public void setDefendingRatio(int defendingRatio) {
-		this.defendingRatio = defendingRatio;
-	}
-
 	public int getGoalKeepingRatio() {
 		return goalKeepingRatio;
-	}
-
-	public void setGoalKeepingRatio(
-			int goalKeepingRatio) {
-		this.goalKeepingRatio = goalKeepingRatio;
 	}
 
 	public int getPassingRatio() {
 		return passingRatio;
 	}
 
-	public void setPassingRatio(int passingRatio) {
-		this.passingRatio = passingRatio;
-	}
-
 	public int getDribblingRatio() {
 		return dribblingRatio;
-	}
-
-	public void setDribblingRatio(int dribblingRatio) {
-		this.dribblingRatio = dribblingRatio;
 	}
 
 	public int getPlayerNumber() {
 		return playerNumber;
 	}
 
-	public void setPlayerNumber(int playerNumber) {
-		this.playerNumber = playerNumber;
+	public double getDirectionToPlayer(Player player){
+		return  Math.toDegrees(Math.atan(Math.abs(player.y()- y()) /
+				Math.abs(player.x()- x())));
 	}
 	
+	public double getDirectionToBall(Ball ball){
+		return  Math.toDegrees(Math.atan(Math.abs(ball.y()- y()) /
+				Math.abs(ball.x()- x())));
+	}
+	
+	public double getDirectionToGoal(){
+		if(this.getTeam() == Player.TEAM_A){
+			return  Math.toDegrees(Math.atan(Math.abs(Game.GOAL_Y_MED- y()) /
+					Math.abs(Game.LIMIT_X- x())));
+		} else {
+			return  Math.toDegrees(Math.atan(Math.abs(Game.GOAL_Y_MED- y()) /
+					Math.abs(0- x())));
+		}
+	}
+
+	public PlayerMovement getPlayerMovement() {
+		return playerMovement;
+	}
+
+	public double x(){
+		return playerMovement.x();
+	}
+	
+	public double y(){
+		return playerMovement.y();
+	}
 }

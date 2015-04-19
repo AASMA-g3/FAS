@@ -1,11 +1,18 @@
 package pt.ulisboa.aasma.fas.jade.agents;
 
+import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
+import jade.core.behaviours.OneShotBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
+
+import java.util.Random;
+
 import pt.ulisboa.aasma.fas.jade.game.Ball;
+import pt.ulisboa.aasma.fas.jade.game.BallMovement;
 import pt.ulisboa.aasma.fas.jade.game.Game;
+import pt.ulisboa.aasma.fas.jade.game.Player;
 
 
 /**
@@ -17,15 +24,10 @@ import pt.ulisboa.aasma.fas.jade.game.Game;
 public class BallAgent extends Agent{
 	private static final long serialVersionUID = 1L;
 	
-	//Constants that represent the state of the ball
-	public static final int BALL_ABANDONED = 0;
-	public static final int BALL_SHOTED = 1;
-	public static final int BALL_PASSED = 2;
-	public static final int BALL_DRIBLED = 3;
+	private String owner;
 	
 	private Game match;
 	private Ball ball;
-	private int state = BallAgent.BALL_ABANDONED;
 	
 	@Override
 	protected void setup() {
@@ -40,81 +42,49 @@ public class BallAgent extends Agent{
 		
 		ball = match.getBall();
 		
-		this.addBehaviour(new AnswerQueryBehaviour(this));
-		this.addBehaviour(new AnswerRequestBehaviour(this));
+		this.addBehaviour(new ReceiveRequestBehaviour(this));
 		this.addBehaviour(new EndGameBehaviour());
 	}
 	
 	
 	/**
-	 * Behaviour to answer queries from players about the state of the ball.
-	 * The ball can be abandoned, shoted, passed or being dribled.
+	 * Behaviour to listen to requests from the Players, like passing, shooting and dribling the ball.
 	 * @author Fábio
 	 *
 	 */
-	protected class AnswerQueryBehaviour extends CyclicBehaviour{
+	protected class ReceiveRequestBehaviour extends CyclicBehaviour{
 		private static final long serialVersionUID = 1L;
 		
-		public AnswerQueryBehaviour(Agent agent) {
+		public ReceiveRequestBehaviour(Agent agent) {
 			super(agent);
 		}
 
 		@Override
 		public void action() {
-			ACLMessage msg = this.myAgent.receive(MessageTemplate.MatchPerformative(ACLMessage.QUERY_IF));
+			ACLMessage msg = this.myAgent.receive(MessageTemplate.MatchPerformative(ACLMessage.REQUEST));
 			if (msg != null) {
-				switch (msg.getContent()) {
-				case AgentMessages.BALL_PASSED:	
-					if (state == BallAgent.BALL_PASSED){
-						ACLMessage res = new ACLMessage(ACLMessage.CONFIRM);
-						res.addReceiver(msg.getSender());
-						res.setContent(AgentMessages.BALL_PASSED);
-						send(res);
-					} else{
-						ACLMessage res = new ACLMessage(ACLMessage.DISCONFIRM);
-						res.addReceiver(msg.getSender());
-						res.setContent(AgentMessages.BALL_PASSED);
-						send(res);
-					}
+
+				switch (msg.getOntology()) {
+				case AgentMessages.TRY_CATCH:
+					this.myAgent.addBehaviour(new TryCatchBehaviour(this.myAgent, match.getPlayer(msg.getSender().getLocalName())));
 					break;
-				case AgentMessages.BALL_DRIBLED:
-					if (state == BallAgent.BALL_DRIBLED){
-						ACLMessage res = new ACLMessage(ACLMessage.CONFIRM);
-						res.addReceiver(msg.getSender());
-						res.setContent(AgentMessages.BALL_DRIBLED);
-						send(res);
-					} else{
-						ACLMessage res = new ACLMessage(ACLMessage.DISCONFIRM);
-						res.addReceiver(msg.getSender());
-						res.setContent(AgentMessages.BALL_DRIBLED);
-						send(res);
-					}
+				case AgentMessages.TRY_RECEIVE:
+					this.myAgent.addBehaviour(new TryReceiveBehaviour(this.myAgent, match.getPlayer(msg.getSender().getLocalName())));
 					break;
-				case AgentMessages.BALL_SHOTED:
-					if (state == BallAgent.BALL_SHOTED){
-						ACLMessage res = new ACLMessage(ACLMessage.CONFIRM);
-						res.addReceiver(msg.getSender());
-						res.setContent(AgentMessages.BALL_SHOTED);
-						send(res);
-					} else{
-						ACLMessage res = new ACLMessage(ACLMessage.DISCONFIRM);
-						res.addReceiver(msg.getSender());
-						res.setContent(AgentMessages.BALL_SHOTED);
-						send(res);
-					}
+				case AgentMessages.TRY_TACKLE:
+					this.myAgent.addBehaviour(new TryTackleBehaviour(this.myAgent, match.getPlayer(msg.getSender().getLocalName())));
 					break;
-				case AgentMessages.BALL_ABANDONED:
-					if (state == BallAgent.BALL_ABANDONED){
-						ACLMessage res = new ACLMessage(ACLMessage.CONFIRM);
-						res.addReceiver(msg.getSender());
-						res.setContent(AgentMessages.BALL_ABANDONED);
-						send(res);
-					} else{
-						ACLMessage res = new ACLMessage(ACLMessage.DISCONFIRM);
-						res.addReceiver(msg.getSender());
-						res.setContent(AgentMessages.BALL_ABANDONED);
-						send(res);
-					}
+				case AgentMessages.TRY_INTERCEPT:
+					this.myAgent.addBehaviour(new TryInterceptBehaviour(this.myAgent, match.getPlayer(msg.getSender().getLocalName())));
+					break;
+				case AgentMessages.MOVE_TO:
+					System.out.println(msg.getContent());
+					String[] words = msg.getContent().split(" ");  
+					int intensity = Integer.parseInt(words[0]);
+					double direction = Double.parseDouble(words[1]);
+					Player player = match.getPlayer(msg.getSender().getLocalName());
+					ball.setCurrentMovement(new BallMovement(intensity, direction, player.x(), player.y(), match.getGameTime()/1000.0f));
+					if(intensity > Ball.INTENSITY_RUN) owner = "";
 					break;
 				default:
 					break;
@@ -125,46 +95,119 @@ public class BallAgent extends Agent{
 		}
 	}
 	
-	/**
-	 * Behaviour to listen to requests from the Players, like passing, shooting and dribling the ball.
-	 * @author Fábio
-	 *
-	 */
-	protected class AnswerRequestBehaviour extends CyclicBehaviour{
-		private static final long serialVersionUID = 1L;
+	
+	protected class TryCatchBehaviour extends OneShotBehaviour{
+		private Player player;
 		
-		public AnswerRequestBehaviour(BallAgent agent) {
-			super();
+		public TryCatchBehaviour(Agent agent, Player player) {
+			super(agent);
+			this.player = player;
 		}
 
 		@Override
 		public void action() {
-			ACLMessage msg = this.myAgent.receive(MessageTemplate.MatchPerformative(ACLMessage.REQUEST));
-			if (msg != null) {
-				ACLMessage res = new ACLMessage(ACLMessage.CONFIRM);
-				res.addReceiver(msg.getSender());
-				//TODO lógica de tirar a bola e tudo mais
-				switch (msg.getContent()) {
-				case AgentMessages.PASS_BALL:
-					res.setContent(AgentMessages.PASS_BALL);
-					send(res);
-					//TODO actualizar a posição da bola
-					break;
-				case AgentMessages.DRIBLE_BALL:
-					res.setContent(AgentMessages.DRIBLE_BALL);
-					send(res);
-					// TODO actualizar a posição da bola
-					break;
-				case AgentMessages.SHOOT_BALL:
-					res.setContent(AgentMessages.SHOOT_BALL);
-					send(res);
-					//TODO actualizar a posição da bola
-					break;
-				default:
-					break;
+				int prob = (int)(Math.random()*100);
+				if(prob > player.getGoalKeepingRatio()){
+					ACLMessage msg = new ACLMessage(ACLMessage.REFUSE);
+					msg.addReceiver(new AID(player.getName(), AID.ISLOCALNAME));
+					msg.setOntology(AgentMessages.FAILED_CATCH);
+					send(msg);
+					return;
+				} else {
+					ball.setCurrentMovement(new BallMovement(0, 0.0f, player.x(), player.y(), match.getGameTime()/1000.0f));
+					owner = player.getName();
+					ACLMessage msg = new ACLMessage(ACLMessage.AGREE);
+					msg.addReceiver(new AID(player.getName(), AID.ISLOCALNAME));
+					msg.setOntology(AgentMessages.SUCESS_CATCH);
+					send(msg);
+					return;
 				}
+		}
+	}
+	
+	protected class TryReceiveBehaviour extends OneShotBehaviour{
+		private Player player;
+		
+		public TryReceiveBehaviour(Agent agent, Player player) {
+			super(agent);
+			this.player = player;
+		}
+
+		@Override
+		public void action() {
+			int prob = (int)(Math.random()*100);
+			if(prob > player.getPassingRatio()){
+				ACLMessage msg = new ACLMessage(ACLMessage.REFUSE);
+				msg.addReceiver(new AID(player.getName(), AID.ISLOCALNAME));
+				msg.setOntology(AgentMessages.FAILED_RECEIVE);
+				send(msg);
+				return;
 			} else {
-				block();
+				ball.setCurrentMovement(new BallMovement(0, 0.0f, player.x(), player.y(), match.getGameTime()/1000.0f));
+				owner = player.getName();
+				ACLMessage msg = new ACLMessage(ACLMessage.AGREE);
+				msg.addReceiver(new AID(player.getName(), AID.ISLOCALNAME));
+				msg.setOntology(AgentMessages.SUCESS_RECEIVE);
+				send(msg);
+				return;
+			}
+		}
+	}
+
+	protected class TryTackleBehaviour extends OneShotBehaviour{
+		private Player player;
+		
+		public TryTackleBehaviour(Agent agent, Player player) {
+			super(agent);
+			this.player = player;
+		}
+
+		@Override
+		public void action() {
+			int prob = (int)(Math.random()*100);
+			if(prob > player.getDribblingRatio()){
+				ACLMessage msg = new ACLMessage(ACLMessage.REFUSE);
+				msg.addReceiver(new AID(player.getName(), AID.ISLOCALNAME));
+				msg.setOntology(AgentMessages.FAILED_TACKLE);
+				send(msg);
+				return;
+			} else {
+				ball.setCurrentMovement(new BallMovement(0, 0.0f, player.x(), player.y(), match.getGameTime()/1000.0f));
+				owner = player.getName();
+				ACLMessage msg = new ACLMessage(ACLMessage.AGREE);
+				msg.addReceiver(new AID(player.getName(), AID.ISLOCALNAME));
+				msg.setOntology(AgentMessages.SUCESS_TACKLE);
+				send(msg);
+				return;
+			}
+		}
+	}
+	
+	protected class TryInterceptBehaviour extends OneShotBehaviour{
+		private Player player;
+		
+		public TryInterceptBehaviour(Agent agent, Player player) {
+			super(agent);
+			this.player = player;
+		}
+
+		@Override
+		public void action() {
+			int prob = (int)(Math.random()*100);
+			if(prob > player.getDefendingRatio()){
+				ACLMessage msg = new ACLMessage(ACLMessage.REFUSE);
+				msg.addReceiver(new AID(player.getName(), AID.ISLOCALNAME));
+				msg.setOntology(AgentMessages.FAILED_INTERCEPT);
+				send(msg);
+				return;
+			} else {
+				ball.setCurrentMovement(new BallMovement(0, 0.0f, player.x(), player.y(), match.getGameTime()/1000.0f));
+				owner = player.getName();
+				ACLMessage msg = new ACLMessage(ACLMessage.AGREE);
+				msg.addReceiver(new AID(player.getName(), AID.ISLOCALNAME));
+				msg.setOntology(AgentMessages.SUCESS_INTERCEPT);
+				send(msg);
+				return;
 			}
 		}
 	}

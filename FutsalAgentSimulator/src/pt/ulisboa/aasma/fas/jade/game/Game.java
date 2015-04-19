@@ -7,10 +7,18 @@ import pt.ulisboa.aasma.fas.exceptions.PlayerDoesNotExistException;
 
 public class Game {
 
-	public static final long GAME_TIME = 5000;
-
+	public static final double GAME_TIME = 500000.0f;
+	
+	public static final int LIMIT_X = 40;
+	public static final int LIMIT_Y = 20;
+	
 	public static final long TICK_TIME = 10;
 	public static final int PLAYERS_PER_TEAM = 5;
+	
+	public static final int GOAL_Y_MIN = 9;
+	public static final int GOAL_Y_MAX = 11;
+	
+	public static final int GOAL_Y_MED = 10;
 	
 	private ArrayList<Player> teamA;
 	private ArrayList<Player> teamB;
@@ -19,7 +27,7 @@ public class Game {
 	
 	private int playerNumberCounter = 1;
 	
-	private long gameTime = 0;
+	private double gameTime = 0;
 	
 	public final AtomicBoolean isEnded = new AtomicBoolean(false);
 	
@@ -31,61 +39,61 @@ public class Game {
 		
 		ArrayList<String> names = getRandomNames();
 		
-		this.teamA.add(new Player(names.get(0), 100, ratios
+		this.teamA.add(new Player(names.get(0), ratios
 				.get(4), ratios.get(2), ratios.get(0),
 				ratios.get(8), ratios.get(6),
 				Player.KEEPER, Player.TEAM_A,
 				playerNumberCounter));
 		playerNumberCounter++;
-		this.teamA.add(new Player(names.get(1), 100, ratios
+		this.teamA.add(new Player(names.get(1), ratios
 				.get(4), ratios.get(2), ratios.get(0),
 				ratios.get(8), ratios.get(6),
 				Player.DEFENDER, Player.TEAM_A,
 				playerNumberCounter));
 		playerNumberCounter++;
-		this.teamA.add(new Player(names.get(2), 100, ratios
+		this.teamA.add(new Player(names.get(2), ratios
 				.get(4), ratios.get(2), ratios.get(0),
 				ratios.get(8), ratios.get(6),
 				Player.DEFENDER, Player.TEAM_A,
 				playerNumberCounter));
 		playerNumberCounter++;
-		this.teamA.add(new Player(names.get(3), 100, ratios
+		this.teamA.add(new Player(names.get(3),ratios
 				.get(4), ratios.get(2), ratios.get(0),
 				ratios.get(8), ratios.get(6),
 				Player.STRIKER, Player.TEAM_A,
 				playerNumberCounter));
 		playerNumberCounter++;
-		this.teamA.add(new Player(names.get(4), 100, ratios
+		this.teamA.add(new Player(names.get(4),  ratios
 				.get(4), ratios.get(2), ratios.get(0),
 				ratios.get(8), ratios.get(6),
 				Player.STRIKER, Player.TEAM_A,
 				playerNumberCounter));
 		playerNumberCounter = 1;
-		this.teamB.add(new Player(names.get(5), 100, ratios
+		this.teamB.add(new Player(names.get(5), ratios
 				.get(5), ratios.get(3), ratios.get(1),
 				ratios.get(9), ratios.get(7),
 				Player.KEEPER, Player.TEAM_B,
 				playerNumberCounter));
 		playerNumberCounter++;
-		this.teamB.add(new Player(names.get(6), 100, ratios
+		this.teamB.add(new Player(names.get(6),  ratios
 				.get(5), ratios.get(3), ratios.get(1),
 				ratios.get(9), ratios.get(7),
 				Player.DEFENDER, Player.TEAM_B,
 				playerNumberCounter));
 		playerNumberCounter++;
-		this.teamB.add(new Player(names.get(7), 100, ratios
+		this.teamB.add(new Player(names.get(7),  ratios
 				.get(5), ratios.get(3), ratios.get(1),
 				ratios.get(9), ratios.get(7),
 				Player.DEFENDER, Player.TEAM_B,
 				playerNumberCounter));
 		playerNumberCounter++;
-		this.teamB.add(new Player(names.get(8), 100, ratios
+		this.teamB.add(new Player(names.get(8), ratios
 				.get(5), ratios.get(3), ratios.get(1),
 				ratios.get(9), ratios.get(7),
 				Player.STRIKER, Player.TEAM_B,
 				playerNumberCounter));
 		playerNumberCounter++;
-		this.teamB.add(new Player(names.get(9), 100, ratios
+		this.teamB.add(new Player(names.get(9),  ratios
 				.get(5), ratios.get(3), ratios.get(1),
 				ratios.get(9), ratios.get(7),
 				Player.STRIKER, Player.TEAM_B,
@@ -177,11 +185,11 @@ public class Game {
 		throw new PlayerDoesNotExistException(playerName);
 	}
 
-	public long getGameTime() {
+	public double getGameTime() {
 		return gameTime;
 	}
 
-	public void setGameTime(long gameTime) {
+	public void setGameTime(double gameTime) {
 		this.gameTime = gameTime;
 	}
 	

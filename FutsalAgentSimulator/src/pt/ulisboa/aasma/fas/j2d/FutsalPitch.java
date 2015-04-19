@@ -12,7 +12,7 @@ import javax.imageio.ImageIO;
 public class FutsalPitch implements Sprite {
 	private BufferedImage background = null;
 
-	public void update(long time) {
+	public void update(double time) {
 	}
 
 	public void init(){

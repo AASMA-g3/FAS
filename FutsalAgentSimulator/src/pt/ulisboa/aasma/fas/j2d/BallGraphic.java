@@ -40,8 +40,8 @@ public class BallGraphic implements Sprite {
 			}
 	}
 	
-	public void update(long time) {
-		ball.getCurrentMovement().updateT((float)time/1000.0f);
+	public void update(double time) {
+		ball.getCurrentMovement().updateT(time/1000.0f);
 	}
 	
 	
@@ -50,15 +50,15 @@ public class BallGraphic implements Sprite {
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		TexturePaint tp = new TexturePaint(ball_texture, new Rectangle2D.Double(getDrawableX(),getDrawableX(), SIZE, SIZE));
 		g.setPaint(tp);
-		g.fill(new Ellipse2D.Float(getDrawableX(), getDrawableY(), SIZE, SIZE));
+		g.fill(new Ellipse2D.Double(getDrawableX(), getDrawableY(), SIZE, SIZE));
 		g.dispose();
 	}
 
-	public float getDrawableX() {
+	public double getDrawableX() {
 		return (ball.getCurrentMovement().x()*GameRunner.SCREEN_RATIO_X)+GameRunner.SCREEN_OFFSET_X;
 	}
 
-	public float getDrawableY() {
+	public double getDrawableY() {
 		return (ball.getCurrentMovement().y()*GameRunner.SCREEN_RATIO_Y)+GameRunner.SCREEN_OFFSET_Y;
 	}
 	

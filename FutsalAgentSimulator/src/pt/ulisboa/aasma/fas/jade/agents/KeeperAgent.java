@@ -1,21 +1,17 @@
 package pt.ulisboa.aasma.fas.jade.agents;
 
+import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.Behaviour;
 import jade.core.behaviours.CyclicBehaviour;
-import jade.core.behaviours.TickerBehaviour;
+import jade.core.behaviours.OneShotBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
+import pt.ulisboa.aasma.fas.jade.game.Ball;
 
 public class KeeperAgent extends PlayerAgent {
 	
 	private static final long serialVersionUID = 1L;
-	
-	private Boolean ballShoted = false;
-	private Boolean ballPassed = false;
-	private Boolean hasBall = false;
-	
-	
 	
 	@Override
 	protected void setup() {
@@ -39,8 +35,8 @@ public class KeeperAgent extends PlayerAgent {
 				switch (msg.getContent()) {
 				case AgentMessages.START_GAME:
 					gameStarted = true;
-					addBehaviour(new MainCycle());
-					addBehaviour(new AskPerceptions(this.myAgent, 300));
+					addBehaviour(new MainCycle(this.myAgent));
+					addBehaviour(new ReceiveFailureBehaviour(this.myAgent));
 					break;
 				default:
 					break;
@@ -53,29 +49,30 @@ public class KeeperAgent extends PlayerAgent {
 			return gameStarted;
 		}
 	}
-
 	
-	protected class AskPerceptions extends TickerBehaviour {
-		private static final long serialVersionUID = 1L;
 
-		public AskPerceptions(Agent agent, long timer) {
-			super(agent, timer);
-		}
-
-		@Override
-		protected void onTick() {
-			// Get the world perceptions
-		}
-	}
 	
 	protected class MainCycle extends CyclicBehaviour {
 		private static final long serialVersionUID = 1L;
+		
+		public MainCycle(Agent agent) {
+			super(agent);
+		}
 
 		@Override
 		public void action() {
-//			if(ballShoted){
-//				
-//			}
+			Ball ball = match.getBall();
+
+			double distance = ball.getDistanceToBall(player);
+		
+			if((distance < 1.0f) && !(hasBall) && (tryCatchBehaviour == null)){
+					tryCatchBehaviour = new TryCatchBehaviour(this.myAgent);
+					this.myAgent.addBehaviour(tryCatchBehaviour);
+			} else {
+				player.getPlayerMovement().setGoal(ball.x(), ball.y());
+			}
 		}
+			
+		
 	}
 }

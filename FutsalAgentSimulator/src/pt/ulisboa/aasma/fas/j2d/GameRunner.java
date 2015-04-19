@@ -25,11 +25,11 @@ public class GameRunner extends JFrame implements LoopSteps {
 	 * @author Ode
 	 */
 	private static final long serialVersionUID = 1L;
-	public static final float SCREEN_RATIO_X = 14.35f;
-	public static final float SCREEN_RATIO_Y = 14.0f;
+	public static final double SCREEN_RATIO_X = 14.35f;
+	public static final double SCREEN_RATIO_Y = 14.0f;
 	
-	public static final float SCREEN_OFFSET_X = 8.0f;
-	public static final float SCREEN_OFFSET_Y = 57.0f; 
+	public static final double SCREEN_OFFSET_X = 8.0f;
+	public static final double SCREEN_OFFSET_Y = 57.0f; 
 	
 	private MainLoop loop = new MainLoop(this, 60);
 
@@ -94,7 +94,7 @@ public class GameRunner extends JFrame implements LoopSteps {
 
 	public void processLogics() {
 		if(game!=null){
-			long time = game.getGameTime();
+			double time = game.getGameTime();
 			
 			if (ball != null)
 				ball.update(time);
@@ -124,12 +124,12 @@ public class GameRunner extends JFrame implements LoopSteps {
 			pitch.draw((Graphics2D) g2);
 
 		if(game!=null){
-			if (ball != null)
-				ball.draw((Graphics2D) g2);
 			
 			for(PlayerGraphic pl : playerList){
 				pl.draw((Graphics2D) g2);
 			}
+			if (ball != null)
+				ball.draw((Graphics2D) g2);
 		}
 
 		g.dispose();
@@ -150,12 +150,12 @@ public class GameRunner extends JFrame implements LoopSteps {
 			pitch.draw((Graphics2D) g);
 		
 		if(game!=null){
-			if (ball != null)
-				ball.draw((Graphics2D) g);
 	
 			for(PlayerGraphic pl : playerList){
 				pl.draw((Graphics2D) g);
 			}
+			if (ball != null)
+				ball.draw((Graphics2D) g);
 		}
 
 		g.dispose();

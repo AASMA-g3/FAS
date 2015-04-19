@@ -15,7 +15,6 @@ public class ReporterAgent extends Agent{
 	private static final long serialVersionUID = 1L;
 	
 	private Game match;
-	private GameRunner engine;
 	
 	private StartGame startGame;
 	private Timer timer;
@@ -31,7 +30,6 @@ public class ReporterAgent extends Agent{
 		}
 		else{
 			match = (Game) args[0];
-			engine = (GameRunner) args[1];
 		}
 		
 		startGame = new StartGame(this, 1000);
@@ -44,11 +42,9 @@ public class ReporterAgent extends Agent{
 	
 	protected class StartGame extends WakerBehaviour{
 		private static final long serialVersionUID = 1L;
-		private ReporterAgent agent;
 
 		public StartGame(Agent agent, long timeToStart) {
 			super(agent, timeToStart);
-			this.agent = (ReporterAgent) agent;
 		}
 
 		@Override
@@ -72,7 +68,6 @@ public class ReporterAgent extends Agent{
 	
 	protected class Timer extends TickerBehaviour{
 		private static final long serialVersionUID = 1L;
-		private ReporterAgent agent;
 		
 		public Timer(Agent agent, long tickTime) {
 			super(agent, tickTime);
@@ -92,11 +87,9 @@ public class ReporterAgent extends Agent{
 	
 	protected class TerminateGame extends OneShotBehaviour{
 		private static final long serialVersionUID = 1L;
-		private ReporterAgent agent;
 		
 		public TerminateGame(Agent agent) {
 			super(agent);
-			this.agent = (ReporterAgent) agent;
 		}
 		
 		@Override
@@ -114,9 +107,9 @@ public class ReporterAgent extends Agent{
 			msg.setContent(AgentMessages.END_GAME);
 			this.myAgent.send(msg);
 			
-			synchronized (this.agent.match.isEnded) {
-				this.agent.match.isEnded.set(true);
-				this.agent.match.isEnded.notify();
+			synchronized (match.isEnded) {
+				match.isEnded.set(true);
+				match.isEnded.notify();
 			}
 			
 			this.myAgent.doDelete();

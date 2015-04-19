@@ -11,7 +11,7 @@ public class Scorer implements Sprite {
 	private int scoreTeamA = 0;
 	private int scoreTeamB = 0;
 	//private long initialTime = System.currentTimeMillis();
-	private long time = 0;	//System.currentTimeMillis(); TODO: A RECEBER DO REPORTER;
+	private double time = 0;	//System.currentTimeMillis(); TODO: A RECEBER DO REPORTER;
 
 	public int getScoreTeamA() {
 		return scoreTeamA;
@@ -30,13 +30,15 @@ public class Scorer implements Sprite {
 	}
 
 	@Override
-	public void update(long time) {
+	public void update(double time) {
 		this.time = time;
 	}
 	
-	public String timeToString(long time){
+	public String timeToString(double ftime){
 		String minutes = new String();
 		String seconds = new String();
+		
+		long time = (long) ftime;
 		
 		long second = (time / 1000) % 60;
 		long minute = (time / (1000 * 60)) % 60;
@@ -59,12 +61,12 @@ public class Scorer implements Sprite {
 		//Team A Background
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		g.setColor(Color.RED);
-		g.fill(new Rectangle2D.Float(0, 0, (float)300, 50));
+		g.fill(new Rectangle2D.Double(0, 0, 300, 50));
 		
 		//Team B Background
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		g.setColor(Color.BLUE);
-		g.fill(new Rectangle2D.Float(300, 0, (float)300, 50));
+		g.fill(new Rectangle2D.Double(300, 0, 300, 50));
 		
 		//Team A Scorer
 		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
@@ -83,7 +85,7 @@ public class Scorer implements Sprite {
 		//Time displayer Background
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		g.setColor(Color.BLACK);
-		g.fill(new Rectangle2D.Float(255, 0, (float)90, 50));
+		g.fill(new Rectangle2D.Double(255, 0, 90, 50));
 		
 		//Time displayer
 		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
@@ -97,7 +99,7 @@ public class Scorer implements Sprite {
 		g.dispose();
 	}
 
-	public long getTime() {
+	public double getTime() {
 		return time;
 	}
 

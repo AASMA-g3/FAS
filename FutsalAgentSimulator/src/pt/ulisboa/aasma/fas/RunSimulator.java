@@ -17,37 +17,36 @@ public class RunSimulator {
 	private static ContainerController home;
 	
 	public static void main(String[] args) {
-		
 		 r = new RunJade(true, "30000");
 
 		 home = r.getHome();
-		
+		 
 		 MenuFrame mf = new MenuFrame();
 		 GameRunner gr = new GameRunner();
 		
 			 //WAIT FOR RUN PRESS
 			 
-		 synchronized (mf.runPressed) {
+		synchronized (mf.runPressed) {
+			while (!mf.runPressed.get()) {
 				try {
 					mf.runPressed.wait();
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					continue;
 				}
 			}
-		 
+		}
+
 			 Game game = new Game(mf.getSliders());
 			 
 			 gr.startGame(game);
 			 
 			 Object[] agentParams = {game};
-			 Object[] reporterParams = {game,gr};
 			  
 			 
 			try {
 				AgentController a;
 				
-				a = home.createNewAgent("Reporter", ReporterAgent.class.getName(), reporterParams);
+				a = home.createNewAgent("Reporter", ReporterAgent.class.getName(), agentParams);
 				a.start();
 				
 				for (Player player : game.getTeamA()){
@@ -68,17 +67,17 @@ public class RunSimulator {
 				e.printStackTrace();
 			}
 			
-			synchronized (game.isEnded) {
+	/*	synchronized (game.isEnded) {
+			while (game.isEnded.get()) {
 				try {
 					game.isEnded.wait();
 					game.isEnded.set(false);
 					System.out.println("Game has ended");
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					continue;
 				}
 			}
-			
+		}*/
 			
 		 }	
 	}

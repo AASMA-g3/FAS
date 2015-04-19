@@ -1,5 +1,7 @@
 package pt.ulisboa.aasma.fas.jade.agents;
 
+import pt.ulisboa.aasma.fas.jade.agents.PlayerAgent.TryCatchBehaviour;
+import pt.ulisboa.aasma.fas.jade.game.Ball;
 import jade.core.Agent;
 import jade.core.behaviours.Behaviour;
 import jade.core.behaviours.CyclicBehaviour;
@@ -28,8 +30,6 @@ public class DefenderAgent extends PlayerAgent {
 				case AgentMessages.START_GAME:
 					gameStarted = true;
 					addBehaviour(new MainCycle());
-//					addBehaviour(new AskPerceptions(this.myAgent, 300));
-//					addBehaviour(new UpdatePerceptions());
 					break;
 				default:
 					break;
@@ -48,7 +48,17 @@ public class DefenderAgent extends PlayerAgent {
 
 		@Override
 		public void action() {
-			
+			/*Ball ball = match.getBall();
+
+			double distance = ball.getDistanceToBall(player);
+		
+			if((distance < 1.0f) && !(hasBall) && (tryCatchBehaviour == null)){
+					tryCatchBehaviour = new TryCatchBehaviour(this.myAgent);
+					this.myAgent.addBehaviour(tryCatchBehaviour);
+			} else {
+				player.getPlayerMovement().setGoal(ball.x(), ball.y());
+			}
+			*/
 		}
 	}
 }
