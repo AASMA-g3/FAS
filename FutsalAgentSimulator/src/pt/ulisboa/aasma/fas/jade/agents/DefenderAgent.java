@@ -1,7 +1,5 @@
 package pt.ulisboa.aasma.fas.jade.agents;
 
-import pt.ulisboa.aasma.fas.jade.agents.KeeperAgent.MainCycle;
-import pt.ulisboa.aasma.fas.jade.agents.KeeperAgent.StartGame;
 import jade.core.Agent;
 import jade.core.behaviours.Behaviour;
 import jade.core.behaviours.CyclicBehaviour;
