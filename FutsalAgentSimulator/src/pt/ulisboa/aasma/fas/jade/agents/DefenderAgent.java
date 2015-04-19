@@ -4,60 +4,47 @@ import jade.core.Agent;
 import jade.core.behaviours.Behaviour;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.lang.acl.ACLMessage;
+import jade.lang.acl.MessageTemplate;
 
 public class DefenderAgent extends PlayerAgent {
 	
 	private static final long serialVersionUID = 1L;
-	private StartGame startGame;
-	private MainCycle mainCycle;
 	
 	@Override
 	protected void setup() {
 		super.setup();
-		startGame = new StartGame(this);
-		mainCycle = new MainCycle(this);
 		
-		this.addBehaviour(startGame);
+		this.addBehaviour(new StartGameBehaviour());
 	}
 	
-	protected class StartGame extends Behaviour {
+	protected class StartGameBehaviour extends Behaviour {
 		private static final long serialVersionUID = 1L;
-		private DefenderAgent agent;
-		private ACLMessage msg;
-		
-		public StartGame(Agent agent) {
-			super(agent);
-			this.agent = (DefenderAgent) agent;
-		}
 		
 		@Override
 		public void action() {
-			msg = this.myAgent.receive();
-			if (msg != null && msg.getContent().equals(AgentMessages.START_GAME)){
-				 this.myAgent.addBehaviour(mainCycle);
+			ACLMessage msg = receive(MessageTemplate.MatchPerformative(ACLMessage.INFORM));
+			if (msg != null){
+				switch (msg.getContent()) {
+				case AgentMessages.START_GAME:
+					gameStarted = true;
+					addBehaviour(new MainCycle());
+//					addBehaviour(new AskPerceptions(this.myAgent, 300));
+//					addBehaviour(new UpdatePerceptions());
+					break;
+				default:
+					break;
+				}
 			}
-				
-			else 
-				block();
 		}
 
 		@Override
 		public boolean done() {
-			if(msg == null)
-				return false;
-			else
-				return true;			
+			return gameStarted;
 		}
 	}
 	
 	protected class MainCycle extends CyclicBehaviour {
 		private static final long serialVersionUID = 1L;
-		private DefenderAgent agent;
-		
-		public MainCycle(Agent agent) {
-			super(agent);
-			this.agent = (DefenderAgent) agent;
-		}
 
 		@Override
 		public void action() {
