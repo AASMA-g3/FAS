@@ -12,7 +12,7 @@ public class Ball {
 
 	public Ball() {
 		super();
-		int prob = (int)(Math.random());
+		long prob = Math.round(Math.random());
 		double direction = 0.0f;
 		if (prob == 0) direction = 180.0f;
 		

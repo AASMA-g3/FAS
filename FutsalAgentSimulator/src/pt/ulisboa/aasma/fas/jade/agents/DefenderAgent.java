@@ -1,5 +1,6 @@
 package pt.ulisboa.aasma.fas.jade.agents;
 
+import pt.ulisboa.aasma.fas.jade.game.Ball;
 import jade.core.behaviours.Behaviour;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.lang.acl.ACLMessage;
@@ -45,6 +46,8 @@ public class DefenderAgent extends PlayerAgent {
 
 		@Override
 		public void action() {
+			Ball ball = match.getBall();
+			player.getPlayerMovement().setGoal(ball.x(), ball.y());
 			/*Ball ball = match.getBall();
 
 			double distance = ball.getDistanceToBall(player);

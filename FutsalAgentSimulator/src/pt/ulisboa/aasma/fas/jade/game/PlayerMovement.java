@@ -127,21 +127,34 @@ public class PlayerMovement {
 	}
 
 	private double getDirectionToGoal() {
-					return Math.toDegrees(Math.atan(Math.abs(this.goalY	- this.myY)
-				/ Math.abs(this.goalX - this.myX)));
+					return Math.toDegrees(Math.atan((this.goalY	- this.myY)
+				/ (this.goalX - this.myX)));
 	}
 
 	private void setX(double currentTick) {	
 		playerPosLock.lock();
 		playerTimerLock.lock();
 		try{
-		if (!(this.myX == this.goalX)){
+		if (Math.round(this.myX) != Math.round(this.goalX)){
 			
-			double cos =  Math.cos(Math.toRadians(getDirectionToGoal()));
+			double theta = getDirectionToGoal();
+			double cos =  Math.cos(Math.toRadians(theta));
+			if (((Math.round(theta)>= 179.0f) && (Math.round(theta)<=181.0f))
+				|| ((Math.round(theta)>= 0.0f) && (Math.round(theta)<=1.0f)))
+				cos = 1;
+			if (((Math.round(theta)>= 89.0f) && (Math.round(theta)<=91.0f))
+					|| ((Math.round(theta)>= 269.0f) && (Math.round(theta)<=271.0f)))
+					cos = 0;
+			
 			double velocity = (this.stamina / 100.0f) * STANDARD_VELOCITY * cos;
 			double time = currentTick - this.lastTick;
 		//	System.out.println(cos + "  " + velocity + "  " + time + "  " + this.myX + "  " + (this.myX+(velocity*time)));
 			
+	
+				if (myX > goalX)
+					velocity = -velocity;
+				 else
+					velocity = Math.abs(velocity);
 			
 			this.myX += velocity*time;
 		}
@@ -161,12 +174,24 @@ public class PlayerMovement {
 		playerPosLock.lock();
 		playerTimerLock.lock();
 		try{
-		if (!(this.myY == this.goalY)){
+			if (Math.round(this.myY) != Math.round(this.goalY)){
 			
-			double sin =  Math.sin(Math.toRadians(getDirectionToGoal()));
+			double theta = getDirectionToGoal();
+			double sin =  Math.sin(Math.toRadians(theta));
+			if (((Math.round(theta)>= 179.0f) && (Math.round(theta)<=181.0f))
+					|| ((Math.round(theta)>= 0.0f) && (Math.round(theta)<=1.0f)))
+					sin = 0;
+				if (((Math.round(theta)>= 89.0f) && (Math.round(theta)<=91.0f))
+						|| ((Math.round(theta)>= 269.0f) && (Math.round(theta)<=271.0f)))
+						sin = 1;
 			double velocity = (this.stamina / 100.0f) * STANDARD_VELOCITY * sin;
 			double time = currentTick - this.lastTick;
 			
+			if(myY > goalY)
+					velocity = -velocity;
+					else
+						velocity = Math.abs(velocity);
+		
 			this.myY += velocity*time;
 		}
 		

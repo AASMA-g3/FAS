@@ -6,9 +6,6 @@ import jade.core.behaviours.CyclicBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import pt.ulisboa.aasma.fas.jade.game.Ball;
-import pt.ulisboa.aasma.fas.jade.game.PlayerMovement;
-import pt.ulisboa.aasma.fas.jade.game.Game;
-import pt.ulisboa.aasma.fas.jade.game.Player;
 
 
 public class KeeperAgent extends PlayerAgent {
@@ -63,7 +60,9 @@ public class KeeperAgent extends PlayerAgent {
 		@Override
 		public void action() {
 
-//			Ball ball = match.getBall();
+			Ball ball = match.getBall();
+			player.getPlayerMovement().setGoal(ball.x(), ball.y());
+		}
 //			double distance = ball.getDistanceToBall(player);
 
 		
@@ -72,7 +71,7 @@ public class KeeperAgent extends PlayerAgent {
 //			}else if (ball.getCurrentMovement().getOriginalIntensity() == Ball.INTENSITY_SHOOT){
 //				//defend
 //			}else {
-				double my_pos_x = 0;
+		/*		double my_pos_x = 0;
 				double my_pos_y = Game.GOAL_Y_MED;
 				double ball_pos_x = match.getBall().x();
 				double ball_pox_y = match.getBall().y();
@@ -84,7 +83,7 @@ public class KeeperAgent extends PlayerAgent {
 				
 				inclination = (ball_pox_y - my_pos_y) / (ball_pos_x - my_pos_x);
 				
-				double my_new_y = my_pos_x * inclination;
+				double my_new_y = my_pos_x * inclination;*/
 //				System.out.println("inclination: " + inclination);
 //				System.out.println("Move to x: " + my_pos_x);
 //				System.out.println("Move to y: " + my_new_y);
@@ -92,7 +91,7 @@ public class KeeperAgent extends PlayerAgent {
 						
 						
 
-			}
+	//		}
 				
 				
 				
@@ -100,7 +99,6 @@ public class KeeperAgent extends PlayerAgent {
 //					tryCatchBehaviour = new TryCatchBehaviour(this.myAgent);
 //					this.myAgent.addBehaviour(tryCatchBehaviour);
 //			} else {
-//				player.getPlayerMovement().setGoal(ball.x(), ball.y());
 //			}
 //		}
 			
