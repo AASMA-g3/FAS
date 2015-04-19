@@ -10,7 +10,8 @@ public class AgentMessages {
 	public static final String BALL_DRIBLED = "Is the ball being dribled?";
 	public static final String BALL_ABANDONED = "Is the ball abandoned?";
 
-	public static final String SHOOT_BALL = "Shoot the ball";
-	public static final String PASS_BALL = "Pass the ball";
-	public static final String DRIBLE_BALL = "Drible the ball";
+	public static final String TRY_CATCH = "Try to catch the ball";
+	public static final String TRY_RECEIVE = "Try to receive the ball";
+	public static final String TRY_TACKLE = "Try to tackle the ball";
+	public static final String MOVE_TO = "Move the ball";
 }

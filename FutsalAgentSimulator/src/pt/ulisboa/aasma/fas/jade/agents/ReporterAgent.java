@@ -102,7 +102,6 @@ public class ReporterAgent extends Agent{
 		@Override
 		public void action() {
 			ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
-			System.out.println("Vamos acabar o jogo!");
 			for(Player player : match.getTeamA()){
 				System.out.println(player.getName());
 				msg.addReceiver(new AID(player.getName(), AID.ISLOCALNAME));

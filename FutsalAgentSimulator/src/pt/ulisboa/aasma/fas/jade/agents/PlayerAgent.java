@@ -62,7 +62,6 @@ public class PlayerAgent extends Agent {
 			ACLMessage msg = receive(MessageTemplate.MatchPerformative(ACLMessage.INFORM));
 			if (msg != null){
 				if(msg.getContent().equals(AgentMessages.END_GAME)){
-					System.out.println("Mataram-me!");
 					doDelete();
 				}
 			} else {
