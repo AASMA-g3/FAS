@@ -24,7 +24,11 @@ public class KeeperAgent extends PlayerAgent {
 		this.addBehaviour(new StartGameBehaviour());
 	}
 	
-	
+	/**
+	 * This Behaviour is responsible to listen to the game start 
+	 * @author Fábio
+	 *
+	 */
 	protected class StartGameBehaviour extends Behaviour {
 		private static final long serialVersionUID = 1L;
 		
@@ -37,7 +41,6 @@ public class KeeperAgent extends PlayerAgent {
 					gameStarted = true;
 					addBehaviour(new MainCycle());
 					addBehaviour(new AskPerceptions(this.myAgent, 300));
-					addBehaviour(new UpdatePerceptions());
 					break;
 				default:
 					break;
@@ -50,32 +53,7 @@ public class KeeperAgent extends PlayerAgent {
 			return gameStarted;
 		}
 	}
-	
-	protected class UpdatePerceptions extends CyclicBehaviour {
-		private static final long serialVersionUID = 1L;
-		
-		@Override
-		public void action() {
-			// Await messages from the world with the updated perceptions
-			ACLMessage msg = receive(MessageTemplate.MatchPerformative(ACLMessage.CONFIRM));
-			if (msg != null) {
-				switch (msg.getContent()) {
-				case AgentMessages.BALL_PASSED:
-					ballPassed = true;
-					ballShoted = false;
-					break;
-				case AgentMessages.BALL_SHOTED:
-					ballShoted = true;
-					ballPassed = false;
-					break;
-				default:
-					break;
-				}
-			} else {
-				block();
-			}
-		}
-	}
+
 	
 	protected class AskPerceptions extends TickerBehaviour {
 		private static final long serialVersionUID = 1L;
@@ -86,12 +64,7 @@ public class KeeperAgent extends PlayerAgent {
 
 		@Override
 		protected void onTick() {
-			ACLMessage msg = new ACLMessage(ACLMessage.QUERY_IF);
-			msg.addReceiver(ballAgent);
-			msg.setContent(AgentMessages.BALL_PASSED);
-			send(msg);
-			msg.setContent(AgentMessages.BALL_SHOTED);
-			send(msg);
+			// Get the world perceptions
 		}
 	}
 	
