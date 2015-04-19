@@ -8,6 +8,7 @@ import jade.core.behaviours.OneShotBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import pt.ulisboa.aasma.fas.jade.game.Ball;
+import pt.ulisboa.aasma.fas.jade.game.PlayerMovement;
 
 public class KeeperAgent extends PlayerAgent {
 	
@@ -62,14 +63,18 @@ public class KeeperAgent extends PlayerAgent {
 		@Override
 		public void action() {
 			Ball ball = match.getBall();
-
+			
 			double distance = ball.getDistanceToBall(player);
+			
 		
 			if((distance < 1.0f) && !(hasBall) && (tryCatchBehaviour == null)){
 					tryCatchBehaviour = new TryCatchBehaviour(this.myAgent);
 					this.myAgent.addBehaviour(tryCatchBehaviour);
+					System.out.println("Try to catch");
 			} else {
-				player.getPlayerMovement().setGoal(ball.x(), ball.y());
+
+					player.getPlayerMovement().setGoal(ball.x(), ball.y());
+				
 			}
 		}
 			

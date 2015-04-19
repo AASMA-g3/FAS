@@ -146,6 +146,7 @@ public class PlayerAgent extends Agent {
 				switch (msg.getOntology()) {
 				case AgentMessages.FAILED_CATCH:
 					tryCatchBehaviour = null;
+					System.out.println("Ball not catched");
 				case AgentMessages.FAILED_RECEIVE:
 					tryReceiveBehaviour = null;
 				case AgentMessages.FAILED_TACKLE:
@@ -174,6 +175,8 @@ public class PlayerAgent extends Agent {
 				case AgentMessages.SUCESS_CATCH:
 					hasBall = true;
 					tryCatchBehaviour = null;
+					player.getPlayerMovement().setGoal(player.x(), player.y());
+					System.out.println("Ball Catched");
 				case AgentMessages.SUCESS_RECEIVE:
 					hasBall = true;
 					tryReceiveBehaviour = null;

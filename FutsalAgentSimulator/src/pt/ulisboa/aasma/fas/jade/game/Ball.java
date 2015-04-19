@@ -13,7 +13,7 @@ public class Ball {
 	public Ball() {
 		super();
 		int prob = (int)(Math.random());
-		double direction = 90.0f;
+		double direction = 0.0f;
 		if (prob == 0) direction = 180.0f;
 		
 		currentMovement = new BallMovement(INTENSITY_MEDIUM_PASS, direction, 20.0f, 10.0f, 0.0f);

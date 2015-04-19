@@ -189,4 +189,10 @@ public class Player {
 	public double y(){
 		return playerMovement.y();
 	}
+
+	public void setPlayerMovement(PlayerMovement playerMovement) {
+		this.playerMovement = playerMovement;
+	}
+
+	
 }
