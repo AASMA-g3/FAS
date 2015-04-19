@@ -1,10 +1,8 @@
 package pt.ulisboa.aasma.fas.jade.agents;
 
-import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.Behaviour;
 import jade.core.behaviours.CyclicBehaviour;
-import jade.core.behaviours.OneShotBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import pt.ulisboa.aasma.fas.jade.game.Ball;
@@ -36,7 +34,6 @@ public class KeeperAgent extends PlayerAgent {
 				case AgentMessages.START_GAME:
 					gameStarted = true;
 					addBehaviour(new MainCycle(this.myAgent));
-					addBehaviour(new ReceiveFailureBehaviour(this.myAgent));
 					break;
 				default:
 					break;
@@ -62,15 +59,24 @@ public class KeeperAgent extends PlayerAgent {
 		@Override
 		public void action() {
 			Ball ball = match.getBall();
-
-			double distance = ball.getDistanceToBall(player);
+//			double distance = ball.getDistanceToBall(player);
 		
-			if((distance < 1.0f) && !(hasBall) && (tryCatchBehaviour == null)){
-					tryCatchBehaviour = new TryCatchBehaviour(this.myAgent);
-					this.myAgent.addBehaviour(tryCatchBehaviour);
-			} else {
-				player.getPlayerMovement().setGoal(ball.x(), ball.y());
+			if (hasBall){
+				//pass
+			}else if (ball.getCurrentMovement().getOriginalIntensity() == Ball.INTENSITY_SHOOT){
+				//defend
+			}else {
+				//position
 			}
+				
+				
+				
+//			if((distance < 1.0f) && !(hasBall) && (tryCatchBehaviour == null)){
+//					tryCatchBehaviour = new TryCatchBehaviour(this.myAgent);
+//					this.myAgent.addBehaviour(tryCatchBehaviour);
+//			} else {
+//				player.getPlayerMovement().setGoal(ball.x(), ball.y());
+//			}
 		}
 			
 		

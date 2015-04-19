@@ -6,7 +6,6 @@ import jade.core.behaviours.OneShotBehaviour;
 import jade.core.behaviours.TickerBehaviour;
 import jade.core.behaviours.WakerBehaviour;
 import jade.lang.acl.ACLMessage;
-import pt.ulisboa.aasma.fas.j2d.GameRunner;
 import pt.ulisboa.aasma.fas.jade.game.Game;
 import pt.ulisboa.aasma.fas.jade.game.Player;
 
@@ -64,7 +63,6 @@ public class ReporterAgent extends Agent{
 
 		
 	}
-	
 	
 	protected class Timer extends TickerBehaviour{
 		private static final long serialVersionUID = 1L;

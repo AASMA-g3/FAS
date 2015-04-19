@@ -7,7 +7,7 @@ public class Ball {
 	public static final int INTENSITY_MEDIUM_PASS = 6;
 	public static final int INTENSITY_SHORT_PASS = 4;
 	public static final int INTENSITY_RUN = 2;
-	
+
 	private BallMovement currentMovement;
 
 	public Ball() {
@@ -16,7 +16,7 @@ public class Ball {
 		double direction = 90.0f;
 		if (prob == 0) direction = 180.0f;
 		
-		currentMovement = new BallMovement(INTENSITY_MEDIUM_PASS, direction, 20.0f, 10.0f, 0.0f);
+		currentMovement = new BallMovement(Ball.INTENSITY_MEDIUM_PASS, direction, 20.0f, 10.0f, 0.0f);
 	}
 	
 	public BallMovement getCurrentMovement() {
@@ -38,5 +38,9 @@ public class Ball {
 	
 	public double y(){
 		return currentMovement.y();
+	}
+	
+	public int getOriginalIntensity() {
+		return currentMovement.getOriginalIntensity();
 	}
 }

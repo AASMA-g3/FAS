@@ -8,6 +8,7 @@ public class BallMovement {
 
 	private final double initialTime; //in seconds
 	
+	private int originalIntensity;
 	private double a = -2.0f;
 	
 	private double vx0;
@@ -26,6 +27,11 @@ public class BallMovement {
 		this.y0 = y0;
 		this.t = 0;
 		this.initialTime = initialTime;
+		this.originalIntensity = intensity;
+	}
+
+	public int getOriginalIntensity() {
+		return originalIntensity;
 	}
 
 	public double getT() {
