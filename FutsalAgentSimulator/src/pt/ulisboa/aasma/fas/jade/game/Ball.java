@@ -16,7 +16,7 @@ public class Ball {
 		double direction = 0.0f;
 		if (prob == 0) direction = 180.0f;
 		
-		currentMovement = new BallMovement(Ball.INTENSITY_MEDIUM_PASS, direction, 20.0f, 10.0f, 0.0f);
+		currentMovement = new BallMovement(0, direction, 20.0f, 10.0f, 0.0f);
 	}
 	
 	public BallMovement getCurrentMovement() {

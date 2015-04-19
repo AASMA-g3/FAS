@@ -59,49 +59,49 @@ public class KeeperAgent extends PlayerAgent {
 
 		@Override
 		public void action() {
-
 			Ball ball = match.getBall();
-			player.getPlayerMovement().setGoal(ball.x(), ball.y());
-		}
-//			double distance = ball.getDistanceToBall(player);
+			double distance = ball.getDistanceToBall(player);
 
-		
-//			if (hasBall){
-//				//pass
-//			}else if (ball.getCurrentMovement().getOriginalIntensity() == Ball.INTENSITY_SHOOT){
-//				//defend
-//			}else {
-		/*		double my_pos_x = 0;
-				double my_pos_y = Game.GOAL_Y_MED;
-				double ball_pos_x = match.getBall().x();
-				double ball_pox_y = match.getBall().y();
+			if (hasBall){
+				//pass
+			}else if (ball.getCurrentMovement().getOriginalIntensity() == Ball.INTENSITY_SHOOT){
+				//defend
+			}else {
+				System.out.println(getName());
+				double ref_x;
+				double ref_y = Game.GOAL_Y_MED;
+				double ball_x = match.getBall().x();
+				double ball_y = match.getBall().y();
+				
+				System.out.println("ball_x " + ball_x);
+				System.out.println("ball_y " + ball_y);
+
 				double inclination;
-				if(player.getTeam() == Player.TEAM_A)
-					my_pos_x = 0;
-				else
-					my_pos_y = Game.LIMIT_X;
+				double my_new_y;
+				double my_new_x;
 				
-				inclination = (ball_pox_y - my_pos_y) / (ball_pos_x - my_pos_x);
+				if (player.getTeam() == Player.TEAM_A){
+					ref_x = 0;
+					my_new_x = 0.2;
+					inclination = (ball_y - ref_y) / (ball_x - ref_x);
+					my_new_y = my_new_x * inclination + Game.GOAL_Y_MED;
+				} else {
+					ref_x = Game.LIMIT_X;
+					inclination = (ball_y - ref_y) / (ball_x - ref_x);
+					my_new_x = 39.8;
+					my_new_y = my_new_x * inclination + Game.GOAL_Y_MED;
+					
+				}
+				player.getPlayerMovement().setGoal(my_new_x, my_new_y);
+				/*
+				if((distance < 1.0f) && !(hasBall) && (tryCatchBehaviour == null)){
+						tryCatchBehaviour = new TryCatchBehaviour(this.myAgent);
+						this.myAgent.addBehaviour(tryCatchBehaviour);
+				} else {
 				
-				double my_new_y = my_pos_x * inclination;*/
-//				System.out.println("inclination: " + inclination);
-//				System.out.println("Move to x: " + my_pos_x);
-//				System.out.println("Move to y: " + my_new_y);
-//				player.set()
-						
-						
-
-	//		}
-				
-				
-				
-//			if((distance < 1.0f) && !(hasBall) && (tryCatchBehaviour == null)){
-//					tryCatchBehaviour = new TryCatchBehaviour(this.myAgent);
-//					this.myAgent.addBehaviour(tryCatchBehaviour);
-//			} else {
-//			}
-//		}
-			
-		
+				}
+				*/
+			}
+		}
 	}
 }
