@@ -177,7 +177,28 @@ public class Player {
 					Math.abs(0- x())));
 		}
 	}
+	
+	public double getDistanceToPlayer(Player player){
+		return Math.sqrt(Math.pow((y() - player.y()), 2) +
+				Math.pow((x() - player.x()), 2));
+	}
 
+	public double getDistanceToBall(Ball ball){
+		return Math.sqrt(Math.pow((y() - ball.y()), 2) +
+				Math.pow((x() - ball.x()), 2));
+	}
+	
+	public double getDistanceToGoal(){
+		double xCoord, yCoord;
+		if(this.getTeam() == Player.TEAM_A)
+			xCoord=Game.LIMIT_X;
+		 else
+			xCoord=0;
+		yCoord = Game.GOAL_Y_MED;
+		return Math.sqrt(Math.pow((y() - yCoord), 2) +
+				Math.pow((x() - xCoord), 2));
+	}
+	
 	public PlayerMovement getPlayerMovement() {
 		return playerMovement;
 	}
@@ -194,5 +215,14 @@ public class Player {
 		this.playerMovement = playerMovement;
 	}
 
+	public boolean isBallOnTrajectory(Ball ball){
+		double ballDirection = ball.getCurrentMovement().getDirection();
+		double playerToBallDirection = getDirectionToBall(ball);
+		
+		if(Math.round(ballDirection) == Math.round(playerToBallDirection)){
+			return true;
+		}
+		return false;
+	}
 	
 }

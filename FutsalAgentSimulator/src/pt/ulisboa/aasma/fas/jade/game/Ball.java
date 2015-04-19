@@ -27,11 +27,6 @@ public class Ball {
 		this.currentMovement = currentMovement;
 	}
 	
-	public double getDistanceToBall(Player player){
-		return Math.sqrt(Math.pow((player.y() - y()), 2) +
-				Math.pow((player.x() - x()), 2));
-	}
-	
 	public double x(){
 		return currentMovement.x();
 	}

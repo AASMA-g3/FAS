@@ -24,10 +24,13 @@ public class BallMovement {
 	private double x0;
 	private double y0;
 	
+	private double direction;
+	
 	private double t;  //in seconds
 
 	public BallMovement(int intensity, double direction, double x0, double y0, double initialTime) {
 		super();
+		this.direction = direction;
 		this.vx0 = intensity*Math.cos(Math.toRadians(direction));
 		this.vy0 = intensity*Math.sin(Math.toRadians(direction));
 		this.x0 = x0;
@@ -39,6 +42,16 @@ public class BallMovement {
 
 	public int getOriginalIntensity() {
 		return originalIntensity;
+	}
+
+	
+	
+	public double getDirection() {
+		return direction;
+	}
+
+	public void setDirection(double direction) {
+		this.direction = direction;
 	}
 
 	public double getT() {
@@ -158,6 +171,8 @@ public class BallMovement {
 		ballPosLock.lock();
 		ballVelLock.lock();
 		ballTimerLock.lock();
+		
+		
 		try{
 			if (!((vy0 >= 0) ^ (vy() < 0))) {
 				double ts = -vy0 / a;
