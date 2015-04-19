@@ -28,7 +28,7 @@ public class PlayerAgent extends Agent {
 	
 	protected static AID ballAgent = new AID("Ball", AID.ISLOCALNAME);
 	protected Game match;
-	protected Player player;
+	Player player;
 	protected Boolean gameStarted = false;
 	
 	protected Boolean hasBall = false;
