@@ -102,6 +102,15 @@ public class Player {
 		return -1;
 	}
 	
+	public void resetCoords(){
+		double x = getRandomXCoord();
+		double y = getRandomYCoord();
+		if (this.team == TEAM_B){
+			x += (20.0f - x)*2.0f;
+		}
+		this.playerMovement.setGoal(x, y);
+	}
+	
 	private double getRandomYCoord(){
 		if(position.equals(KEEPER)){
 			double minY = 8.0f;
