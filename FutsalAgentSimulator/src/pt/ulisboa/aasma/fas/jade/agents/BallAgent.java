@@ -41,6 +41,7 @@ public class BallAgent extends Agent{
 		
 		this.addBehaviour(new ReceiveRequestBehaviour(this));
 		this.addBehaviour(new EndGameBehaviour());
+		ball.setCurrentMovement(new BallMovement(8, 30.0f, 20, 10, match.getGameTime()/1000.0f));
 	}
 	
 	

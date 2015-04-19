@@ -6,6 +6,9 @@ import jade.core.behaviours.CyclicBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import pt.ulisboa.aasma.fas.jade.game.Ball;
+import pt.ulisboa.aasma.fas.jade.game.Game;
+import pt.ulisboa.aasma.fas.jade.game.Player;
+import sun.font.EAttribute;
 
 
 public class KeeperAgent extends PlayerAgent {
@@ -63,18 +66,25 @@ public class KeeperAgent extends PlayerAgent {
 			double distance = ball.getDistanceToBall(player);
 
 			if (hasBall){
-				//pass
+				Player p1;
+				if(player.getTeam() == Player.TEAM_A){
+					for (Player p : match.getTeamA()) {
+						if()
+					}
+				} else {				
+					for (Player p : match.getTeamB()) {
+						
+					}
+				}
+
+				addBehaviour(new MoveBallBehaviour(this.myAgent, 4,  player.getDirectionToPlayer(p1)));
 			}else if (ball.getCurrentMovement().getOriginalIntensity() == Ball.INTENSITY_SHOOT){
-				//defend
+				addBehaviour(new TryCatchBehaviour(this.myAgent));
 			}else {
-				System.out.println(getName());
-				double ref_x;
+				/*double ref_x;
 				double ref_y = Game.GOAL_Y_MED;
 				double ball_x = match.getBall().x();
 				double ball_y = match.getBall().y();
-				
-				System.out.println("ball_x " + ball_x);
-				System.out.println("ball_y " + ball_y);
 
 				double inclination;
 				double my_new_y;
@@ -87,12 +97,16 @@ public class KeeperAgent extends PlayerAgent {
 					my_new_y = my_new_x * inclination + Game.GOAL_Y_MED;
 				} else {
 					ref_x = Game.LIMIT_X;
-					inclination = (ball_y - ref_y) / (ball_x - ref_x);
+					inclination = (ref_y - ball_y) / (ref_x - ball_x);
 					my_new_x = 39.8;
 					my_new_y = my_new_x * inclination + Game.GOAL_Y_MED;
 					
-				}
-				player.getPlayerMovement().setGoal(my_new_x, my_new_y);
+				}*/
+				
+				if (player.getTeam() == Player.TEAM_A)
+					player.getPlayerMovement().setGoal(0.2, 10.0);
+				else
+					player.getPlayerMovement().setGoal(39.8, 10.0);
 				/*
 				if((distance < 1.0f) && !(hasBall) && (tryCatchBehaviour == null)){
 						tryCatchBehaviour = new TryCatchBehaviour(this.myAgent);
