@@ -1,12 +1,13 @@
 package pt.ulisboa.aasma.fas.jade.game;
 
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import pt.ulisboa.aasma.fas.exceptions.PlayerDoesNotExistException;
 
 public class Game {
 	
-	public static final long GAME_TIME = 300000;
+	public static final long GAME_TIME = 5000;
 	public static final long TICK_TIME = 10;
 	public static final int PLAYERS_PER_TEAM = 5;
 	
@@ -19,7 +20,9 @@ public class Game {
 	
 	private long gameTime = 0;
 	
-	public Game(int shootingRatio, int defendingRatio, int goalKeepingRatio, int passingRatio, int dribblingRatio) {
+	public final AtomicBoolean isEnded = new AtomicBoolean(false);
+	
+	public Game(ArrayList<Integer> ratios) {
 
 		this.ball = new Ball();
 		this.teamA = new ArrayList<Player>();
@@ -27,26 +30,65 @@ public class Game {
 		
 		ArrayList<String> names = getRandomNames();
 		
-		this.teamA.add(new Player(names.get(0), 100, shootingRatio, defendingRatio, goalKeepingRatio, passingRatio, dribblingRatio, Player.KEEPER, Player.TEAM_A,playerNumberCounter));
-		playerNumberCounter++;	
-		this.teamA.add(new Player(names.get(1), 100, shootingRatio, defendingRatio, goalKeepingRatio, passingRatio, dribblingRatio, Player.DEFENDER,Player.TEAM_A,playerNumberCounter));
+		this.teamA.add(new Player(names.get(0), 100, ratios
+				.get(4), ratios.get(2), ratios.get(0),
+				ratios.get(8), ratios.get(6),
+				Player.KEEPER, Player.TEAM_A,
+				playerNumberCounter));
 		playerNumberCounter++;
-		this.teamA.add(new Player(names.get(2), 100, shootingRatio, defendingRatio, goalKeepingRatio, passingRatio, dribblingRatio, Player.DEFENDER,Player.TEAM_A,playerNumberCounter));
+		this.teamA.add(new Player(names.get(1), 100, ratios
+				.get(4), ratios.get(2), ratios.get(0),
+				ratios.get(8), ratios.get(6),
+				Player.DEFENDER, Player.TEAM_A,
+				playerNumberCounter));
 		playerNumberCounter++;
-		this.teamA.add(new Player(names.get(3), 100, shootingRatio, defendingRatio, goalKeepingRatio, passingRatio, dribblingRatio, Player.STRIKER,Player.TEAM_A,playerNumberCounter));
+		this.teamA.add(new Player(names.get(2), 100, ratios
+				.get(4), ratios.get(2), ratios.get(0),
+				ratios.get(8), ratios.get(6),
+				Player.DEFENDER, Player.TEAM_A,
+				playerNumberCounter));
 		playerNumberCounter++;
-		this.teamA.add(new Player(names.get(4), 100, shootingRatio, defendingRatio, goalKeepingRatio, passingRatio, dribblingRatio, Player.STRIKER,Player.TEAM_A,playerNumberCounter));
+		this.teamA.add(new Player(names.get(3), 100, ratios
+				.get(4), ratios.get(2), ratios.get(0),
+				ratios.get(8), ratios.get(6),
+				Player.STRIKER, Player.TEAM_A,
+				playerNumberCounter));
+		playerNumberCounter++;
+		this.teamA.add(new Player(names.get(4), 100, ratios
+				.get(4), ratios.get(2), ratios.get(0),
+				ratios.get(8), ratios.get(6),
+				Player.STRIKER, Player.TEAM_A,
+				playerNumberCounter));
 		playerNumberCounter = 1;
-		this.teamB.add(new Player(names.get(5), 100, shootingRatio, defendingRatio, goalKeepingRatio, passingRatio, dribblingRatio, Player.KEEPER,Player.TEAM_B,playerNumberCounter));
+		this.teamB.add(new Player(names.get(5), 100, ratios
+				.get(5), ratios.get(3), ratios.get(1),
+				ratios.get(9), ratios.get(7),
+				Player.KEEPER, Player.TEAM_B,
+				playerNumberCounter));
 		playerNumberCounter++;
-		this.teamB.add(new Player(names.get(6), 100, shootingRatio, defendingRatio, goalKeepingRatio, passingRatio, dribblingRatio, Player.DEFENDER,Player.TEAM_B,playerNumberCounter));
+		this.teamB.add(new Player(names.get(6), 100, ratios
+				.get(5), ratios.get(3), ratios.get(1),
+				ratios.get(9), ratios.get(7),
+				Player.DEFENDER, Player.TEAM_B,
+				playerNumberCounter));
 		playerNumberCounter++;
-		this.teamB.add(new Player(names.get(7), 100, shootingRatio, defendingRatio, goalKeepingRatio, passingRatio, dribblingRatio, Player.DEFENDER,Player.TEAM_B,playerNumberCounter));
+		this.teamB.add(new Player(names.get(7), 100, ratios
+				.get(5), ratios.get(3), ratios.get(1),
+				ratios.get(9), ratios.get(7),
+				Player.DEFENDER, Player.TEAM_B,
+				playerNumberCounter));
 		playerNumberCounter++;
-		this.teamB.add(new Player(names.get(8), 100, shootingRatio, defendingRatio, goalKeepingRatio, passingRatio, dribblingRatio, Player.STRIKER,Player.TEAM_B,playerNumberCounter));
+		this.teamB.add(new Player(names.get(8), 100, ratios
+				.get(5), ratios.get(3), ratios.get(1),
+				ratios.get(9), ratios.get(7),
+				Player.STRIKER, Player.TEAM_B,
+				playerNumberCounter));
 		playerNumberCounter++;
-		this.teamB.add(new Player(names.get(9), 100, shootingRatio, defendingRatio, goalKeepingRatio, passingRatio, dribblingRatio, Player.STRIKER,Player.TEAM_B,playerNumberCounter));
-		
+		this.teamB.add(new Player(names.get(9), 100, ratios
+				.get(5), ratios.get(3), ratios.get(1),
+				ratios.get(9), ratios.get(7),
+				Player.STRIKER, Player.TEAM_B,
+				playerNumberCounter));
 		
 	}
 

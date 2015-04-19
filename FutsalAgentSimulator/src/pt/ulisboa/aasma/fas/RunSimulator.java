@@ -1,7 +1,5 @@
 package pt.ulisboa.aasma.fas;
 
-import java.awt.EventQueue;
-
 import jade.wrapper.AgentController;
 import jade.wrapper.ContainerController;
 import jade.wrapper.StaleProxyException;
@@ -23,48 +21,65 @@ public class RunSimulator {
 		 r = new RunJade(true, "30000");
 
 		 home = r.getHome();
-		 
-
-		 	MenuFrame mf = new MenuFrame();
-			GameRunner bf = new GameRunner();
-			bf.setVisible(true);
-			bf.startMainLoop();
-			
-		 
-		 //WAIT FOR RUN PRESS
-		 
-		 Game game = new Game(70, 50, 90, 70, 70);
-		 
-		 bf.startGame(game);
-		 
-		 Object[] agentParams = {game};
-		 Object[] reporterParams = {game,bf};
-		  
-		 
-		try {
-			AgentController a;
-			
-			a = home.createNewAgent("Reporter", ReporterAgent.class.getName(), reporterParams);
-			a.start();
-			
-			for (Player player : game.getTeamA()){
-				a = home.createNewAgent(player.getName(),player.getPosition(),agentParams);
-				a.start();
+		
+		 MenuFrame mf = new MenuFrame();
+		 GameRunner gr = new GameRunner();
+		
+			 //WAIT FOR RUN PRESS
+			 
+		 synchronized (mf.runPressed) {
+				try {
+					mf.runPressed.wait();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
-
-			for (Player player : game.getTeamB()){
-				a = home.createNewAgent(player.getName(),player.getPosition(),agentParams);
+		 
+			 Game game = new Game(mf.getSliders());
+			 
+			 gr.startGame(game);
+			 
+			 Object[] agentParams = {game};
+			 Object[] reporterParams = {game,gr};
+			  
+			 
+			try {
+				AgentController a;
+				
+				a = home.createNewAgent("Reporter", ReporterAgent.class.getName(), reporterParams);
 				a.start();
+				
+				for (Player player : game.getTeamA()){
+					a = home.createNewAgent(player.getName(),player.getPosition(),agentParams);
+					a.start();
+				}
+	
+				for (Player player : game.getTeamB()){
+					a = home.createNewAgent(player.getName(),player.getPosition(),agentParams);
+					a.start();
+				}
+				
+				a = home.createNewAgent("Ball", BallAgent.class.getName(), agentParams);
+				a.start();
+				
+				
+			} catch (StaleProxyException e) {
+				e.printStackTrace();
 			}
 			
-			a = home.createNewAgent("Ball", BallAgent.class.getName(), agentParams);
-			a.start();
+			synchronized (game.isEnded) {
+				try {
+					game.isEnded.wait();
+					game.isEnded.set(false);
+					System.out.println("Game has ended");
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 			
 			
-		} catch (StaleProxyException e) {
-			e.printStackTrace();
-		}
-
-
+		 }	
 	}
-}
+

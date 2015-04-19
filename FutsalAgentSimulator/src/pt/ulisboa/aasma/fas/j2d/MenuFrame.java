@@ -2,11 +2,11 @@ package pt.ulisboa.aasma.fas.j2d;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -25,12 +25,16 @@ public class MenuFrame extends JFrame {
 	private static final int MAX_ATTR = 5;
 	
 	//JPanel
-	JPanel pnlControl = new JPanel();
+	private JPanel pnlControl = new JPanel();
 	//Buttons
-	JButton btnRestart = new JButton("Restart Game");
-	JButton btnRun = new JButton("Run!");
+	private JButton btnRestart = new JButton("Restart Game");
+	private JButton btnRun = new JButton("Run!");
 
-
+	public final AtomicBoolean runPressed = new AtomicBoolean(false);
+	public final AtomicBoolean restartPressed = new AtomicBoolean(false);
+	
+	private ArrayList<Integer> sliders = new ArrayList<Integer>();
+	
 	
 	public MenuFrame(){
 		 //ControlPanel setbounds
@@ -40,8 +44,9 @@ public class MenuFrame extends JFrame {
 	    //JPanel bounds
 	    pnlControl.setBounds(800, 800, 200, 100);
 
-
-
+	    for (int i=0; i<10; i++){
+	    	sliders.add(new Integer(MED_ATTR));
+	    }
 	   
 	    Box boxGK = Box.createVerticalBox();
 	    Box boxDef = Box.createVerticalBox();
@@ -92,13 +97,17 @@ public class MenuFrame extends JFrame {
 	    btnRestart.addActionListener(new ActionListener() { 
 	    	  public void actionPerformed(ActionEvent e) { 
 	    		    System.out.println("Game Restarted");
-	    		    //TODO: CALL RESTART GAME FUNCTION
+	    		   restartPressed.set(true);
 	    		  } 
 	    		} );
-	    btnRun.addActionListener(new ActionListener() { 
+	    this.btnRun.addActionListener(new ActionListener() { 
 	    	  public void actionPerformed(ActionEvent e) { 
-	    		    System.out.println("Game Running!");
-	    		    //TODO: CALL RUN GAME STAT
+	    		  
+	    		  synchronized (runPressed) {
+	    			  runPressed.set(true);
+	    			  runPressed.notify();
+				}
+	    		  
 	    		  } 
 	    		} );
 	    
@@ -106,70 +115,70 @@ public class MenuFrame extends JFrame {
 	    s1a.addChangeListener(new ChangeListener(){
 	    	public void stateChanged(ChangeEvent e) {
 	    		JSlider source = (JSlider)e.getSource();
-	    		//TODO: mudaCenasAtributos(source.getValue());
+	    		sliders.set(0, source.getValue());
 	    	}
 	    });
 	    
 	    s1b.addChangeListener(new ChangeListener(){
 	    	public void stateChanged(ChangeEvent e) {
 	    		JSlider source = (JSlider)e.getSource();
-	    		//TODO: mudaCenasAtributos(source.getValue());
+	    		sliders.set(1, source.getValue());
 	    	}
 	    });
 	    
 	    s2a.addChangeListener(new ChangeListener(){
 	    	public void stateChanged(ChangeEvent e) {
 	    		JSlider source = (JSlider)e.getSource();
-	    		//TODO: mudaCenasAtributos(source.getValue());
+	    		sliders.set(2, source.getValue());
 	    	}
 	    });
 	    
 	    s2b.addChangeListener(new ChangeListener(){
 	    	public void stateChanged(ChangeEvent e) {
 	    		JSlider source = (JSlider)e.getSource();
-	    		//TODO: mudaCenasAtributos(source.getValue());
+	    		sliders.set(3, source.getValue());
 	    	}
 	    });
 	    
 	    s3a.addChangeListener(new ChangeListener(){
 	    	public void stateChanged(ChangeEvent e) {
 	    		JSlider source = (JSlider)e.getSource();
-	    		//TODO: mudaCenasAtributos(source.getValue());
+	    		sliders.set(4, source.getValue());
 	    	}
 	    });
 	    
 	    s3b.addChangeListener(new ChangeListener(){
 	    	public void stateChanged(ChangeEvent e) {
 	    		JSlider source = (JSlider)e.getSource();
-	    		//TODO: mudaCenasAtributos(source.getValue());
+	    		sliders.set(5, source.getValue());
 	    	}
 	    });
 	    
 	    s4a.addChangeListener(new ChangeListener(){
 	    	public void stateChanged(ChangeEvent e) {
 	    		JSlider source = (JSlider)e.getSource();
-	    		//TODO: mudaCenasAtributos(source.getValue());
+	    		sliders.set(6, source.getValue());
 	    	}
 	    });
 	    
 	    s4b.addChangeListener(new ChangeListener(){
 	    	public void stateChanged(ChangeEvent e) {
 	    		JSlider source = (JSlider)e.getSource();
-	    		//TODO: mudaCenasAtributos(source.getValue());
+	    		sliders.set(7, source.getValue());
 	    	}
 	    });
 	    
 	    s5a.addChangeListener(new ChangeListener(){
 	    	public void stateChanged(ChangeEvent e) {
 	    		JSlider source = (JSlider)e.getSource();
-	    		//TODO: mudaCenasAtributos(source.getValue());
+	    		sliders.set(8, source.getValue());
 	    	}
 	    });
 	    
 	    s5b.addChangeListener(new ChangeListener(){
 	    	public void stateChanged(ChangeEvent e) {
 	    		JSlider source = (JSlider)e.getSource();
-	    		//TODO: mudaCenasAtributos(source.getValue());
+	    		sliders.set(9, source.getValue());
 	    	}
 	    });
 
@@ -202,6 +211,11 @@ public JSlider sliderCreate(int min, int max, int med, String name, Box boxTo){
 	return j;
 
 }
+
+public ArrayList<Integer> getSliders() {
+	return sliders;
+}
+
 	
 }
 

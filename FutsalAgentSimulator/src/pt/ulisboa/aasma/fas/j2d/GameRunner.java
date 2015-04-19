@@ -54,6 +54,8 @@ public class GameRunner extends JFrame implements LoopSteps {
 				loop.stop();
 			}
 		});
+		setVisible(true);
+		startMainLoop();
 
 	}
 
@@ -68,9 +70,6 @@ public class GameRunner extends JFrame implements LoopSteps {
 		pitch = new FutsalPitch();
 		scorer = new Scorer();
 		pitch.init();
-
-		
-
 
 	}
 	
@@ -94,17 +93,18 @@ public class GameRunner extends JFrame implements LoopSteps {
 	}
 
 	public void processLogics() {
-		long time = game.getGameTime();
-		
-		if (ball != null)
-			ball.update(time);
-		
-		scorer.update(time);
-		
-		for (PlayerGraphic pl : playerList){
-			pl.update(time);
+		if(game!=null){
+			long time = game.getGameTime();
+			
+			if (ball != null)
+				ball.update(time);
+			
+			scorer.update(time);
+			
+			for (PlayerGraphic pl : playerList){
+				pl.update(time);
+			}
 		}
-
 	}
 
 	public void renderGraphics() {
@@ -123,13 +123,14 @@ public class GameRunner extends JFrame implements LoopSteps {
 		if (pitch != null)
 			pitch.draw((Graphics2D) g2);
 
-		if (ball != null)
-			ball.draw((Graphics2D) g2);
-		
-		for(PlayerGraphic pl : playerList){
-			pl.draw((Graphics2D) g2);
+		if(game!=null){
+			if (ball != null)
+				ball.draw((Graphics2D) g2);
+			
+			for(PlayerGraphic pl : playerList){
+				pl.draw((Graphics2D) g2);
+			}
 		}
-		
 
 		g.dispose();
 		g2.dispose();
@@ -147,14 +148,15 @@ public class GameRunner extends JFrame implements LoopSteps {
 
 		if (pitch != null)
 			pitch.draw((Graphics2D) g);
-
-		if (ball != null)
-			ball.draw((Graphics2D) g);
-
-		for(PlayerGraphic pl : playerList){
-			pl.draw((Graphics2D) g);
+		
+		if(game!=null){
+			if (ball != null)
+				ball.draw((Graphics2D) g);
+	
+			for(PlayerGraphic pl : playerList){
+				pl.draw((Graphics2D) g);
+			}
 		}
-
 
 		g.dispose();
 	}
@@ -201,28 +203,6 @@ public class GameRunner extends JFrame implements LoopSteps {
 	public void setPitch(FutsalPitch pitch) {
 		this.pitch = pitch;
 	}
-	
-	  public static void addComponentsToPane(Container window) {
-		    window.setLayout(null);
-
-		    JButton run = new JButton("Run");
-		    JButton reset = new JButton("Reset");
-		    JButton close = new JButton("Close");
-
-		    window.add(run);
-		    window.add(reset);
-		    window.add(close);
-
-		    Insets insets = window.getInsets();
-	        Dimension size = run.getPreferredSize();
-		 	/*run.setBounds(25 + insets.left, 5 + insets.top, size.width, size.height);
-		    size = reset.getPreferredSize();
-		    reset.setBounds(55 + insets.left, 40 + insets.top, size.width,
-		            size.height);
-		    size = close.getPreferredSize();*/
-		    close.setBounds(250 + insets.left, 450 + insets.top, size.width + 50,
-		        size.height + 20);
-		  }
 
 
 

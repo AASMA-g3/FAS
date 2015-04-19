@@ -108,8 +108,16 @@ public class ReporterAgent extends Agent{
 			for(Player player : match.getTeamB()){
 				msg.addReceiver(new AID(player.getName(), AID.ISLOCALNAME));
 			}
+			msg.addReceiver(new AID("Ball", AID.ISLOCALNAME));
 			msg.setContent(AgentMessages.END_GAME);
 			this.myAgent.send(msg);
+			
+			synchronized (this.agent.match.isEnded) {
+				this.agent.match.isEnded.set(true);
+				this.agent.match.isEnded.notify();
+			}
+			
+			this.myAgent.doDelete();
 		}
 		
 	}
