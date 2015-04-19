@@ -7,6 +7,7 @@ import jade.wrapper.ContainerController;
 import jade.wrapper.StaleProxyException;
 import pt.ulisboa.aasma.fas.bootstrap.RunJade;
 import pt.ulisboa.aasma.fas.j2d.GameRunner;
+import pt.ulisboa.aasma.fas.j2d.MenuFrame;
 import pt.ulisboa.aasma.fas.jade.agents.BallAgent;
 import pt.ulisboa.aasma.fas.jade.agents.ReporterAgent;
 import pt.ulisboa.aasma.fas.jade.game.Game;
@@ -24,9 +25,11 @@ public class RunSimulator {
 		 home = r.getHome();
 		 
 
+		 	MenuFrame mf = new MenuFrame();
 			GameRunner bf = new GameRunner();
 			bf.setVisible(true);
 			bf.startMainLoop();
+			
 		 
 		 //WAIT FOR RUN PRESS
 		 

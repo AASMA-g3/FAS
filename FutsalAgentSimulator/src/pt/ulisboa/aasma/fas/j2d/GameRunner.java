@@ -1,13 +1,21 @@
 package pt.ulisboa.aasma.fas.j2d;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Insets;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 import pt.ulisboa.aasma.fas.jade.game.Game;
 import pt.ulisboa.aasma.fas.jade.game.Player;
@@ -34,10 +42,12 @@ public class GameRunner extends JFrame implements LoopSteps {
 	
 	public GameRunner() {
 		super("FutsalAgentSimulator");
-
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		setSize(606, 600);
+
+		setSize(606, 385);
 		setResizable(false);
+
+		//SLIDERS E BOTÕES TODO
 		addWindowListener(new WindowAdapter() {
 
 			public void windowClosing(WindowEvent e) {
@@ -59,6 +69,7 @@ public class GameRunner extends JFrame implements LoopSteps {
 		pitch = new FutsalPitch();
 		scorer = new Scorer();
 		pitch.init();
+
 		
 
 
@@ -96,11 +107,12 @@ public class GameRunner extends JFrame implements LoopSteps {
 		Graphics g = getBufferStrategy().getDrawGraphics();
 
 		// Criamos um contexto gráfico que não leva em conta as bordas
-		Graphics g2 = g.create(getInsets().left, getInsets().top, getWidth()
-				- getInsets().right, getHeight() - getInsets().bottom);
+		Graphics g2 = g.create(getInsets().right, getInsets().top, getWidth()
+				- getInsets().left, getHeight() - getInsets().bottom);
 		// Limpamos o ecra
 		g2.setColor(Color.BLACK);
 		g2.fillRect(0, 0, 606, 357);
+		
 
 		scorer.draw((Graphics2D) g2);
 
@@ -113,15 +125,16 @@ public class GameRunner extends JFrame implements LoopSteps {
 		for(PlayerGraphic pl : playerList){
 			pl.draw((Graphics2D) g2);
 		}
+		
 
 		g.dispose();
 		g2.dispose();
 	}
-
+	
+	@Override
 	public void paint(Graphics g) {
-
 		g = g.create(getInsets().right, getInsets().top, getWidth()
-				- getInsets().left, getHeight() - getInsets().bottom);
+				- getInsets().left,  getInsets().bottom);
 
 		g.fillRect(0, 0, 606, 357);
 
@@ -138,6 +151,7 @@ public class GameRunner extends JFrame implements LoopSteps {
 			pl.draw((Graphics2D) g);
 		}
 
+
 		g.dispose();
 	}
 
@@ -147,11 +161,9 @@ public class GameRunner extends JFrame implements LoopSteps {
 	}
 
 	public void tearDown() {
-		// Não é realmente necessário, pois o jogo acaba.
-		// Mas se fosse um fim de fase, seria.
 		pitch = null;
 		ball = null;
-		scorer = null;
+		
 	}
 
 	public MainLoop getLoop() {
@@ -193,6 +205,29 @@ public class GameRunner extends JFrame implements LoopSteps {
 	public void setPitch(FutsalPitch pitch) {
 		this.pitch = pitch;
 	}
+	
+	  public static void addComponentsToPane(Container window) {
+		    window.setLayout(null);
+
+		    JButton run = new JButton("Run");
+		    JButton reset = new JButton("Reset");
+		    JButton close = new JButton("Close");
+
+		    window.add(run);
+		    window.add(reset);
+		    window.add(close);
+
+		    Insets insets = window.getInsets();
+	        Dimension size = run.getPreferredSize();
+		 	/*run.setBounds(25 + insets.left, 5 + insets.top, size.width, size.height);
+		    size = reset.getPreferredSize();
+		    reset.setBounds(55 + insets.left, 40 + insets.top, size.width,
+		            size.height);
+		    size = close.getPreferredSize();*/
+		    close.setBounds(250 + insets.left, 450 + insets.top, size.width + 50,
+		        size.height + 20);
+		  }
+
 
 
 }
