@@ -49,8 +49,8 @@ public class StrikerAgent extends PlayerAgent {
 		@Override
 		public void action() {
 			
-			/*Ball ball = match.getBall();
-			if(moving && (player.getPlayerMovement().getGoalX() - player.x()) < 0.8
+			Ball ball = match.getBall();
+			/*if(moving && (player.getPlayerMovement().getGoalX() - player.x()) < 0.8
 					&& (player.getPlayerMovement().getGoalY() - player.y()) < 0.8){
 				moving = false;
 				
