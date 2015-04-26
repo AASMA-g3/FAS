@@ -121,11 +121,8 @@ public class MainLoop implements Runnable
      */
     public void run()
     {
-        running = true;
-        try
-        {
             game.setup();
-            while (running)
+            while (true)
             {
                 beforeTime = System.nanoTime();
                 skipFramesInExcessTime();
@@ -139,26 +136,20 @@ public class MainLoop implements Runnable
                 long sleepTime = calculateSleepTime();
     
                 if (sleepTime >= 0)
-                    sleep(sleepTime);
-                else
+					try {
+						sleep(sleepTime);
+					} catch (InterruptedException e) {
+						continue;
+					}
+				else
                 {
                     excessTime -= sleepTime; // Sleep time is negative
                     overSleepTime = 0L;
                     yieldIfNeed();
                 }
             }
-        }
-        catch (Exception e)
-        {
-            throw new RuntimeException("Exception during game loop", e);
-        }
-        finally
-        {
-            running = false;
-            game.tearDown();
-            System.exit(0);
-        }
     }
+       
 
     /**
      * Skip the number of frames according to the given excess time. This allow
