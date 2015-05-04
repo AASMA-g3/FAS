@@ -157,12 +157,14 @@ public class PlayerMovement {
 					velocity = Math.abs(velocity);
 			
 			this.myX += velocity*time;
+			
+			if (this.myX < 0.0f)
+				this.myX = 0.0f;
+			if (this.myX > Game.LIMIT_X)
+				this.myX = Game.LIMIT_X;
 		}
 		
-		if (this.myX < 0.0f)
-			this.myX = 0.0f;
-		if (this.myX > Game.LIMIT_X)
-			this.myX = Game.LIMIT_X;
+		
 	
 		} finally {
 			playerPosLock.unlock();
@@ -193,12 +195,14 @@ public class PlayerMovement {
 						velocity = Math.abs(velocity);
 		
 			this.myY += velocity*time;
+			
+			if (this.myY < 0.0f)
+				this.myY = 0.0f;
+			if (this.myY > Game.LIMIT_Y)
+				this.myY = Game.LIMIT_Y;
 		}
 		
-		if (this.myY < 0.0f)
-			this.myY = 0.0f;
-		if (this.myY > Game.LIMIT_Y)
-			this.myY = Game.LIMIT_Y;
+		
 	
 		} finally {
 			playerPosLock.unlock();

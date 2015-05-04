@@ -38,4 +38,6 @@ public class Ball {
 	public int getOriginalIntensity() {
 		return currentMovement.getOriginalIntensity();
 	}
+	
+	
 }

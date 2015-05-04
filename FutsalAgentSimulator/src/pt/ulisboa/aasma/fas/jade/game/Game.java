@@ -9,7 +9,7 @@ public class Game {
 
 	public static final double GAME_TIME = 500000.0f;
 	
-	public static final int LIMIT_X = 39;
+	public static final int LIMIT_X = 40;
 	public static final int LIMIT_Y = 20;
 	
 	public static final long TICK_TIME = 10;
