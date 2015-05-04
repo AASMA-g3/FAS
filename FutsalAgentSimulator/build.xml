@@ -42,7 +42,7 @@
     </target>	
 	
   <target name="run" depends="jar">
-  	 <java classname="${main-class}" fork="true">
+  	 <java classname="${main-class}" fork="true" maxmemory="2G">
   	  	<classpath>
              <path refid="classpath"/>
              <path location="${build.dir}/${ant.project.name}.jar"/>

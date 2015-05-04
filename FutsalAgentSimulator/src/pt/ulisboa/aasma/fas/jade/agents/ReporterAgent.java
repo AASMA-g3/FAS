@@ -105,11 +105,8 @@ public class ReporterAgent extends Agent{
 			msg.setContent(AgentMessages.END_GAME);
 			this.myAgent.send(msg);
 			
-			synchronized (match.isEnded) {
-				match.isEnded.set(true);
-				match.isEnded.notify();
-			}
-			
+			match.isEnded.set(true);
+		
 			this.myAgent.doDelete();
 		}
 		

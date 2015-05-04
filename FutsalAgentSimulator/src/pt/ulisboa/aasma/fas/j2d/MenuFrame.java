@@ -1,5 +1,10 @@
 package pt.ulisboa.aasma.fas.j2d;
 
+import jade.wrapper.AgentController;
+import jade.wrapper.ContainerController;
+import jade.wrapper.ControllerException;
+import jade.wrapper.StaleProxyException;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
@@ -17,9 +22,22 @@ import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import pt.ulisboa.aasma.fas.bootstrap.RunJade;
+import pt.ulisboa.aasma.fas.jade.agents.BallAgent;
+import pt.ulisboa.aasma.fas.jade.agents.ReporterAgent;
+import pt.ulisboa.aasma.fas.jade.game.Game;
+import pt.ulisboa.aasma.fas.jade.game.Player;
+
 
 public class MenuFrame extends JFrame {
-
+	
+	private static RunJade r;
+	private static ContainerController home;
+	
+	private static GameRunner gr;
+	private static MenuFrame mf;
+	private Game currentGame;
+	
 	private static final int MIN_ATTR = 0;
 	private static final int MED_ATTR = 2;
 	private static final int MAX_ATTR = 5;
@@ -27,7 +45,7 @@ public class MenuFrame extends JFrame {
 	//JPanel
 	private JPanel pnlControl = new JPanel();
 	//Buttons
-	private JButton btnRestart = new JButton("Restart Game");
+	private JButton btnRestart = new JButton("Reset");
 	private JButton btnRun = new JButton("Run!");
 
 	public final AtomicBoolean runPressed = new AtomicBoolean(false);
@@ -35,8 +53,16 @@ public class MenuFrame extends JFrame {
 	
 	private ArrayList<Integer> sliders = new ArrayList<Integer>();
 	
+	private boolean gameInProgress = false;
+	
 	
 	public MenuFrame(){
+		gr = new GameRunner();
+		
+		  r = new RunJade(true, "30000");
+		  home = r.getHome();
+			 
+		
 		 //ControlPanel setbounds
 	    btnRestart.setBounds(60, 400, 220, 30);
 	    btnRun.setBounds(60, 400, 220, 30);
@@ -94,23 +120,90 @@ public class MenuFrame extends JFrame {
 	    pnlControl.add(btnBox);
 	    add(pnlControl, BorderLayout.CENTER);
 	    
-	    btnRestart.addActionListener(new ActionListener() { 
-	    	  public void actionPerformed(ActionEvent e) { 
-	    		    System.out.println("Game Restarted");
-	    		   restartPressed.set(true);
-	    		  } 
-	    		} );
-	    this.btnRun.addActionListener(new ActionListener() { 
-	    	  public void actionPerformed(ActionEvent e) { 
-	    		  
-	    		  synchronized (runPressed) {
-	    			  runPressed.set(true);
-	    			  runPressed.notify();
+		btnRestart.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+
+				if (gameInProgress) {
+					currentGame.isEnded.set(true);
+					gr.setGameInProgress(false);
+					
+					
+					AgentController a;
+					try {
+						a = home.getAgent("Reporter");
+						a.kill();
+						a = home.getAgent("Ball");
+						a.kill();
+					
+						for (Player player : currentGame.getTeamA()) {
+							a = home.getAgent(player.getName());
+							a.kill();
+						}
+
+						for (Player player : currentGame.getTeamB()) {
+							a = home.getAgent(player.getName());
+							a.kill();
+						}
+						
+					
+					} catch (ControllerException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					
+					gameInProgress = false;
+				} else {
+					System.out.println("No game in progress.");
 				}
-	    		  
-	    		  } 
-	    		} );
-	    
+			}} );
+		this.btnRun.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				if(!gameInProgress){
+				currentGame = new Game(getSliders());
+
+				gr.startGame(currentGame);
+
+				Object[] agentParams = { currentGame };
+
+				try {
+					AgentController a;
+
+					a = home.createNewAgent("Reporter",
+							ReporterAgent.class.getName(),
+							agentParams);
+					a.start();
+
+					for (Player player : currentGame.getTeamA()) {
+						a = home.createNewAgent(
+								player.getName(),
+								player.getPosition(),
+								agentParams);
+						a.start();
+					}
+
+					for (Player player : currentGame.getTeamB()) {
+						a = home.createNewAgent(
+								player.getName(),
+								player.getPosition(),
+								agentParams);
+						a.start();
+					}
+
+					a = home.createNewAgent("Ball",
+							BallAgent.class.getName(),
+							agentParams);
+					a.start();
+
+				} catch (StaleProxyException spe) {
+					spe.printStackTrace();
+				}
+				gameInProgress = true;
+				} else{
+					System.out.println("Game in progress. Wait for end or reset.");
+				}
+			}
+		});
 	    
 	    s1a.addChangeListener(new ChangeListener(){
 	    	public void stateChanged(ChangeEvent e) {

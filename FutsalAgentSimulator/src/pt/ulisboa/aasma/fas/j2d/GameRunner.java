@@ -39,6 +39,8 @@ public class GameRunner extends JFrame implements LoopSteps {
 	private Game game;
 	private ArrayList<PlayerGraphic> playerList;
 	
+	private boolean gameInProgress = false;
+	
 	public GameRunner() {
 		super("FutsalAgentSimulator");
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -55,6 +57,13 @@ public class GameRunner extends JFrame implements LoopSteps {
 			}
 		});
 		setVisible(true);
+		
+	
+		// TODO: SETUP DE TODOS OS AGENTES + BOLA
+		pitch = new FutsalPitch();
+		
+		scorer = new Scorer();
+		
 		startMainLoop();
 
 	}
@@ -63,15 +72,14 @@ public class GameRunner extends JFrame implements LoopSteps {
 		// Iniciamos o main loop
 		new Thread(loop, "Main loop").start();
 	}
-
+	
+	@Override
 	public void setup() {
+		// TODO Auto-generated method stub
 		createBufferStrategy(2);
-		// TODO: SETUP DE TODOS OS AGENTES + BOLA
-		pitch = new FutsalPitch();
-		scorer = new Scorer();
 		pitch.init();
-
 	}
+
 	
 	public void startGame(Game game){
 		this.game = game;
@@ -89,22 +97,22 @@ public class GameRunner extends JFrame implements LoopSteps {
 			PlayerGraphic playerGraphic = new PlayerGraphic(player);
 			playerList.add(playerGraphic);
 		}
-		
+		gameInProgress = true;
 	}
 
 	public void processLogics() {
-		if(game!=null){
-			double time = game.getGameTime();
+		if (gameInProgress){
 			
-			if (ball != null)
-				ball.update(time);
+			double time = game.getGameTime();
+			ball.update(time);
 			
 			scorer.update(time);
 			
-			for (PlayerGraphic pl : playerList){
+			for (PlayerGraphic pl : playerList)
 				pl.update(time);
-			}
+			
 		}
+		
 	}
 
 	public void renderGraphics() {
@@ -117,21 +125,17 @@ public class GameRunner extends JFrame implements LoopSteps {
 		g2.setColor(Color.BLACK);
 		g2.fillRect(0, 0, 606, 357);
 		
-
 		scorer.draw((Graphics2D) g2);
+		pitch.draw((Graphics2D) g2);
 
-		if (pitch != null)
-			pitch.draw((Graphics2D) g2);
-
-		if(game!=null){
-			
-			for(PlayerGraphic pl : playerList){
+		if (gameInProgress){
+		
+			for(PlayerGraphic pl : playerList)
 				pl.draw((Graphics2D) g2);
-			}
-			if (ball != null)
-				ball.draw((Graphics2D) g2);
+			
+			ball.draw((Graphics2D) g2);
+			
 		}
-
 		g.dispose();
 		g2.dispose();
 	}
@@ -143,21 +147,17 @@ public class GameRunner extends JFrame implements LoopSteps {
 
 		g.fillRect(0, 0, 606, 357);
 
-		if (scorer != null)
-			scorer.draw((Graphics2D) g);
-
-		if (pitch != null)
-			pitch.draw((Graphics2D) g);
+		scorer.draw((Graphics2D) g);
+		pitch.draw((Graphics2D) g);
 		
-		if(game!=null){
-	
-			for(PlayerGraphic pl : playerList){
+		if (gameInProgress){
+			
+			for(PlayerGraphic pl : playerList)
 				pl.draw((Graphics2D) g);
-			}
-			if (ball != null)
-				ball.draw((Graphics2D) g);
+			
+			ball.draw((Graphics2D) g);
+		
 		}
-
 		g.dispose();
 	}
 
@@ -168,8 +168,7 @@ public class GameRunner extends JFrame implements LoopSteps {
 
 	public void tearDown() {
 		pitch = null;
-		ball = null;
-		
+		ball = null;	
 	}
 
 	public MainLoop getLoop() {
@@ -202,6 +201,14 @@ public class GameRunner extends JFrame implements LoopSteps {
 
 	public void setPitch(FutsalPitch pitch) {
 		this.pitch = pitch;
+	}
+
+	public boolean isGameInProgress() {
+		return gameInProgress;
+	}
+
+	public void setGameInProgress(boolean gameInProgress) {
+		this.gameInProgress = gameInProgress;
 	}
 
 
