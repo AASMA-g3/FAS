@@ -187,6 +187,8 @@ public class BallMovement {
 			ballTimerLock.unlock();
 		}	
 		
+		
+		
 		if (Y < 0.0f)
 			Y = 0.0f;
 		if (Y > Game.LIMIT_Y)

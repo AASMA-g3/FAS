@@ -39,5 +39,39 @@ public class Ball {
 		return currentMovement.getOriginalIntensity();
 	}
 	
+	public boolean isOnTrajectoryToGoal(int team){
+			double ballDirection = getCurrentMovement().getDirection();
+			double ballToGoalDirection = getDirectionToGoal(team);
+			
+			if(Math.round(ballDirection) == Math.round(ballToGoalDirection)){
+				return true;
+			}	
+			return false;
+	}
+	
+	public boolean isOnTrajectoryToPlayer(Player player){
+		double ballDirection = getCurrentMovement().getDirection();
+		double ballToPlayerDirection = getDirectionToPlayer(player);
+		
+		if(Math.round(ballDirection) == Math.round(ballToPlayerDirection)){
+			return true;
+		}	
+		return false;
+	}
+	
+	public double getDirectionToGoal(int team){
+		if (team == Player.TEAM_A){
+			return Math.toDegrees(Math.atan((this.y()- Game.GOAL_Y_MED)
+					/ (this.x() - 0)));
+		}else{
+			return Math.toDegrees(Math.atan((this.y()- Game.GOAL_Y_MED)
+					/ (this.x() - Game.LIMIT_X)));
+		}
+	}
+	
+	public double getDirectionToPlayer(Player player){
+		return Math.toDegrees(Math.atan((this.y()- player.y())
+					/ (this.x() - player.x())));
+	}
 	
 }

@@ -248,50 +248,22 @@ public class Player {
 	public void setPlayerMovement(PlayerMovement playerMovement) {
 		this.playerMovement = playerMovement;
 	}
-	
-	public boolean isBallOnTrajectoryToAllyGoal(Ball ball){
-		double ballDirection = ball.getCurrentMovement().getDirection();
-		double playerToAllyGoalDirection = getDirectionToAllyGoal();
-		
-		if(Math.round(ballDirection) == Math.round(playerToAllyGoalDirection)){
-			return true;
-		}
-		return false;
-	}
-	
-	public boolean isBallOnTrajectoryToEnemyGoal(Ball ball){
-		double ballDirection = ball.getCurrentMovement().getDirection();
-		double playerToEnemyGoalDirection = getDirectionToEnemyGoal();
-		
-		if(Math.round(ballDirection) == Math.round(playerToEnemyGoalDirection)){
-			return true;
-		}
-		return false;
-	}
-	
-	public boolean isBallOnTrajectoryToPlayer(Ball ball){
-		double ballDirection = ball.getCurrentMovement().getDirection();
-		double playerToBallDirection = getDirectionToBall(ball);
-		
-		if(Math.round(ballDirection) == Math.round(playerToBallDirection)){
-			return true;
-		}
-		return false;
-	}
 
-	public boolean isPlayerOnTrajectoryToPlayer(Player playerInWay){
-		double playerInWayDirectionToMe = playerInWay.getDirectionToPlayer(this);
-		double playerMeDirectionToInWay = this.getDirectionToPlayer(playerInWay);
+	public boolean isOnTrajectoryToPlayer(Player senderPlayer, Player allyPlayer){
+		Player enemyPlayer = this;
+		double senderToAllyDirection = senderPlayer.getDirectionToPlayer(allyPlayer);
+		double enemyToAllyDirection = enemyPlayer.getDirectionToPlayer(allyPlayer);
 		
-		if(Math.round(playerInWayDirectionToMe) == Math.round(playerMeDirectionToInWay)){
+		if(Math.round(senderToAllyDirection) == Math.round(enemyToAllyDirection)){
 			return true;
 		}
 		return false;
 	}
 	
-	public boolean isPlayerAroundPlayer(Player playerInWay){
+	public boolean isAroundPlayer(Player allyPlayer){
+		Player enemyPlayer = this;
 		
-		if (this.getDistanceToPlayer(playerInWay) <= 1.0f)
+		if (enemyPlayer.getDistanceToPlayer(allyPlayer) <= 1.0f)
 			return true;
 		else
 			return false;
@@ -310,13 +282,13 @@ public class Player {
 		ArrayList<Player> openPlayers = new ArrayList<Player>();
 		if (this.getTeam() == TEAM_A){
 			for (Player player : teamA) {
-				if(!player.isPlayerBlocked(teamB)){
+				if(!player.isPlayerBlocked(this, teamB)){
 					openPlayers.add(player);
 				}
 			}	
 		}else{
 			for (Player player : teamB) {
-				if(!player.isPlayerBlocked(teamA)){
+				if(!player.isPlayerBlocked(this, teamA)){
 					openPlayers.add(player);
 				}
 			}	
@@ -372,12 +344,12 @@ public class Player {
 			return playerA;
 	}
 	
-	public boolean isPlayerBlocked(ArrayList<Player> enemyTeam){
+	public boolean isPlayerBlocked(Player senderPlayer, ArrayList<Player> enemyTeam){
 			for (Player enemyPlayer : enemyTeam) {
-				if (this.isPlayerOnTrajectoryToPlayer(enemyPlayer)){
+				if (enemyPlayer.isOnTrajectoryToPlayer(senderPlayer, this)){
 					return true;
 				} else {
-					if (this.isPlayerAroundPlayer(enemyPlayer)){
+					if (enemyPlayer.isAroundPlayer(this)){
 						return true;
 					} else {
 						continue;
