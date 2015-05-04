@@ -80,7 +80,7 @@ public class KeeperAgent extends PlayerAgent {
 					addBehaviour(new TryCatchBehaviour(this.myAgent));
 					tryCatchBehaviour = PlayerAgent.WAITING_ANSWER;
 				}else{
-					//The ball is to far away or I failed to defend it,s so let's get in position!
+					//The ball is to far away or I failed to defend it, so let's get in position!
 				}
 			}else if(player.isBallOnTrajectoryToAllyGoal(ball) &&
 						(ball.getCurrentMovement().getOriginalIntensity() < Ball.INTENSITY_SHOOT)){

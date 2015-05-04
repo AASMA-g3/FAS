@@ -48,17 +48,12 @@ public class DefenderAgent extends PlayerAgent {
 		public void action() {
 			Ball ball = match.getBall();
 			player.getPlayerMovement().setGoal(ball.x(), ball.y());
-			/*Ball ball = match.getBall();
 
-			double distance = ball.getDistanceToBall(player);
-		
-			if((distance < 1.0f) && !(hasBall) && (tryCatchBehaviour == null)){
-					tryCatchBehaviour = new TryCatchBehaviour(this.myAgent);
-					this.myAgent.addBehaviour(tryCatchBehaviour);
-			} else {
-				player.getPlayerMovement().setGoal(ball.x(), ball.y());
-			}
-			*/
+//			if(!player.teamHasBall() ){
+//				if(){
+//					
+//				}
+//			}
 		}
 	}
 }
