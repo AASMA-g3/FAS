@@ -1,5 +1,7 @@
 package pt.ulisboa.aasma.fas.jade.game;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Random;
 
 import pt.ulisboa.aasma.fas.jade.agents.DefenderAgent;
@@ -39,6 +41,8 @@ public class Player {
 	
 	private String position;
 	private int playerNumber;
+	
+	private boolean hasBall;
 
 	public Player(String name, int shootingRatio, int defendingRatio,
 			int goalKeepingRatio, int passingRatio, int dribblingRatio, String position, int team, int playerNumber) {
@@ -79,7 +83,7 @@ public class Player {
 			this.goalKeepingRatio = 0;
 		}
 		
-		
+		this.hasBall = false;
 	}
 	
 	private double getRandomXCoord(){
@@ -177,8 +181,18 @@ public class Player {
 				Math.abs(ball.x()- x())));
 	}
 	
-	public double getDirectionToGoal(){
+	public double getDirectionToAllyGoal(){
 		if(this.getTeam() == Player.TEAM_A){
+			return  Math.toDegrees(Math.atan(Math.abs(Game.GOAL_Y_MED- y()) /
+					Math.abs(Game.LIMIT_X- x())));
+		} else {
+			return  Math.toDegrees(Math.atan(Math.abs(Game.GOAL_Y_MED- y()) /
+					Math.abs(0- x())));
+		}
+	}
+	
+	public double getDirectionToEnemyGoal(){
+		if(this.getTeam() == Player.TEAM_B){
 			return  Math.toDegrees(Math.atan(Math.abs(Game.GOAL_Y_MED- y()) /
 					Math.abs(Game.LIMIT_X- x())));
 		} else {
@@ -197,7 +211,18 @@ public class Player {
 				Math.pow((x() - ball.x()), 2));
 	}
 	
-	public double getDistanceToGoal(){
+	public double getDistanceToAllyGoal(){
+		double xCoord, yCoord;
+		if(this.getTeam() == Player.TEAM_B)
+			xCoord=Game.LIMIT_X;
+		 else
+			xCoord=0;
+		yCoord = Game.GOAL_Y_MED;
+		return Math.sqrt(Math.pow((y() - yCoord), 2) +
+				Math.pow((x() - xCoord), 2));
+	}
+	
+	public double getDistanceToEnemyGoal(){
 		double xCoord, yCoord;
 		if(this.getTeam() == Player.TEAM_A)
 			xCoord=Game.LIMIT_X;
@@ -223,8 +248,28 @@ public class Player {
 	public void setPlayerMovement(PlayerMovement playerMovement) {
 		this.playerMovement = playerMovement;
 	}
-
-	public boolean isBallOnTrajectory(Ball ball){
+	
+	public boolean isBallOnTrajectoryToAllyGoal(Ball ball){
+		double ballDirection = ball.getCurrentMovement().getDirection();
+		double playerToAllyGoalDirection = getDirectionToAllyGoal();
+		
+		if(Math.round(ballDirection) == Math.round(playerToAllyGoalDirection)){
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean isBallOnTrajectoryToEnemyGoal(Ball ball){
+		double ballDirection = ball.getCurrentMovement().getDirection();
+		double playerToEnemyGoalDirection = getDirectionToEnemyGoal();
+		
+		if(Math.round(ballDirection) == Math.round(playerToEnemyGoalDirection)){
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean isBallOnTrajectoryToPlayer(Ball ball){
 		double ballDirection = ball.getCurrentMovement().getDirection();
 		double playerToBallDirection = getDirectionToBall(ball);
 		
@@ -232,6 +277,114 @@ public class Player {
 			return true;
 		}
 		return false;
+	}
+
+	public boolean isPlayerOnTrajectoryToPlayer(Player playerInWay){
+		double playerInWayDirectionToMe = playerInWay.getDirectionToPlayer(this);
+		double playerMeDirectionToInWay = this.getDirectionToPlayer(playerInWay);
+		
+		if(Math.round(playerInWayDirectionToMe) == Math.round(playerMeDirectionToInWay)){
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean isPlayerAroundPlayer(Player playerInWay){
+		
+		if (this.getDistanceToPlayer(playerInWay) <= 1.0f)
+			return true;
+		else
+			return false;
+
+	}
+	
+	public boolean hasBall() {
+		return hasBall;
+	}
+
+	public void setHasBall(boolean hasBall) {
+		this.hasBall = hasBall;
+	}
+	
+	public ArrayList<Player> getOpenAllyPlayers(ArrayList<Player> teamA, ArrayList<Player> teamB){
+		ArrayList<Player> openPlayers = new ArrayList<Player>();
+		if (this.getTeam() == TEAM_A){
+			for (Player player : teamA) {
+				if(!player.isPlayerBlocked(teamB)){
+					openPlayers.add(player);
+				}
+			}	
+		}else{
+			for (Player player : teamB) {
+				if(!player.isPlayerBlocked(teamA)){
+					openPlayers.add(player);
+				}
+			}	
+		}
+		return openPlayers;
+	}
+	
+	public Player getNearestAllyOpenPlayer(ArrayList<Player> teamA, ArrayList<Player> teamB){
+		ArrayList<Player> openPlayers = getOpenAllyPlayers(teamA, teamB);
+		if(openPlayers.isEmpty()){
+			return null;
+		}
+		
+		Player nearestPlayer = null;
+		for (Player player : openPlayers) {
+			if(nearestPlayer == null){
+				nearestPlayer = player;
+				continue;
+			}
+			nearestPlayer = getClosestPlayer(nearestPlayer, player);	
+		}
+		return nearestPlayer;
+	}
+	
+	public Player getNearestAllyPlayer(ArrayList<Player> teamA, ArrayList<Player> teamB){
+		
+		Player nearestPlayer = null;
+		if(this.team == TEAM_A){
+			for (Player player : teamA) {
+				if(nearestPlayer == null){
+					nearestPlayer = player;
+					continue;
+				}
+				nearestPlayer = getClosestPlayer(nearestPlayer, player);	
+			}	
+		} else {
+			for (Player player : teamB) {
+				if(nearestPlayer == null){
+					nearestPlayer = player;
+					continue;
+				}
+				nearestPlayer = getClosestPlayer(nearestPlayer, player);	
+			}	
+		}
+		
+		return nearestPlayer;
+	}
+	
+	public Player getClosestPlayer(Player playerA, Player playerB){
+		if(this.getDistanceToPlayer(playerA) > this.getDistanceToPlayer(playerB))
+			return playerB;
+		else
+			return playerA;
+	}
+	
+	public boolean isPlayerBlocked(ArrayList<Player> enemyTeam){
+			for (Player enemyPlayer : enemyTeam) {
+				if (this.isPlayerOnTrajectoryToPlayer(enemyPlayer)){
+					return true;
+				} else {
+					if (this.isPlayerAroundPlayer(enemyPlayer)){
+						return true;
+					} else {
+						continue;
+					}
+				}
+			}
+			return false;
 	}
 	
 }
