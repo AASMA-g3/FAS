@@ -6,6 +6,8 @@ import jade.core.behaviours.OneShotBehaviour;
 import jade.core.behaviours.TickerBehaviour;
 import jade.core.behaviours.WakerBehaviour;
 import jade.lang.acl.ACLMessage;
+import pt.ulisboa.aasma.fas.jade.game.Ball;
+import pt.ulisboa.aasma.fas.jade.game.BallMovement;
 import pt.ulisboa.aasma.fas.jade.game.Game;
 import pt.ulisboa.aasma.fas.jade.game.Player;
 
@@ -16,6 +18,7 @@ public class ReporterAgent extends Agent{
 	private Game match;
 	
 	private StartGame startGame;
+	private RestartBall restartBall;
 	private Timer timer;
 	private TerminateGame terminateGame;
 	
@@ -79,7 +82,37 @@ public class ReporterAgent extends Agent{
 				this.stop();
 			}
 			match.setGameTime(match.getGameTime()+Game.TICK_TIME);
+			
+			if(match.isGoal()){
+				double x = match.getBall().x();
+				double y = match.getBall().y();
+				if(x < 0.0f){
+					match.setTeamBScore(match.getTeamBScore()+1);
+					restartBall = new RestartBall(this.myAgent, 2000, new BallMovement(Ball.INTENSITY_SHOOT, 180.0f, 20, 10, match.getGameTime()/1000.0f));
+				} else {
+					match.setTeamAScore(match.getTeamAScore()+1);
+					restartBall = new RestartBall(this.myAgent, 2000, new BallMovement(Ball.INTENSITY_SHOOT, 0.0f, 20, 10, match.getGameTime()/1000.0f));
+				}
+				match.getBall().setCurrentMovement(new BallMovement(0, 0.0f, 20.0f, 10.0f, match.getGameTime()/1000.0f));
+				this.myAgent.addBehaviour(restartBall);
+			}
+			
 		}
+		
+	}
+	
+	protected class RestartBall extends WakerBehaviour{
+		private static final long serialVersionUID = 1L;
+		private BallMovement movement;
+		public RestartBall(Agent agent, long timeToStart, BallMovement movement) {
+			super(agent, timeToStart);
+		}
+
+		@Override
+		protected void handleElapsedTimeout() {
+			//match.getBall().setCurrentMovement(movement);
+		}
+
 		
 	}
 	

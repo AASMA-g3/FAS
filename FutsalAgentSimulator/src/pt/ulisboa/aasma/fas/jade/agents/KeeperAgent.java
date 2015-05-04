@@ -8,8 +8,6 @@ import jade.lang.acl.MessageTemplate;
 import pt.ulisboa.aasma.fas.jade.game.Ball;
 import pt.ulisboa.aasma.fas.jade.game.Game;
 import pt.ulisboa.aasma.fas.jade.game.Player;
-import sun.font.EAttribute;
-
 
 public class KeeperAgent extends PlayerAgent {
 	
@@ -70,15 +68,15 @@ public class KeeperAgent extends PlayerAgent {
 			Ball ball = match.getBall();
 			double distance = player.getDistanceToBall(ball);
 
-			if(//ball.isOnTrajectoryToGoal(player.getTeam()) &&
+			if(ball.isOnTrajectoryToGoal(player.getTeam()) &&
 					(ball.getCurrentMovement().getOriginalIntensity() == Ball.INTENSITY_SHOOT)){
 					//The ball has been shot to the goal so we have to catch it!
-				System.out.println("Remate!");
+				//System.out.println("Remate!");
 				if(distance < 1.0 &&
 						tryCatchBehaviour != PlayerAgent.WAITING_ANSWER &&
 						tryCatchBehaviour != PlayerAgent.FAILED){
 					//The ball is close enough so let's try to catch it!
-					System.out.println("Vamos apanhar a puta");
+					//System.out.println("Vamos apanhar a puta");
 					addBehaviour(new TryCatchBehaviour(this.myAgent));
 					tryCatchBehaviour = PlayerAgent.WAITING_ANSWER;
 				}else{

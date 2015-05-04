@@ -106,6 +106,9 @@ public class GameRunner extends JFrame implements LoopSteps {
 			double time = game.getGameTime();
 			ball.update(time);
 			
+			scorer.setScoreTeamA(game.getTeamAScore());
+			scorer.setScoreTeamB(game.getTeamBScore());
+			
 			scorer.update(time);
 			
 			for (PlayerGraphic pl : playerList)

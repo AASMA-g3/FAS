@@ -175,33 +175,47 @@ public class Player {
 	}
 
 	public double getDirectionToPlayer(Player player){
-		return  Math.toDegrees(Math.atan(Math.abs(player.y()- y()) /
-				Math.abs(player.x()- x())));
+		double angle;
+		angle= Math.toDegrees(Math.atan2(player.y() - this.y(), player.x() - this.x()));
+		if(angle < 0.0f){
+	        angle += 360.0f;
+	    }
+	    return angle;
 	}
 	
 	public double getDirectionToBall(Ball ball){
-		return  Math.toDegrees(Math.atan(Math.abs(ball.y()- y()) /
-				Math.abs(ball.x()- x())));
+		double angle;
+		angle= Math.toDegrees(Math.atan2(ball.y() - this.y(), ball.x() - this.x()));
+		if(angle < 0.0f){
+	        angle += 360.0f;
+	    }
+	    return angle;
 	}
 	
 	public double getDirectionToAllyGoal(){
+		double angle;
 		if(this.getTeam() == Player.TEAM_A){
-			return  Math.toDegrees(Math.atan(Math.abs(Game.GOAL_Y_MED- y()) /
-					Math.abs(Game.LIMIT_X- x())));
+			angle= Math.toDegrees(Math.atan2(Game.GOAL_Y_MED - this.y(), Game.LIMIT_X - this.x()));
 		} else {
-			return  Math.toDegrees(Math.atan(Math.abs(Game.GOAL_Y_MED- y()) /
-					Math.abs(0- x())));
+			angle= Math.toDegrees(Math.atan2(Game.GOAL_Y_MED - this.y(), 0 - this.x()));
 		}
+		if(angle < 0.0f){
+	        angle += 360.0f;
+	    }
+	    return angle;
 	}
 	
 	public double getDirectionToEnemyGoal(){
+		double angle;
 		if(this.getTeam() == Player.TEAM_B){
-			return  Math.toDegrees(Math.atan(Math.abs(Game.GOAL_Y_MED- y()) /
-					Math.abs(Game.LIMIT_X- x())));
+			angle= Math.toDegrees(Math.atan2(Game.GOAL_Y_MED - this.y(), Game.LIMIT_X - this.x()));
 		} else {
-			return  Math.toDegrees(Math.atan(Math.abs(Game.GOAL_Y_MED- y()) /
-					Math.abs(0- x())));
+			angle= Math.toDegrees(Math.atan2(Game.GOAL_Y_MED - this.y(), 0 - this.x()));
 		}
+		if(angle < 0.0f){
+	        angle += 360.0f;
+	    }
+	    return angle;
 	}
 	
 	public double getDistanceToPlayer(Player player){

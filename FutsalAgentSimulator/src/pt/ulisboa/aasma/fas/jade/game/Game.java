@@ -15,10 +15,13 @@ public class Game {
 	public static final long TICK_TIME = 10;
 	public static final int PLAYERS_PER_TEAM = 5;
 	
-	public static final int GOAL_Y_MIN = 10;
-	public static final int GOAL_Y_MAX = 12;
+	public static final int GOAL_Y_MIN = 9;
+	public static final int GOAL_Y_MAX = 11;
 	
-	public static final int GOAL_Y_MED = 11;
+	public static final int GOAL_Y_MED = 10;
+	
+	private int TeamAScore;
+	private int TeamBScore;
 	
 	private ArrayList<Player> teamA;
 	private ArrayList<Player> teamB;
@@ -36,6 +39,8 @@ public class Game {
 		this.ball = new Ball();
 		this.teamA = new ArrayList<Player>();
 		this.teamB = new ArrayList<Player>();
+		this.TeamAScore = 0;
+		this.TeamBScore = 0;
 		
 		ArrayList<String> names = getRandomNames();
 		
@@ -191,6 +196,40 @@ public class Game {
 
 	public void setGameTime(double gameTime) {
 		this.gameTime = gameTime;
+	}
+
+	public int getTeamAScore() {
+		return TeamAScore;
+	}
+
+	public void setTeamAScore(int teamAScore) {
+		TeamAScore = teamAScore;
+	}
+
+	public int getTeamBScore() {
+		return TeamBScore;
+	}
+
+	public void setTeamBScore(int teamBScore) {
+		TeamBScore = teamBScore;
+	}
+	
+	public boolean isGoal(){
+		double X = ball.x();
+		double Y = ball.y();
+		
+		if (X < 0.0f){
+			if(((X > -1.0f) && (Y > Game.GOAL_Y_MIN) && (Y < Game.GOAL_Y_MAX))){
+				return true;
+			}
+		}
+		if (X > Game.LIMIT_X){
+			if(!((X > (Game.LIMIT_X + 1.0f)) && (Y > Game.GOAL_Y_MIN) && (Y < Game.GOAL_Y_MAX))){
+				return true;
+			}
+		}
+		return false;
+		
 	}
 	
 }

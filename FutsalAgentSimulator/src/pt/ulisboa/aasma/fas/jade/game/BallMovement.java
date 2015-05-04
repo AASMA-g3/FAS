@@ -156,11 +156,17 @@ public class BallMovement {
 			ballTimerLock.unlock();
 		}
 		
-		if (X < 0.0f)
-			X = 0.0f;
-		if (X > Game.LIMIT_X)
-			X = Game.LIMIT_X;
-
+		
+		if (X < 0.0f){
+			if(!((X > -1.0f) && (y() > Game.GOAL_Y_MIN) && (y() < Game.GOAL_Y_MAX))){
+				X = 0.0f;
+			}
+		}
+		if (X > Game.LIMIT_X){
+			if(!((X > (Game.LIMIT_X + 1.0f)) && (y() > Game.GOAL_Y_MIN) && (y() < Game.GOAL_Y_MAX))){
+				X = Game.LIMIT_X;
+			}
+		}
 		return X;
 
 	}
@@ -186,9 +192,7 @@ public class BallMovement {
 			ballVelLock.unlock();
 			ballTimerLock.unlock();
 		}	
-		
-		
-		
+			
 		if (Y < 0.0f)
 			Y = 0.0f;
 		if (Y > Game.LIMIT_Y)
