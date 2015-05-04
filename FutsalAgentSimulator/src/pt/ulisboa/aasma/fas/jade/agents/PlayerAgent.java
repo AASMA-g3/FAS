@@ -63,7 +63,7 @@ public class PlayerAgent extends Agent {
 		}
 		
 		// Add a behaviour to all agents to listen to the end of the game 
-		EndGameBehaviour b = new EndGameBehaviour();
+		GameStatusChangesBehaviour b = new GameStatusChangesBehaviour();
 		this.addBehaviour(b);
 	}
 	
@@ -73,7 +73,7 @@ public class PlayerAgent extends Agent {
 	 * @author Fábio
 	 *
 	 */
-	protected class EndGameBehaviour extends CyclicBehaviour {
+	protected class GameStatusChangesBehaviour extends CyclicBehaviour {
 		private static final long serialVersionUID = 1L;
 
 		@Override
@@ -82,6 +82,11 @@ public class PlayerAgent extends Agent {
 			if (msg != null){
 				if(msg.getContent().equals(AgentMessages.END_GAME)){
 					doDelete();
+				} else if(msg.getContent().equals(AgentMessages.PAUSE_GAME)){
+					gameStarted = false;
+					player.resetCoords();
+				} else if (msg.getContent().equals(AgentMessages.RESTART_GAME)){
+					gameStarted = true;
 				}
 			} else {
 				block();

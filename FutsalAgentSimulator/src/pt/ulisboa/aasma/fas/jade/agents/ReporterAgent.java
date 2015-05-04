@@ -14,6 +14,9 @@ import pt.ulisboa.aasma.fas.jade.game.Player;
 public class ReporterAgent extends Agent{
 	
 	private static final long serialVersionUID = 1L;
+	private static final int NO_GOAL = 0;
+	private static final int A_GOAL = 1;
+	private static final int B_GOAL = 2;
 	
 	private Game match;
 	
@@ -21,6 +24,8 @@ public class ReporterAgent extends Agent{
 	private RestartBall restartBall;
 	private Timer timer;
 	private TerminateGame terminateGame;
+	
+	private int lastGoal = NO_GOAL;
 	
 	@Override
 	protected void setup() {
@@ -88,12 +93,24 @@ public class ReporterAgent extends Agent{
 				double y = match.getBall().y();
 				if(x < 0.0f){
 					match.setTeamBScore(match.getTeamBScore()+1);
-					restartBall = new RestartBall(this.myAgent, 2000, new BallMovement(Ball.INTENSITY_SHOOT, 180.0f, 20, 10, match.getGameTime()/1000.0f));
+					((ReporterAgent)this.myAgent).lastGoal = B_GOAL;
 				} else {
 					match.setTeamAScore(match.getTeamAScore()+1);
-					restartBall = new RestartBall(this.myAgent, 2000, new BallMovement(Ball.INTENSITY_SHOOT, 0.0f, 20, 10, match.getGameTime()/1000.0f));
+					((ReporterAgent)this.myAgent).lastGoal = A_GOAL;
 				}
-				match.getBall().setCurrentMovement(new BallMovement(0, 0.0f, 20.0f, 10.0f, match.getGameTime()/1000.0f));
+				restartBall = new RestartBall(this.myAgent, 2000);
+				match.getBall().updateCurrentMovement(0, 0.0f, 20.0f, 10.0f, match.getGameTime()/1000.0f);
+				
+				ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
+				for(Player player : match.getTeamA()){
+					msg.addReceiver(new AID(player.getName(), AID.ISLOCALNAME));
+				}
+				for(Player player : match.getTeamB()){
+					msg.addReceiver(new AID(player.getName(), AID.ISLOCALNAME));
+				}
+				msg.setContent(AgentMessages.PAUSE_GAME);
+				this.myAgent.send(msg);
+				
 				this.myAgent.addBehaviour(restartBall);
 			}
 			
@@ -103,14 +120,29 @@ public class ReporterAgent extends Agent{
 	
 	protected class RestartBall extends WakerBehaviour{
 		private static final long serialVersionUID = 1L;
-		private BallMovement movement;
-		public RestartBall(Agent agent, long timeToStart, BallMovement movement) {
+		public RestartBall(Agent agent, long timeToStart) {
 			super(agent, timeToStart);
 		}
 
 		@Override
 		protected void handleElapsedTimeout() {
-			//match.getBall().setCurrentMovement(movement);
+			if(lastGoal == A_GOAL){
+				match.getBall().updateCurrentMovement(Ball.INTENSITY_SHOOT, 180.0f, 20, 10, match.getGameTime()/1000.0f);
+			} else if (lastGoal == B_GOAL){
+				match.getBall().updateCurrentMovement(Ball.INTENSITY_SHOOT, 0.0f, 20, 10, match.getGameTime()/1000.0f);				
+			}
+			
+			
+			ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
+			for(Player player : match.getTeamA()){
+				msg.addReceiver(new AID(player.getName(), AID.ISLOCALNAME));
+			}
+			for(Player player : match.getTeamB()){
+				msg.addReceiver(new AID(player.getName(), AID.ISLOCALNAME));
+			}
+			msg.setContent(AgentMessages.RESTART_GAME);
+			this.myAgent.send(msg);
+			
 		}
 
 		

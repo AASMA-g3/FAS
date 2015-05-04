@@ -46,9 +46,11 @@ public class DefenderAgent extends PlayerAgent {
 
 		@Override
 		public void action() {
+			
+			if (gameStarted){
 			Ball ball = match.getBall();
 			player.getPlayerMovement().setGoal(ball.x(), ball.y());
-
+			}
 //			if(!player.teamHasBall() ){
 //				if(){
 //					

@@ -16,15 +16,11 @@ public class Ball {
 		double direction = 0.0f;
 		if (prob == 0) direction = 180.0f;
 		
-		currentMovement = new BallMovement(0, direction, 20.0f, 10.0f, 0.0f);
+		currentMovement = new BallMovement(0, 0.0f, 20.0f, 10.0f, 0.0f);
 	}
 	
 	public BallMovement getCurrentMovement() {
 		return currentMovement;
-	}
-
-	public void setCurrentMovement(BallMovement currentMovement) {
-		this.currentMovement = currentMovement;
 	}
 	
 	public double x(){
@@ -84,5 +80,8 @@ public class Ball {
 	    return angle;
 	}
 
+	public void updateCurrentMovement(int intensity, double direction, double x0, double y0, double initialTime) {
+		this.currentMovement.updateCurrentMovement(intensity, direction, x0, y0, initialTime);
+	}
 	
 }

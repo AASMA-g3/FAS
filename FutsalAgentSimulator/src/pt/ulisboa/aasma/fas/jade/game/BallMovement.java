@@ -13,10 +13,12 @@ public class BallMovement {
 	private final Lock ballPosLock = new ReentrantLock();
 	private final Lock ballTimerLock = new ReentrantLock();
 	
-	private final double initialTime; //in seconds
+	private final double A = 0.0f; 
+	
+	private double initialTime; //in seconds
 	
 	private int originalIntensity;
-	private double a = -2.0f;
+	private double a;
 	
 	private double vx0;
 	private double vy0;
@@ -31,6 +33,9 @@ public class BallMovement {
 	public BallMovement(int intensity, double direction, double x0, double y0, double initialTime) {
 		super();
 		this.direction = direction;
+		this.a = A;
+		if((direction > 90.0f) && (direction < 270.0f)) 
+			this.a = -a;
 		this.vx0 = intensity*Math.cos(Math.toRadians(direction));
 		this.vy0 = intensity*Math.sin(Math.toRadians(direction));
 		this.x0 = x0;
@@ -220,6 +225,35 @@ public class BallMovement {
 			ballVelLock.unlock();
 		}
 		return ret;
+	}
+	
+	
+	
+	public double getInitialTime() {
+		return initialTime;
+	}
+	
+	public void updateCurrentMovement(int intensity, double direction, double x0, double y0, double initialTime) {
+		ballPosLock.lock();
+		ballVelLock.lock();
+		ballTimerLock.lock();
+		try{
+			this.direction = direction;
+			this.a = A;
+			if((direction > 90.0f) && (direction < 270.0f)) 
+				this.a = -a;
+			this.vx0 = intensity*Math.cos(Math.toRadians(direction));
+			this.vy0 = intensity*Math.sin(Math.toRadians(direction));
+			this.x0 = x0;
+			this.y0 = y0;
+			this.t = 0;
+			this.initialTime = initialTime;
+			this.originalIntensity = intensity;
+		} finally {
+			ballPosLock.unlock();
+			ballVelLock.unlock();
+			ballTimerLock.unlock();
+		}	
 	}
 	
 }

@@ -42,7 +42,10 @@ public class BallAgent extends Agent{
 		
 		this.addBehaviour(new ReceiveRequestBehaviour(this));
 		this.addBehaviour(new EndGameBehaviour());
-		ball.setCurrentMovement(new BallMovement(10, 180.0f, 20, 10, match.getGameTime()/1000.0f));
+		long prob = Math.round(Math.random());
+		double direction = 0.0f;
+		if (prob == 0) direction = 180.0f;
+		ball.updateCurrentMovement(Ball.INTENSITY_SHOOT, direction, 20.0f, 10.0f, match.getGameTime()/1000.0f);
 	}
 	
 	
@@ -82,7 +85,7 @@ public class BallAgent extends Agent{
 					int intensity = Integer.parseInt(words[0]);
 					double direction = Double.parseDouble(words[1]);
 					Player player = match.getPlayer(msg.getSender().getLocalName());
-					ball.setCurrentMovement(new BallMovement(intensity, direction, player.x(), player.y(), match.getGameTime()/1000.0f));
+					ball.updateCurrentMovement(intensity, direction, player.x(), player.y(), match.getGameTime()/1000.0f);
 					if(intensity > Ball.INTENSITY_RUN) owner = "";
 					break;
 				default:
@@ -114,7 +117,7 @@ public class BallAgent extends Agent{
 			if (owner.equals("")){
 				int prob = (int)(Math.random()*100);
 				if(prob < player.getGoalKeepingRatio()){
-					ball.setCurrentMovement(new BallMovement(0, 0.0f, player.x(), player.y(), match.getGameTime()/1000.0f));
+					ball.updateCurrentMovement(0, 0.0f, player.x(), player.y(), match.getGameTime()/1000.0f);
 					owner = player.getName();
 					ACLMessage msg = new ACLMessage(ACLMessage.AGREE);
 					msg.addReceiver(new AID(player.getName(), AID.ISLOCALNAME));
@@ -150,7 +153,7 @@ public class BallAgent extends Agent{
 			if (owner.equals("")){
 				int prob = (int)(Math.random()*100);
 				if(prob < player.getPassingRatio()){
-					ball.setCurrentMovement(new BallMovement(0, 0.0f, player.x(), player.y(), match.getGameTime()/1000.0f));
+					ball.updateCurrentMovement(0, 0.0f, player.x(), player.y(), match.getGameTime()/1000.0f);
 					owner = player.getName();
 					ACLMessage msg = new ACLMessage(ACLMessage.AGREE);
 					msg.addReceiver(new AID(player.getName(), AID.ISLOCALNAME));
@@ -191,7 +194,7 @@ public class BallAgent extends Agent{
 				send(msg);
 				return;
 			} else {
-				ball.setCurrentMovement(new BallMovement(0, 0.0f, player.x(), player.y(), match.getGameTime()/1000.0f));
+				ball.updateCurrentMovement(0, 0.0f, player.x(), player.y(), match.getGameTime()/1000.0f);
 				owner = player.getName();
 				ACLMessage msg = new ACLMessage(ACLMessage.AGREE);
 				msg.addReceiver(new AID(player.getName(), AID.ISLOCALNAME));
@@ -226,7 +229,7 @@ public class BallAgent extends Agent{
 				send(msg);
 				return;
 			} else {
-				ball.setCurrentMovement(new BallMovement(0, 0.0f, player.x(), player.y(), match.getGameTime()/1000.0f));
+				ball.updateCurrentMovement(0, 0.0f, player.x(), player.y(), match.getGameTime()/1000.0f);
 				owner = player.getName();
 				ACLMessage msg = new ACLMessage(ACLMessage.AGREE);
 				msg.addReceiver(new AID(player.getName(), AID.ISLOCALNAME));

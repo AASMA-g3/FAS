@@ -65,9 +65,10 @@ public class KeeperAgent extends PlayerAgent {
 
 		@Override
 		public void action() {
-			Ball ball = match.getBall();
-			double distance = player.getDistanceToBall(ball);
 
+			if (gameStarted){
+				Ball ball = match.getBall();
+				double distance = player.getDistanceToBall(ball);
 			if(ball.isOnTrajectoryToGoal(player.getTeam()) &&
 					(ball.getCurrentMovement().getOriginalIntensity() == Ball.INTENSITY_SHOOT)){
 					//The ball has been shot to the goal so we have to catch it!
@@ -94,7 +95,7 @@ public class KeeperAgent extends PlayerAgent {
 				else
 					player.getPlayerMovement().setGoal(Player.TEAM_B_KEEPER_XPOS, Game.GOAL_Y_MED);
 			}
-				
+			}
 			
 			
 //			if (hasBall){
