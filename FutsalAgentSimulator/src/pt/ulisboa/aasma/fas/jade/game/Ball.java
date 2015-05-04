@@ -59,19 +59,33 @@ public class Ball {
 		return false;
 	}
 	
+//	public double getDirectionToGoal(int team){
+//		if (team == Player.TEAM_A){
+//			return Math.toDegrees(Math.atan((this.y()- Game.GOAL_Y_MED)
+//					/ (this.x() - 0)));
+//		}else{
+//			return Math.toDegrees(Math.atan((this.y()- Game.GOAL_Y_MED)
+//					/ (this.x() - Game.LIMIT_X)));
+//		}
+//	}
 	public double getDirectionToGoal(int team){
 		if (team == Player.TEAM_A){
-			return Math.toDegrees(Math.atan((this.y()- Game.GOAL_Y_MED)
-					/ (this.x() - 0)));
+			return Math.toDegrees(Math.atan((Game.GOAL_Y_MED - this.y())
+					/ (0 - this.x())));
 		}else{
-			return Math.toDegrees(Math.atan((this.y()- Game.GOAL_Y_MED)
-					/ (this.x() - Game.LIMIT_X)));
+			return Math.toDegrees(Math.atan((Game.GOAL_Y_MED - this.y())
+					/ (Game.LIMIT_X - this.x())));
 		}
 	}
 	
 	public double getDirectionToPlayer(Player player){
-		return Math.toDegrees(Math.atan((this.y()- player.y())
-					/ (this.x() - player.x())));
+		return Math.toDegrees(Math.atan((player.y() - this.y())
+					/ (player.x() - this.x())));
 	}
+	
+//	public double getDirectionToPlayer(Player player){
+//		return Math.toDegrees(Math.atan((this.y()- player.y())
+//					/ (this.x() - player.x())));
+//	}
 	
 }

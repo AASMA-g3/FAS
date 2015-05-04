@@ -26,8 +26,8 @@ public class Player {
 	
 	public static final int RATIO_MULTIPLIER = 20;
 	
-	public static final double TEAM_A_KEEPER_XPOS = 0.5;
-	public static final double TEAM_B_KEEPER_XPOS = 38.4;
+	public static final float TEAM_A_KEEPER_XPOS = 0.0f;
+	public static final float TEAM_B_KEEPER_XPOS = 38.7f;
 	
 	private int team;
 

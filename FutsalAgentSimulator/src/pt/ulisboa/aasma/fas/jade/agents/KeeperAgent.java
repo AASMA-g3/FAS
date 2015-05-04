@@ -70,19 +70,21 @@ public class KeeperAgent extends PlayerAgent {
 			Ball ball = match.getBall();
 			double distance = player.getDistanceToBall(ball);
 
-			if(player.isBallOnTrajectoryToAllyGoal(ball) &&
+			if(//ball.isOnTrajectoryToGoal(player.getTeam()) &&
 					(ball.getCurrentMovement().getOriginalIntensity() == Ball.INTENSITY_SHOOT)){
 					//The ball has been shot to the goal so we have to catch it!
+				System.out.println("Remate!");
 				if(distance < 1.0 &&
 						tryCatchBehaviour != PlayerAgent.WAITING_ANSWER &&
 						tryCatchBehaviour != PlayerAgent.FAILED){
 					//The ball is close enough so let's try to catch it!
+					System.out.println("Vamos apanhar a puta");
 					addBehaviour(new TryCatchBehaviour(this.myAgent));
 					tryCatchBehaviour = PlayerAgent.WAITING_ANSWER;
 				}else{
 					//The ball is to far away or I failed to defend it, so let's get in position!
 				}
-			}else if(player.isBallOnTrajectoryToAllyGoal(ball) &&
+			}else if(//ball.isOnTrajectoryToGoal(player.getTeam()) &&
 						(ball.getCurrentMovement().getOriginalIntensity() < Ball.INTENSITY_SHOOT)){
 					//The ball has been passed to me so I have to control it.
 			}else if(hasBall) {
