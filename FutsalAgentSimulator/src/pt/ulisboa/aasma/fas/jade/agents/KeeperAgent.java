@@ -70,56 +70,78 @@ public class KeeperAgent extends PlayerAgent {
 			Ball ball = match.getBall();
 			double distance = player.getDistanceToBall(ball);
 
-			if (hasBall){
-				/*Player p1;
-				if(player.getTeam() == Player.TEAM_A){
-					p1 = match.getTeamA().get(0);
-				} else {				
-					p1 = match.getTeamB().get(0);
-				}
-				addBehaviour(new MoveBallBehaviour(this.myAgent, Ball.INTENSITY_LONG_PASS,  player.getDirectionToPlayer(p1)));
-				*/
-			}else if (ball.getCurrentMovement().getOriginalIntensity() == Ball.INTENSITY_SHOOT){
-				if(distance < 1.0 || (tryCatchBehaviour == PlayerAgent.WAITING_ANSWER)){
+			if(//ball.isOnTrajectoryToGoal(player.getTeam()) &&
+					(ball.getCurrentMovement().getOriginalIntensity() == Ball.INTENSITY_SHOOT)){
+					//The ball has been shot to the goal so we have to catch it!
+				System.out.println("Remate!");
+				if(distance < 1.0 &&
+						tryCatchBehaviour != PlayerAgent.WAITING_ANSWER &&
+						tryCatchBehaviour != PlayerAgent.FAILED){
+					//The ball is close enough so let's try to catch it!
+					System.out.println("Vamos apanhar a puta");
 					addBehaviour(new TryCatchBehaviour(this.myAgent));
 					tryCatchBehaviour = PlayerAgent.WAITING_ANSWER;
+				}else{
+					//The ball is to far away or I failed to defend it, so let's get in position!
 				}
-			}else {
-				/*double ref_x;
-				double ref_y = Game.GOAL_Y_MED;
-				double ball_x = match.getBall().x();
-				double ball_y = match.getBall().y();
-
-				double inclination;
-				double my_new_y;
-				double my_new_x;
-				
-				if (player.getTeam() == Player.TEAM_A){
-					ref_x = 0;
-					my_new_x = 0.2;
-					inclination = (ball_y - ref_y) / (ball_x - ref_x);
-					my_new_y = my_new_x * inclination + Game.GOAL_Y_MED;
-				} else {
-					ref_x = Game.LIMIT_X;
-					inclination = (ref_y - ball_y) / (ref_x - ball_x);
-					my_new_x = 39.8;
-					my_new_y = my_new_x * inclination + Game.GOAL_Y_MED;
-					
-				}*/
-				
+			}else if(//ball.isOnTrajectoryToGoal(player.getTeam()) &&
+						(ball.getCurrentMovement().getOriginalIntensity() < Ball.INTENSITY_SHOOT)){
+					//The ball has been passed to me so I have to control it.
+			}else if(hasBall) {
+				//I have the ball so let's pass it to a open player, if none open just hold.
+			}else{
+				//Nothing of notice so I'll position myself 
 				if (player.getTeam() == Player.TEAM_A)
-					player.getPlayerMovement().setGoal(0.2, Game.GOAL_Y_MED);
+					player.getPlayerMovement().setGoal(Player.TEAM_A_KEEPER_XPOS, Game.GOAL_Y_MED);
 				else
-					player.getPlayerMovement().setGoal(38.8, Game.GOAL_Y_MED);
-				/*
-				if((distance < 1.0f) && !(hasBall) && (tryCatchBehaviour == null)){
-						tryCatchBehaviour = new TryCatchBehaviour(this.myAgent);
-						this.myAgent.addBehaviour(tryCatchBehaviour);
-				} else {
-				
-				}
-				*/
+					player.getPlayerMovement().setGoal(Player.TEAM_B_KEEPER_XPOS, Game.GOAL_Y_MED);
 			}
+				
+			
+			
+//			if (hasBall){
+//				Player p1;
+//				if(player.getTeam() == Player.TEAM_A){
+//					p1 = match.getTeamA().get(0);
+//				} else {				
+//					p1 = match.getTeamB().get(0);
+//				}
+//				addBehaviour(new MoveBallBehaviour(this.myAgent, Ball.INTENSITY_LONG_PASS,  player.getDirectionToPlayer(p1)));
+//				
+//			}else if (ball.getCurrentMovement().getOriginalIntensity() == Ball.INTENSITY_SHOOT){
+//				if(distance < 1.0 || (tryCatchBehaviour == PlayerAgent.WAITING_ANSWER)){
+//					addBehaviour(new TryCatchBehaviour(this.myAgent));
+//					tryCatchBehaviour = PlayerAgent.WAITING_ANSWER;
+//				}
+//			}else {
+//				double ref_x;
+//				double ref_y = Game.GOAL_Y_MED;
+//				double ball_x = match.getBall().x();
+//				double ball_y = match.getBall().y();
+//
+//				double inclination;
+//				double my_new_y;
+//				double my_new_x;
+//				
+//				if (player.getTeam() == Player.TEAM_A){
+//					ref_x = 0;
+//					my_new_x = 0.2;
+//					inclination = (ball_y - ref_y) / (ball_x - ref_x);
+//					my_new_y = my_new_x * inclination + Game.GOAL_Y_MED;
+//				} else {
+//					ref_x = Game.LIMIT_X;
+//					inclination = (ref_y - ball_y) / (ref_x - ball_x);
+//					my_new_x = 39.8;
+//					my_new_y = my_new_x * inclination + Game.GOAL_Y_MED;
+//					
+//				}
+//				
+//				if (player.getTeam() == Player.TEAM_A)
+//					player.getPlayerMovement().setGoal(Player.TEAM_A_KEEPER_XPOS, Game.GOAL_Y_MED);
+//				else
+//					player.getPlayerMovement().setGoal(Player.TEAM_B_KEEPER_XPOS, Game.GOAL_Y_MED);
+//
+//			}
 		}
 	}
 }
