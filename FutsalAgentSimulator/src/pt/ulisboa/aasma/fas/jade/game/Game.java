@@ -224,7 +224,7 @@ public class Game {
 			}
 		}
 		if (X > Game.LIMIT_X){
-			if(!((X > (Game.LIMIT_X + 1.0f)) && (Y > Game.GOAL_Y_MIN) && (Y < Game.GOAL_Y_MAX))){
+			if(!((X < (Game.LIMIT_X + 1.0f)) && (Y > Game.GOAL_Y_MIN) && (Y < Game.GOAL_Y_MAX))){
 				return true;
 			}
 		}

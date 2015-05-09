@@ -64,12 +64,13 @@ public class PlayerAgent extends Agent {
 			return;
 		}
 		
+
 		addBehaviour(new ReceiveInformBehaviour(this));
 		addBehaviour(new ReceiveAgreeBehaviour(this));
 		addBehaviour(new ReceiveRefuseBehaviour(this));
+		// Add a behaviour to all agents to listen to the end of the game 
+		this.addBehaviour(new ReceiveInformBehaviour(this));
 	}
-	
-	
 	
 	/**
 	 * Try to catch the ball by sending a message to the ball
@@ -203,7 +204,6 @@ public class PlayerAgent extends Agent {
 	 * @author Fábio
 	 *
 	 */
-	 
 	protected class ReceiveInformBehaviour extends CyclicBehaviour{
 		private static final long serialVersionUID = 1L;
 
@@ -219,29 +219,18 @@ public class PlayerAgent extends Agent {
 			else{
 				switch (msg.getOntology()) {
 					case AgentMessages.END_GAME:
-						
+						doDelete();
+					case AgentMessages.PAUSE_GAME:
+						gameStarted = false;
+						player.resetCoords();
+					case AgentMessages.RESTART_GAME:
+						gameStarted = true;
 					//TODO Use this method to control the movement of the players to restart the game after a goal
 					default:
 						break;
 				}
 			}
-			
- 			ACLMessage msg = receive(MessageTemplate.MatchPerformative(ACLMessage.INFORM));
-			if (msg != null){
-				if(msg.getContent().equals(AgentMessages.END_GAME)){
-					doDelete();
-				} else if(msg.getContent().equals(AgentMessages.PAUSE_GAME)){
-					gameStarted = false;
-					player.resetCoords();
-				} else if (msg.getContent().equals(AgentMessages.RESTART_GAME)){
-					gameStarted = true;
-				}
-			} else {
-				block();
-			}
-			
 		}
-		
 	}
 	
 	/**
