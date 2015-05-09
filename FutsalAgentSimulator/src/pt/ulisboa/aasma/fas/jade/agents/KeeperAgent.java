@@ -71,22 +71,26 @@ public class KeeperAgent extends PlayerAgent {
 			if(ball.isOnTrajectoryToGoal(player.getTeam()) &&
 					(ball.getCurrentMovement().getOriginalIntensity() == Ball.INTENSITY_SHOOT)){
 					//The ball has been shot to the goal so we have to catch it!
-				//System.out.println("Remate!");
+				
 				if(distance < 1.0 &&
 						tryCatchBehaviour != PlayerAgent.WAITING_ANSWER &&
 						tryCatchBehaviour != PlayerAgent.FAILED){
 					//The ball is close enough so let's try to catch it!
-					//System.out.println("Vamos apanhar a puta");
+					System.out.println("Remate!");
 					addBehaviour(new TryCatchBehaviour(this.myAgent));
 					tryCatchBehaviour = PlayerAgent.WAITING_ANSWER;
 				}else{
 					//The ball is to far away or I failed to defend it, so let's get in position!
 				}
-			}else if(//ball.isOnTrajectoryToGoal(player.getTeam()) &&
+			}else if(ball.isOnTrajectoryToGoal(player.getTeam()) &&
 						(ball.getCurrentMovement().getOriginalIntensity() < Ball.INTENSITY_SHOOT)){
 					//The ball has been passed to me so I have to control it.
 			}else if(hasBall) {
 				//I have the ball so let's pass it to a open player, if none open just hold.
+				Player p1 = player.getNearestAllyOpenPlayer(match.getTeamA(), match.getTeamB());
+				System.out.println("vou passar para o :" + p1.getName());
+				if(p1 != null)
+					addBehaviour(new MoveBallBehaviour(this.myAgent, Ball.INTENSITY_LONG_PASS,  player.getDirectionToPlayer(p1)));
 			}else{
 				//Nothing of notice so I'll position myself 
 				if (player.getTeam() == Player.TEAM_A)

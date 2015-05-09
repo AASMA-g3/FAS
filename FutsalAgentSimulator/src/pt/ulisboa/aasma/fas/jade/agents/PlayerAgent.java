@@ -14,6 +14,8 @@ import pt.ulisboa.aasma.fas.jade.game.Player;
 /**
  * Super class from which all Agents inherit
  * It's basically responsible to kill the agent when the game ends 
+ * And holds the behaviours that interact with the ball since all
+ * agents interact with the ball in the same way.
  * @author Fábio
  *
  */
@@ -62,32 +64,12 @@ public class PlayerAgent extends Agent {
 			return;
 		}
 		
-		// Add a behaviour to all agents to listen to the end of the game 
-		EndGameBehaviour b = new EndGameBehaviour();
-		this.addBehaviour(b);
+		addBehaviour(new ReceiveInformBehaviour(this));
+		addBehaviour(new ReceiveAgreeBehaviour(this));
+		addBehaviour(new ReceiveRefuseBehaviour(this));
 	}
 	
-	/**
-	 * Behaviour to listen to the END_GAME message sent by the ReporterAgent that kills
-	 * the Agent
-	 * @author Fábio
-	 *
-	 */
-	protected class EndGameBehaviour extends CyclicBehaviour {
-		private static final long serialVersionUID = 1L;
-
-		@Override
-		public void action() {
-			ACLMessage msg = receive(MessageTemplate.MatchPerformative(ACLMessage.INFORM));
-			if (msg != null){
-				if(msg.getContent().equals(AgentMessages.END_GAME)){
-					doDelete();
-				}
-			} else {
-				block();
-			}
-		}
-	}
+	
 	
 	/**
 	 * Try to catch the ball by sending a message to the ball
@@ -152,7 +134,7 @@ public class PlayerAgent extends Agent {
 	}
 
 	/**
-	 * Try to intercept the ball by sending a message to the player
+	 * Try to intercept the ball by sending a message to the ball
 	 * @author Fábio
 	 *
 	 */
@@ -168,67 +150,6 @@ public class PlayerAgent extends Agent {
 			msg.setOntology(AgentMessages.TRY_INTERCEPT);	
 			send(msg);
 			tryInterceptBehaviour = PlayerAgent.WAITING_ANSWER;
-		}
-	}
-	
-	/**
-	 * Receive the messages of success or refusal from the ball when trying to execute some behaviour
-	 * @author Fábio
-	 *
-	 */
-	protected class ReceiveBehaviour extends CyclicBehaviour{
-		private static final long serialVersionUID = 1L;
-		
-		public ReceiveBehaviour(Agent agent) {
-			super(agent);
-		}
-		
-		@Override
-		public void action() {
-			Boolean block = false;
-			ACLMessage msg = this.myAgent.receive(MessageTemplate.MatchPerformative(ACLMessage.REFUSE));
-			if (msg != null) {
-				switch (msg.getOntology()) {
-		case AgentMessages.TRY_CATCH:
-					tryCatchBehaviour = PlayerAgent.FAILED;
-				case AgentMessages.TRY_RECEIVE:
-					tryReceiveBehaviour = PlayerAgent.FAILED;
-				case AgentMessages.TRY_TACKLE:
-					tryTackleBehaviour = PlayerAgent.FAILED;
-				case AgentMessages.TRY_INTERCEPT:
-					tryInterceptBehaviour = PlayerAgent.FAILED;
-				case AgentMessages.MOVE_TO:
-					moveBallBehaviour = PlayerAgent.FAILED;
-				default:
-					break;
-				}
-			} else {
-				block = true;
-			}
-			msg = this.myAgent.receive(MessageTemplate.MatchPerformative(ACLMessage.AGREE));
-			if (msg != null) {
-				switch (msg.getOntology()) {
-				case AgentMessages.TRY_CATCH:
-					hasBall = true;
-					tryCatchBehaviour = PlayerAgent.SUCCEDED;
-				case AgentMessages.TRY_RECEIVE:
-					hasBall = true;
-					tryReceiveBehaviour = PlayerAgent.SUCCEDED;
-				case AgentMessages.TRY_TACKLE:
-					hasBall = true;
-					tryTackleBehaviour = PlayerAgent.SUCCEDED;
-				case AgentMessages.TRY_INTERCEPT:
-					hasBall = true;
-					tryInterceptBehaviour = PlayerAgent.SUCCEDED;
-				case AgentMessages.MOVE_TO:
-					moveBallBehaviour = PlayerAgent.SUCCEDED;
-				default:
-					break;
-				}
-			} else {
-				block = true;
-			}
-			if (block) block();
 		}
 	}
 	
@@ -273,6 +194,130 @@ public class PlayerAgent extends Agent {
 				moveBallBehaviour = PlayerAgent.WAITING_ANSWER;
 			} else {
 				moveBallBehaviour = PlayerAgent.FAILED;
+			}
+		}
+	}
+
+	/**
+	 * This Behaviour receives general information about the game flow
+	 * @author Fábio
+	 *
+	 */
+	 
+	protected class ReceiveInformBehaviour extends CyclicBehaviour{
+		private static final long serialVersionUID = 1L;
+
+		public ReceiveInformBehaviour(Agent agent) {
+			super(agent);
+		}
+		
+		@Override
+		public void action() {
+			ACLMessage msg = this.myAgent.receive(MessageTemplate.MatchPerformative(ACLMessage.INFORM));
+			if(msg == null)
+				block();
+			else{
+				switch (msg.getOntology()) {
+					case AgentMessages.END_GAME:
+						
+					//TODO Use this method to control the movement of the players to restart the game after a goal
+					default:
+						break;
+				}
+			}
+			
+ 			ACLMessage msg = receive(MessageTemplate.MatchPerformative(ACLMessage.INFORM));
+			if (msg != null){
+				if(msg.getContent().equals(AgentMessages.END_GAME)){
+					doDelete();
+				} else if(msg.getContent().equals(AgentMessages.PAUSE_GAME)){
+					gameStarted = false;
+					player.resetCoords();
+				} else if (msg.getContent().equals(AgentMessages.RESTART_GAME)){
+					gameStarted = true;
+				}
+			} else {
+				block();
+			}
+			
+		}
+		
+	}
+	
+	/**
+	 * Recieve Agree messages from the ball
+	 * @author Fábio
+	 *
+	 */
+	protected class ReceiveAgreeBehaviour extends CyclicBehaviour{
+		private static final long serialVersionUID = 1L;
+
+		public ReceiveAgreeBehaviour(Agent agent) {
+			super(agent);
+		}
+		
+		@Override
+		public void action() {
+			ACLMessage msg = this.myAgent.receive(MessageTemplate.MatchPerformative(ACLMessage.AGREE));
+			if(msg == null)
+				block();
+			else{
+				switch (msg.getOntology()) {
+					case AgentMessages.TRY_CATCH:
+						hasBall = true;
+						tryCatchBehaviour = PlayerAgent.SUCCEDED;
+						System.out.println("Keeper: I caught the ball!");
+					case AgentMessages.TRY_RECEIVE:
+						hasBall = true;
+						tryReceiveBehaviour = PlayerAgent.SUCCEDED;
+					case AgentMessages.TRY_TACKLE:
+						hasBall = true;
+						tryTackleBehaviour = PlayerAgent.SUCCEDED;
+					case AgentMessages.TRY_INTERCEPT:
+						hasBall = true;
+						tryInterceptBehaviour = PlayerAgent.SUCCEDED;
+					case AgentMessages.MOVE_TO:
+						moveBallBehaviour = PlayerAgent.SUCCEDED;
+					default:
+						break;
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Receive the messages of success or refusal from the ball when trying to execute some behaviour
+	 * @author Fábio
+	 *
+	 */
+	protected class ReceiveRefuseBehaviour extends CyclicBehaviour{
+		private static final long serialVersionUID = 1L;
+		
+		public ReceiveRefuseBehaviour(Agent agent) {
+			super(agent);
+		}
+		
+		@Override
+		public void action() {
+			ACLMessage msg = this.myAgent.receive(MessageTemplate.MatchPerformative(ACLMessage.REFUSE));
+			if (msg == null)
+				block();
+			else{
+				switch (msg.getOntology()) {
+				case AgentMessages.TRY_CATCH:
+					tryCatchBehaviour = PlayerAgent.FAILED;
+					System.out.println("Keeper: I didn't caught the ball!");
+				case AgentMessages.TRY_RECEIVE:
+					tryReceiveBehaviour = PlayerAgent.FAILED;
+				case AgentMessages.TRY_TACKLE:
+					tryTackleBehaviour = PlayerAgent.FAILED;
+				case AgentMessages.TRY_INTERCEPT:
+					tryInterceptBehaviour = PlayerAgent.FAILED;
+				case AgentMessages.MOVE_TO:
+					moveBallBehaviour = PlayerAgent.FAILED;
+				default:
+					break;
+				}
 			}
 		}
 	}

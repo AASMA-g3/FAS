@@ -135,7 +135,7 @@ public class ReporterAgent extends Agent{
 				msg.addReceiver(new AID(player.getName(), AID.ISLOCALNAME));
 			}
 			msg.addReceiver(new AID("Ball", AID.ISLOCALNAME));
-			msg.setContent(AgentMessages.END_GAME);
+			msg.setOntology(AgentMessages.END_GAME);
 			this.myAgent.send(msg);
 			
 			match.isEnded.set(true);
