@@ -34,7 +34,6 @@ public class PlayerAgent extends Agent {
 	protected Boolean gameStarted = false;
 	
 	protected Boolean hasBall = false;
-	
 	protected int tryCatchBehaviour = NOT_TRYING_BEHAVIOUR;
 	protected int tryReceiveBehaviour = NOT_TRYING_BEHAVIOUR;
 	protected int tryTackleBehaviour = NOT_TRYING_BEHAVIOUR;
@@ -64,12 +63,8 @@ public class PlayerAgent extends Agent {
 			return;
 		}
 		
-
-		addBehaviour(new ReceiveInformBehaviour(this));
 		addBehaviour(new ReceiveAgreeBehaviour(this));
 		addBehaviour(new ReceiveRefuseBehaviour(this));
-		// Add a behaviour to all agents to listen to the end of the game 
-		this.addBehaviour(new ReceiveInformBehaviour(this));
 	}
 	
 	/**
@@ -187,7 +182,7 @@ public class PlayerAgent extends Agent {
 					hasBall = false;
 				}
 				
-				ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
+				ACLMessage msg = new ACLMessage(ACLMessage.REQUEST);
 				msg.addReceiver(ballAgent);
 				msg.setOntology(AgentMessages.MOVE_TO);
 				msg.setContent(intensity + " " + direction);
@@ -199,40 +194,30 @@ public class PlayerAgent extends Agent {
 		}
 	}
 
-	/**
-	 * This Behaviour receives general information about the game flow
-	 * @author Fábio
-	 *
-	 */
-	protected class ReceiveInformBehaviour extends CyclicBehaviour{
+	protected class DribleBehaviour extends OneShotBehaviour{
 		private static final long serialVersionUID = 1L;
-
-		public ReceiveInformBehaviour(Agent agent) {
+		
+		private float x;
+		private float direction;
+		
+		public DribleBehaviour(Agent agent, float direction) {
 			super(agent);
+			this.x = x;
+			this.direction = direction;
 		}
 		
 		@Override
 		public void action() {
-			ACLMessage msg = this.myAgent.receive(MessageTemplate.MatchPerformative(ACLMessage.INFORM));
-			if(msg == null)
-				block();
-			else{
-				switch (msg.getOntology()) {
-					case AgentMessages.END_GAME:
-						doDelete();
-					case AgentMessages.PAUSE_GAME:
-						gameStarted = false;
-						player.resetCoords();
-					case AgentMessages.RESTART_GAME:
-						gameStarted = true;
-					//TODO Use this method to control the movement of the players to restart the game after a goal
-					default:
-						break;
-				}
+			if(hasBall){
+				ACLMessage msg = new ACLMessage(ACLMessage.REQUEST);
+				msg.addReceiver(ballAgent);
+				msg.setOntology(AgentMessages.MOVE_TO);
+				msg.setContent(Ball.INTENSITY_RUN + " " + direction);
+				send(msg);
 			}
 		}
+		
 	}
-	
 	/**
 	 * Recieve Agree messages from the ball
 	 * @author Fábio
@@ -255,18 +240,22 @@ public class PlayerAgent extends Agent {
 					case AgentMessages.TRY_CATCH:
 						hasBall = true;
 						tryCatchBehaviour = PlayerAgent.SUCCEDED;
-						System.out.println("Keeper: I caught the ball!");
+						break;
 					case AgentMessages.TRY_RECEIVE:
 						hasBall = true;
 						tryReceiveBehaviour = PlayerAgent.SUCCEDED;
+						break;
 					case AgentMessages.TRY_TACKLE:
 						hasBall = true;
 						tryTackleBehaviour = PlayerAgent.SUCCEDED;
+						break;
 					case AgentMessages.TRY_INTERCEPT:
 						hasBall = true;
 						tryInterceptBehaviour = PlayerAgent.SUCCEDED;
+						break;
 					case AgentMessages.MOVE_TO:
 						moveBallBehaviour = PlayerAgent.SUCCEDED;
+						break;
 					default:
 						break;
 				}
@@ -295,15 +284,19 @@ public class PlayerAgent extends Agent {
 				switch (msg.getOntology()) {
 				case AgentMessages.TRY_CATCH:
 					tryCatchBehaviour = PlayerAgent.FAILED;
-					System.out.println("Keeper: I didn't caught the ball!");
+					break;
 				case AgentMessages.TRY_RECEIVE:
 					tryReceiveBehaviour = PlayerAgent.FAILED;
+					break;
 				case AgentMessages.TRY_TACKLE:
 					tryTackleBehaviour = PlayerAgent.FAILED;
+					break;
 				case AgentMessages.TRY_INTERCEPT:
 					tryInterceptBehaviour = PlayerAgent.FAILED;
+					break;
 				case AgentMessages.MOVE_TO:
 					moveBallBehaviour = PlayerAgent.FAILED;
+					break;
 				default:
 					break;
 				}

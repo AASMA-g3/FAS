@@ -65,7 +65,7 @@ public class ReporterAgent extends Agent{
 			for(Player player : match.getTeamB()){
 				msg.addReceiver(new AID(player.getName(), AID.ISLOCALNAME));
 			}
-			msg.setContent(AgentMessages.START_GAME);
+			msg.setOntology(AgentMessages.START_GAME);
 			this.myAgent.send(msg);
 		}
 
@@ -108,7 +108,7 @@ public class ReporterAgent extends Agent{
 				for(Player player : match.getTeamB()){
 					msg.addReceiver(new AID(player.getName(), AID.ISLOCALNAME));
 				}
-				msg.setContent(AgentMessages.PAUSE_GAME);
+				msg.setOntology(AgentMessages.PAUSE_GAME);
 				this.myAgent.send(msg);
 				
 				this.myAgent.addBehaviour(restartBall);
@@ -140,7 +140,7 @@ public class ReporterAgent extends Agent{
 			for(Player player : match.getTeamB()){
 				msg.addReceiver(new AID(player.getName(), AID.ISLOCALNAME));
 			}
-			msg.setContent(AgentMessages.RESTART_GAME);
+			msg.setOntology(AgentMessages.RESTART_GAME);
 			this.myAgent.send(msg);
 			
 		}

@@ -88,6 +88,9 @@ public class BallAgent extends Agent{
 					ball.updateCurrentMovement(intensity, direction, player.x(), player.y(), match.getGameTime()/1000.0f);
 					if(intensity > Ball.INTENSITY_RUN) owner = "";
 					break;
+				case AgentMessages.DRIBLE:
+					
+					break;
 				default:
 					break;
 				}
@@ -123,7 +126,6 @@ public class BallAgent extends Agent{
 					msg.addReceiver(new AID(player.getName(), AID.ISLOCALNAME));
 					msg.setOntology(AgentMessages.TRY_CATCH);
 					send(msg);
-					System.out.println("Ball: I was caught!");
 					return;
 				}
 			}
@@ -254,7 +256,7 @@ public class BallAgent extends Agent{
 		@Override
 		public void action() {
 			ACLMessage msg = receive(MessageTemplate.MatchPerformative(ACLMessage.INFORM));
-			if (msg != null && msg.getContent().equals(AgentMessages.END_GAME)){
+			if (msg != null && msg.getOntology().equals(AgentMessages.END_GAME)){
 				doDelete();
 			} else {
 				block();

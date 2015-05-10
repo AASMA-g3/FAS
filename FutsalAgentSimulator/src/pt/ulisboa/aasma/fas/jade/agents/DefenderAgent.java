@@ -1,7 +1,10 @@
 package pt.ulisboa.aasma.fas.jade.agents;
 
+import pt.ulisboa.aasma.fas.jade.agents.PlayerAgent.MoveBallBehaviour;
 import pt.ulisboa.aasma.fas.jade.game.Ball;
-import jade.core.behaviours.Behaviour;
+import pt.ulisboa.aasma.fas.jade.game.Game;
+import pt.ulisboa.aasma.fas.jade.game.Player;
+import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
@@ -14,30 +17,46 @@ public class DefenderAgent extends PlayerAgent {
 	protected void setup() {
 		super.setup();
 		
-		this.addBehaviour(new StartGameBehaviour());
+		this.addBehaviour(new ReceiveInformBehaviour(this));
 	}
 	
-	protected class StartGameBehaviour extends Behaviour {
+	/**
+	 * This Behaviour receives general information about the game flow
+	 * @author Fábio
+	 *
+	 */
+	protected class ReceiveInformBehaviour extends CyclicBehaviour{
 		private static final long serialVersionUID = 1L;
+
+		public ReceiveInformBehaviour(Agent agent) {
+			super(agent);
+		}
 		
 		@Override
 		public void action() {
-			ACLMessage msg = receive(MessageTemplate.MatchPerformative(ACLMessage.INFORM));
-			if (msg != null){
-				switch (msg.getContent()) {
-				case AgentMessages.START_GAME:
-					gameStarted = true;
-					addBehaviour(new MainCycle());
-					break;
-				default:
-					break;
+			ACLMessage msg = this.myAgent.receive(MessageTemplate.MatchPerformative(ACLMessage.INFORM));
+			if(msg == null)
+				block();
+			else{
+				switch (msg.getOntology()) {
+					case AgentMessages.START_GAME:
+						gameStarted = true;
+						addBehaviour(new MainCycle());
+						break;
+					case AgentMessages.END_GAME:
+						doDelete();
+						break;
+					case AgentMessages.PAUSE_GAME:
+						gameStarted = false;
+						player.resetCoords();
+						break;
+					case AgentMessages.RESTART_GAME:
+						gameStarted = true;
+						break;
+					default:
+						break;
 				}
 			}
-		}
-
-		@Override
-		public boolean done() {
-			return gameStarted;
 		}
 	}
 	
@@ -48,14 +67,25 @@ public class DefenderAgent extends PlayerAgent {
 		public void action() {
 			
 			if (gameStarted){
-			Ball ball = match.getBall();
-			player.getPlayerMovement().setGoal(ball.x(), ball.y());
+				Ball ball = match.getBall();
+				Player p1 = player.getNearestAllyOpenPlayer(match.getTeamA(), match.getTeamB());
+				
+				if(hasBall && p1 != null && moveBallBehaviour != PlayerAgent.WAITING_ANSWER){
+					System.out.println("vou passar para o :" + p1.getName());
+					addBehaviour(new MoveBallBehaviour(
+									this.myAgent,
+									Ball.INTENSITY_LONG_PASS,
+									player.getDirectionToPlayer(p1)));
+				}else if(hasBall && p1 == null){
+					//advance
+					player.getPlayerMovement().setGoal(player.x() + 1.0f , player.y());
+//					addBehaviour(new DribleBehaviour(this, player.x() + 1.0f , player.y()));
+				}
+				
+			
+			
 			}
-//			if(!player.teamHasBall() ){
-//				if(){
-//					
-//				}
-//			}
+			
 		}
 	}
 }

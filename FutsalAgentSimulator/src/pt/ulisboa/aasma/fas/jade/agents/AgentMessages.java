@@ -13,5 +13,6 @@ public class AgentMessages {
 	public static final String TRY_TACKLE = "Try to tackle the ball";
 	public static final String TRY_INTERCEPT = "Try to intercept the ball";
 	public static final String MOVE_TO = "Move the ball";
+	public static final String DRIBLE = "Drible the ball";
 	
 }
