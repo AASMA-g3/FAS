@@ -33,7 +33,6 @@ public class PlayerAgent extends Agent {
 	Player player;
 	protected Boolean gameStarted = false;
 	
-	protected Boolean hasBall = false;
 	protected int tryCatchBehaviour = NOT_TRYING_BEHAVIOUR;
 	protected int tryReceiveBehaviour = NOT_TRYING_BEHAVIOUR;
 	protected int tryTackleBehaviour = NOT_TRYING_BEHAVIOUR;
@@ -168,18 +167,18 @@ public class PlayerAgent extends Agent {
 
 		@Override
 		public void action() {
-			if(hasBall){
+			if(player.hasBall()){
 				int prob = (int)(Math.random());
 				if (prob == 0) prob = -1;
 				
 				if(intensity == Ball.INTENSITY_SHOOT){
 					direction += ((100-player.getShootingRatio())/10)*prob;
-					hasBall = false;
+					player.setHasBall(false);
 				}
 				else if((intensity == Ball.INTENSITY_LONG_PASS) || (intensity == Ball.INTENSITY_MEDIUM_PASS) ||
 						(intensity == Ball.INTENSITY_SHORT_PASS)) {
 					direction += ((100-player.getPassingRatio())/10)*prob;
-					hasBall = false;
+					player.setHasBall(false);
 				}
 				
 				ACLMessage msg = new ACLMessage(ACLMessage.REQUEST);
@@ -208,7 +207,7 @@ public class PlayerAgent extends Agent {
 		
 		@Override
 		public void action() {
-			if(hasBall){
+			if(player.hasBall()){
 				ACLMessage msg = new ACLMessage(ACLMessage.REQUEST);
 				msg.addReceiver(ballAgent);
 				msg.setOntology(AgentMessages.MOVE_TO);
@@ -238,19 +237,19 @@ public class PlayerAgent extends Agent {
 			else{
 				switch (msg.getOntology()) {
 					case AgentMessages.TRY_CATCH:
-						hasBall = true;
+						player.setHasBall(true);
 						tryCatchBehaviour = PlayerAgent.SUCCEDED;
 						break;
 					case AgentMessages.TRY_RECEIVE:
-						hasBall = true;
+						player.setHasBall(true);
 						tryReceiveBehaviour = PlayerAgent.SUCCEDED;
 						break;
 					case AgentMessages.TRY_TACKLE:
-						hasBall = true;
+						player.setHasBall(true);
 						tryTackleBehaviour = PlayerAgent.SUCCEDED;
 						break;
 					case AgentMessages.TRY_INTERCEPT:
-						hasBall = true;
+						player.setHasBall(true);
 						tryInterceptBehaviour = PlayerAgent.SUCCEDED;
 						break;
 					case AgentMessages.MOVE_TO:

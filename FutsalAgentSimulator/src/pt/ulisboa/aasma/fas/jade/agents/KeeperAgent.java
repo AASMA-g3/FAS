@@ -97,7 +97,7 @@ public class KeeperAgent extends PlayerAgent {
 							(ball.getCurrentMovement().getOriginalIntensity() < Ball.INTENSITY_SHOOT) &&
 							(ball.getCurrentMovement().getOriginalIntensity() > Ball.INTENSITY_RUN)){
 						//The ball has been passed to me so I have to control it.
-				}else if(hasBall) {
+				}else if(player.hasBall()) {
 					//I have the ball so let's pass it to a open player, if none open just hold.
 					Player p1 = player.getNearestAllyOpenPlayer(match.getTeamA(), match.getTeamB());
 					System.out.println("vou passar para o :" + p1.getName());

@@ -70,13 +70,13 @@ public class DefenderAgent extends PlayerAgent {
 				Ball ball = match.getBall();
 				Player p1 = player.getNearestAllyOpenPlayer(match.getTeamA(), match.getTeamB());
 				
-				if(hasBall && p1 != null && moveBallBehaviour != PlayerAgent.WAITING_ANSWER){
+				if(player.hasBall() && p1 != null && moveBallBehaviour != PlayerAgent.WAITING_ANSWER){
 					System.out.println("vou passar para o :" + p1.getName());
 					addBehaviour(new MoveBallBehaviour(
 									this.myAgent,
 									Ball.INTENSITY_LONG_PASS,
 									player.getDirectionToPlayer(p1)));
-				}else if(hasBall && p1 == null){
+				}else if(player.hasBall() && p1 == null){
 					//advance
 					player.getPlayerMovement().setGoal(player.x() + 1.0f , player.y());
 //					addBehaviour(new DribleBehaviour(this, player.x() + 1.0f , player.y()));
