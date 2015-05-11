@@ -43,14 +43,21 @@ public class KeeperAgent extends PlayerAgent {
 						addBehaviour(new MainCycle(this.myAgent));
 						break;
 					case AgentMessages.END_GAME:
-						System.out.println("vou morrer!");
 						doDelete();
 						break;
 					case AgentMessages.PAUSE_GAME:
 						gameStarted = false;
-						player.resetCoords();
+						if (player.getTeam() == Player.TEAM_A)
+							player.getPlayerMovement().setGoal(Player.TEAM_A_KEEPER_XPOS + 2, Game.GOAL_Y_MED);
+						else
+							player.getPlayerMovement().setGoal(Player.TEAM_B_KEEPER_XPOS - 2, Game.GOAL_Y_MED);;
 						break;
 					case AgentMessages.RESTART_GAME:
+						tryCatchBehaviour = NOT_TRYING_BEHAVIOUR;
+						tryReceiveBehaviour = NOT_TRYING_BEHAVIOUR;
+						tryTackleBehaviour = NOT_TRYING_BEHAVIOUR;
+						tryInterceptBehaviour = NOT_TRYING_BEHAVIOUR;
+						moveBallBehaviour = NOT_TRYING_BEHAVIOUR;
 						gameStarted = true;
 						break;
 					default:
@@ -82,35 +89,38 @@ public class KeeperAgent extends PlayerAgent {
 				if(ball.isOnTrajectoryToGoal(player.getTeam()) &&
 						(ball.getCurrentMovement().getOriginalIntensity() == Ball.INTENSITY_SHOOT)){
 						//The ball has been shot to the goal so we have to catch it!
-					
+
 					if(distance < 1.0 &&
-							tryCatchBehaviour != PlayerAgent.WAITING_ANSWER &&
-							tryCatchBehaviour != PlayerAgent.FAILED){
+							tryCatchBehaviour == PlayerAgent.NOT_TRYING_BEHAVIOUR){
 						//The ball is close enough so let's try to catch it!
 						System.out.println("Remate!");
 						addBehaviour(new TryCatchBehaviour(this.myAgent));
-						tryCatchBehaviour = PlayerAgent.WAITING_ANSWER;
 					}else{
-						//The ball is to far away or I failed to defend it, so let's get in position!
+						if (player.getTeam() == Player.TEAM_A){
+							player.getPlayerMovement().setGoal(Player.TEAM_A_KEEPER_XPOS, Game.GOAL_Y_MED);
+						}	
+						else{
+							player.getPlayerMovement().setGoal(Player.TEAM_B_KEEPER_XPOS, Game.GOAL_Y_MED);
+						}
 					}
 				}else if(ball.isOnTrajectoryToGoal(player.getTeam()) &&
 							(ball.getCurrentMovement().getOriginalIntensity() < Ball.INTENSITY_SHOOT) &&
 							(ball.getCurrentMovement().getOriginalIntensity() > Ball.INTENSITY_RUN)){
 						//The ball has been passed to me so I have to control it.
-				}else if(player.hasBall()) {
+					addBehaviour(new TryReceiveBehaviour(this.myAgent));
+				}else if(player.hasBall() && moveBallBehaviour == PlayerAgent.NOT_TRYING_BEHAVIOUR) {
 					//I have the ball so let's pass it to a open player, if none open just hold.
 					Player p1 = player.getNearestAllyOpenPlayer(match.getTeamA(), match.getTeamB());
-					System.out.println("vou passar para o :" + p1.getName());
 					if(p1 != null)
 						addBehaviour(new MoveBallBehaviour(this.myAgent, Ball.INTENSITY_LONG_PASS,
 								player.getDirectionToPlayer(p1)));
 				}else{
 					//Nothing of notice so I'll position myself 
 					if (player.getTeam() == Player.TEAM_A){
-						player.getPlayerMovement().setGoal(player.x() + 1, Game.GOAL_Y_MED);
+						player.getPlayerMovement().setGoal(Player.TEAM_A_KEEPER_XPOS + 1, Game.GOAL_Y_MED);
 					}	
 					else{
-						player.getPlayerMovement().setGoal(Player.TEAM_B_KEEPER_XPOS, Game.GOAL_Y_MED);
+						player.getPlayerMovement().setGoal(Player.TEAM_B_KEEPER_XPOS - 1, Game.GOAL_Y_MED);
 					}
 				}
 			}

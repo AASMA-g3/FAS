@@ -126,6 +126,7 @@ public class BallAgent extends Agent{
 					msg.addReceiver(new AID(player.getName(), AID.ISLOCALNAME));
 					msg.setOntology(AgentMessages.TRY_CATCH);
 					send(msg);
+					System.out.println("Ball: I was caught!");
 					return;
 				}
 			}

@@ -4,6 +4,7 @@ import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.core.behaviours.OneShotBehaviour;
+import jade.core.behaviours.WakerBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import pt.ulisboa.aasma.fas.exceptions.FutsalAgentSimulatorException;
@@ -153,20 +154,20 @@ public class PlayerAgent extends Agent {
 	 * @author Fábio
 	 *
 	 */
-	protected class MoveBallBehaviour extends OneShotBehaviour{
+	protected class MoveBallBehaviour extends WakerBehaviour{
 		private static final long serialVersionUID = 1L;
 		
 		private int intensity;
 		private double direction;
 		
 		public MoveBallBehaviour(Agent agent, int intensity, double direction) {
-			super(agent);
+			super(agent, 500);
 			this.intensity = intensity;
 			this.direction = direction;
 		}
 
-		@Override
-		public void action() {
+		
+		public void onWake() {
 			if(player.hasBall()){
 				int prob = (int)(Math.random());
 				if (prob == 0) prob = -1;
@@ -239,18 +240,20 @@ public class PlayerAgent extends Agent {
 					case AgentMessages.TRY_CATCH:
 						player.setHasBall(true);
 						tryCatchBehaviour = PlayerAgent.SUCCEDED;
+						myAgent.addBehaviour(new CleanCatchBehaviour(myAgent));
 						break;
 					case AgentMessages.TRY_RECEIVE:
 						player.setHasBall(true);
 						tryReceiveBehaviour = PlayerAgent.SUCCEDED;
+						myAgent.addBehaviour(new CleanReceiveBehaviour(myAgent));
 						break;
 					case AgentMessages.TRY_TACKLE:
 						player.setHasBall(true);
-						tryTackleBehaviour = PlayerAgent.SUCCEDED;
+						myAgent.addBehaviour(new CleanTackleBehaviour(myAgent));
 						break;
 					case AgentMessages.TRY_INTERCEPT:
 						player.setHasBall(true);
-						tryInterceptBehaviour = PlayerAgent.SUCCEDED;
+						myAgent.addBehaviour(new CleanInterceptBehaviour(myAgent));
 						break;
 					case AgentMessages.MOVE_TO:
 						moveBallBehaviour = PlayerAgent.SUCCEDED;
@@ -283,15 +286,19 @@ public class PlayerAgent extends Agent {
 				switch (msg.getOntology()) {
 				case AgentMessages.TRY_CATCH:
 					tryCatchBehaviour = PlayerAgent.FAILED;
+					myAgent.addBehaviour(new CleanCatchBehaviour(myAgent));
 					break;
 				case AgentMessages.TRY_RECEIVE:
 					tryReceiveBehaviour = PlayerAgent.FAILED;
+					myAgent.addBehaviour(new CleanReceiveBehaviour(myAgent));
 					break;
 				case AgentMessages.TRY_TACKLE:
 					tryTackleBehaviour = PlayerAgent.FAILED;
+					myAgent.addBehaviour(new CleanTackleBehaviour(myAgent));
 					break;
 				case AgentMessages.TRY_INTERCEPT:
 					tryInterceptBehaviour = PlayerAgent.FAILED;
+					myAgent.addBehaviour(new CleanInterceptBehaviour(myAgent));
 					break;
 				case AgentMessages.MOVE_TO:
 					moveBallBehaviour = PlayerAgent.FAILED;
@@ -300,6 +307,62 @@ public class PlayerAgent extends Agent {
 					break;
 				}
 			}
+		}
+	}
+	
+	protected class CleanCatchBehaviour extends WakerBehaviour{
+		private static final long serialVersionUID = 1L;
+
+		public CleanCatchBehaviour(Agent arg0) {
+			super(arg0, 100);
+		}
+
+		@Override
+		protected void onWake() {
+			super.onWake();
+			tryCatchBehaviour = NOT_TRYING_BEHAVIOUR;
+		}
+	}
+	
+	protected class CleanInterceptBehaviour extends WakerBehaviour{
+		private static final long serialVersionUID = 1L;
+
+		public CleanInterceptBehaviour(Agent arg0) {
+			super(arg0, 100);
+		}
+
+		@Override
+		protected void onWake() {
+			super.onWake();
+			tryInterceptBehaviour = NOT_TRYING_BEHAVIOUR;
+		}
+	}
+	
+	protected class CleanReceiveBehaviour extends WakerBehaviour{
+		private static final long serialVersionUID = 1L;
+
+		public CleanReceiveBehaviour(Agent arg0) {
+			super(arg0, 100);
+		}
+
+		@Override
+		protected void onWake() {
+			super.onWake();
+			tryReceiveBehaviour = NOT_TRYING_BEHAVIOUR;
+		}
+	}
+	
+	protected class CleanTackleBehaviour extends WakerBehaviour{
+		private static final long serialVersionUID = 1L;
+
+		public CleanTackleBehaviour(Agent arg0) {
+			super(arg0, 100);
+		}
+
+		@Override
+		protected void onWake() {
+			super.onWake();
+			tryTackleBehaviour = NOT_TRYING_BEHAVIOUR;
 		}
 	}
 }
