@@ -31,7 +31,7 @@ public class Ball {
 		return currentMovement.y();
 	}
 	
-	public int getOriginalIntensity() {
+	public double getOriginalIntensity() {
 		return currentMovement.getOriginalIntensity();
 	}
 	

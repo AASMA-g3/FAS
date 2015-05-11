@@ -29,6 +29,8 @@ public class Player {
 	public static final float TEAM_A_KEEPER_XPOS = 0.0f;
 	public static final float TEAM_B_KEEPER_XPOS = 38.7f;
 	
+	private static int PAIR_COUNTING = 1;
+	
 	private int team;
 
 	private int shootingRatio;
@@ -60,9 +62,13 @@ public class Player {
 		this.team = team;
 		this.playerNumber = playerNumber;
 		
+		if (PAIR_COUNTING == 6)
+			PAIR_COUNTING = 1;
 		
-		double x = getRandomXCoord();
-		double y = getRandomYCoord();
+		double x = getNewXCoord();
+		double y = getNewYCoord(PAIR_COUNTING);
+		PAIR_COUNTING++;
+		
 		if (this.team == TEAM_B){
 			x += (20.0f - x)*2.0f;
 		}
@@ -89,6 +95,43 @@ public class Player {
 		this.hasBall = false;
 	}
 	
+	
+	
+	/**
+	 * Resets the coordinates for the player, 
+	 * in his position general area
+	 * @return
+	 */
+	public void resetRandomCoords(){
+		double x = getRandomXCoord();
+		double y = getRandomYCoord();
+		if (this.team == TEAM_B){
+			x += (20.0f - x)*2.0f;
+		}
+		this.playerMovement.setGoal(x, y);
+	}
+	
+	/**
+	 * Resets the coordinates for the player, 
+	 * appropriate to his team and position, 
+	 * taking also in consideration the other position
+	 * teammate, in case it applies
+	 * @return
+	 */
+	public void resetNewCoords(){
+		double x = getRandomXCoord();
+		double y = getRandomYCoord();
+		if (this.team == TEAM_B){
+			x += (20.0f - x)*2.0f;
+		}
+		this.playerMovement.setGoal(x, y);
+	}
+	
+	/**
+	 * Returns a new coordinate in x for the player, 
+	 * in his position general area
+	 * @return
+	 */
 	private double getRandomXCoord(){
 		if(position.equals(KEEPER)){
 			double minX = 0.0f;
@@ -109,15 +152,69 @@ public class Player {
 		return -1;
 	}
 	
-	public void resetCoords(){
-		double x = getRandomXCoord();
-		double y = getRandomYCoord();
-		if (this.team == TEAM_B){
-			x += (20.0f - x)*2.0f;
+	/**
+	 * Returns a new coordinate in x for the player, 
+	 * appropriate to his team and position
+	 * @return
+	 */
+	private double getNewXCoord(){
+		if(position.equals(KEEPER)){
+			double minX = 0.0f;
+			double maxX = 2.0f;
+			Random rand = new Random();
+			return rand.nextDouble() * (maxX - minX) + minX;
+		} else if (position.equals(DEFENDER)){
+			double minX = 10.0f;
+			double maxX = 11.0f;
+			Random rand = new Random();
+			return rand.nextDouble() * (maxX - minX) + minX;
+		} else if (position.equals(STRIKER)) {
+			double minX = 17.0f;
+			double maxX = 19.0f;
+			Random rand = new Random();
+			return rand.nextDouble() * (maxX - minX) + minX;
 		}
-		this.playerMovement.setGoal(x, y);
+		return -1;
 	}
 	
+	/**
+	 * Returns a new coordinate in x for the player, 
+	 * appropriate to his team and position, 
+	 * taking also in consideration the other position
+	 * teammate, in case it applies
+	 * Only used internally when a Player is created.
+	 * Never used;
+	 * @return
+	 */
+	private double getNewXCoord(int num){
+		if(position.equals(KEEPER)){
+			double minX = 0.0f;
+			double maxX = 2.0f;
+			Random rand = new Random();
+			return rand.nextDouble() * (maxX - minX) + minX;
+		} else if (position.equals(DEFENDER)){
+			if(PAIR_COUNTING == 1){
+				double minX = 10.0f;
+				double maxX = 11.0f;
+				Random rand = new Random();
+				return rand.nextDouble() * (maxX - minX) + minX;
+			}else{
+				
+			}
+		} else if (position.equals(STRIKER)) {
+			double minX = 17.0f;
+			double maxX = 19.0f;
+			Random rand = new Random();
+			return rand.nextDouble() * (maxX - minX) + minX;
+		}
+		return -1;
+	}
+	
+	/**
+	 * Returns a new coordinate in y for the player, 
+	 * in his position general area
+	 * @return
+	 */
 	private double getRandomYCoord(){
 		if(position.equals(KEEPER)){
 			double minY = 8.0f;
@@ -137,7 +234,72 @@ public class Player {
 		}
 		return -1;
 	}
-
+	/**
+	 * Returns a new coordinate in y for the player, 
+	 * appropriate to his team and position
+	 * @return
+	 */
+	private double getNewYCoord(){
+		if(position.equals(KEEPER)){
+			double minY = 9.0f;
+			double maxY = 11.0f;
+			Random rand = new Random();
+			return rand.nextDouble() * (maxY - minY) + minY;
+		} else if (position.equals(DEFENDER)){
+			double minY = 5.0f;
+			double maxY = 15.0f;
+			Random rand = new Random();
+			return rand.nextDouble() * (maxY - minY) + minY;
+		} else if (position.equals(STRIKER)) {
+			double minY = 5.0f;
+			double maxY = 15.0f;
+			Random rand = new Random();
+			return rand.nextDouble() * (maxY - minY) + minY;
+		}
+		return -1;
+	}
+	/**
+	 * Returns a new coordinate in y for the player, 
+	 * appropriate to his team and position, 
+	 * taking also in consideration the other position
+	 * teammate, in case it applies
+     * Only used internally when a Player is created.
+	 * @return
+	 */
+	private double getNewYCoord(int num){
+		if(position.equals(KEEPER)){
+			double minY = 9.0f;
+			double maxY = 11.0f;
+			Random rand = new Random();
+			return rand.nextDouble() * (maxY - minY) + minY;
+		} else if (position.equals(DEFENDER)){
+			if(PAIR_COUNTING == 2){
+				double minY = 5.0f;
+				double maxY = 7.0f;
+				Random rand = new Random();
+				return rand.nextDouble() * (maxY - minY) + minY;
+			} else {
+				double minY = 13.0f;
+				double maxY = 15.0f;
+				Random rand = new Random();
+				return rand.nextDouble() * (maxY - minY) + minY;
+			}
+		} else if (position.equals(STRIKER)) {
+			if(PAIR_COUNTING == 4){
+				double minY = 5.0f;
+				double maxY = 7.0f;
+				Random rand = new Random();
+				return rand.nextDouble() * (maxY - minY) + minY;
+			} else {
+				double minY = 13.0f;
+				double maxY = 15.0f;
+				Random rand = new Random();
+				return rand.nextDouble() * (maxY - minY) + minY;
+			}
+		}
+		return -1;
+	}
+	
 	public int getShootingRatio() {
 		return shootingRatio;
 	}

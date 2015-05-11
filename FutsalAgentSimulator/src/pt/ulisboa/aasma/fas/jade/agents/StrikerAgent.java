@@ -48,7 +48,7 @@ public class StrikerAgent extends PlayerAgent {
 						break;
 					case AgentMessages.PAUSE_GAME:
 						gameStarted = false;
-						player.resetCoords();
+						player.resetNewCoords();
 						break;
 					case AgentMessages.RESTART_GAME:
 						gameStarted = true;

@@ -17,7 +17,7 @@ public class BallMovement {
 	
 	private double initialTime; //in seconds
 	
-	private int originalIntensity;
+	private double originalIntensity;
 	private double a;
 	
 	private double vx0;
@@ -45,7 +45,7 @@ public class BallMovement {
 		this.originalIntensity = intensity;
 	}
 
-	public int getOriginalIntensity() {
+	public double getOriginalIntensity() {
 		return originalIntensity;
 	}
 
