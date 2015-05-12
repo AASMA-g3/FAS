@@ -48,7 +48,7 @@ public class KeeperAgent extends PlayerAgent {
 					case AgentMessages.PAUSE_GAME:
 						gameStarted = false;
 						if (player.getTeam() == Player.TEAM_A)
-							player.getPlayerMovement().setGoal(Player.TEAM_A_KEEPER_XPOS + 2, Game.GOAL_Y_MED);
+							player.setGoal(Player.TEAM_A_KEEPER_XPOS + 2, Game.GOAL_Y_MED);
 						else
 							player.getPlayerMovement().setGoal(Player.TEAM_B_KEEPER_XPOS - 2, Game.GOAL_Y_MED);;
 						break;
@@ -74,9 +74,9 @@ public class KeeperAgent extends PlayerAgent {
 			super(agent);
 			
 			if (player.getTeam() == Player.TEAM_A)
-				player.getPlayerMovement().setGoal(Player.TEAM_A_KEEPER_XPOS, Game.GOAL_Y_MED);
+				player.setGoal(Player.TEAM_A_KEEPER_XPOS, Game.GOAL_Y_MED);
 			else
-				player.getPlayerMovement().setGoal(Player.TEAM_B_KEEPER_XPOS, Game.GOAL_Y_MED);
+				player.setGoal(Player.TEAM_B_KEEPER_XPOS, Game.GOAL_Y_MED);
 		}
 
 		@Override
@@ -97,7 +97,7 @@ public class KeeperAgent extends PlayerAgent {
 						addBehaviour(new TryCatchBehaviour(this.myAgent));
 					}else{
 						if (player.getTeam() == Player.TEAM_A){
-							player.getPlayerMovement().setGoal(Player.TEAM_A_KEEPER_XPOS, Game.GOAL_Y_MED);
+							player.setGoal(Player.TEAM_A_KEEPER_XPOS, Game.GOAL_Y_MED);
 						}	
 						else{
 							player.getPlayerMovement().setGoal(Player.TEAM_B_KEEPER_XPOS, Game.GOAL_Y_MED);

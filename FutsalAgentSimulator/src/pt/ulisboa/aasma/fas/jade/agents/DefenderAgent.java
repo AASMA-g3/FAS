@@ -48,7 +48,7 @@ public class DefenderAgent extends PlayerAgent {
 						break;
 					case AgentMessages.PAUSE_GAME:
 						gameStarted = false;
-						player.resetNewCoords();
+						player.setNewGoal(Player.NEW_GOAL_POSITION_AREA);
 						break;
 					case AgentMessages.RESTART_GAME:
 						gameStarted = true;
@@ -78,7 +78,7 @@ public class DefenderAgent extends PlayerAgent {
 									player.getDirectionToPlayer(p1)));
 				}else if(player.hasBall() && p1 == null){
 					//advance
-					player.getPlayerMovement().setGoal(player.x() + 1.0f , player.y());
+					player.setGoal(player.x() + 1.0f , player.y());
 //					addBehaviour(new DribleBehaviour(this, player.x() + 1.0f , player.y()));
 				}
 				

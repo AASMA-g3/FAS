@@ -1,6 +1,7 @@
 package pt.ulisboa.aasma.fas.jade.agents;
 
 import pt.ulisboa.aasma.fas.jade.game.Ball;
+import pt.ulisboa.aasma.fas.jade.game.Player;
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.lang.acl.ACLMessage;
@@ -48,7 +49,7 @@ public class StrikerAgent extends PlayerAgent {
 						break;
 					case AgentMessages.PAUSE_GAME:
 						gameStarted = false;
-						player.resetNewCoords();
+						player.setNewGoal(Player.NEW_GOAL_POSITION_AREA);
 						break;
 					case AgentMessages.RESTART_GAME:
 						gameStarted = true;
@@ -77,7 +78,7 @@ public class StrikerAgent extends PlayerAgent {
 				moving = true;
 			}*/
 			
-			player.getPlayerMovement().setGoal(ball.x(), ball.y());
+			player.setGoal(ball.x(), ball.y());
 			
 			/*Ball ball = match.getBall();
 

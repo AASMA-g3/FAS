@@ -1,5 +1,9 @@
 package pt.ulisboa.aasma.fas.jade.game;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Iterator;
+
 public class Ball {
 	
 	public static final int INTENSITY_SHOOT = 10;

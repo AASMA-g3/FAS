@@ -10,6 +10,12 @@ import pt.ulisboa.aasma.fas.jade.agents.StrikerAgent;
 
 public class Player {
 	
+	public static final int NEW_GOAL_GENERAL_AREA = 0;
+	public static final int NEW_GOAL_POSITION_AREA = 1;
+	
+	public static final int NEW_GOAL_INTERCEPT_GOAL = 2;
+	public static final int NEW_GOAL_INTERCEPT_PASS = 3;
+	
 	public static final String KEEPER = KeeperAgent.class.getName();
 	public static final String DEFENDER = DefenderAgent.class.getName();
 	public static final String STRIKER = StrikerAgent.class.getName();
@@ -102,13 +108,13 @@ public class Player {
 	 * in his position general area
 	 * @return
 	 */
-	public void resetRandomCoords(){
+	private void resetRandomCoords(){
 		double x = getRandomXCoord();
 		double y = getRandomYCoord();
 		if (this.team == TEAM_B){
 			x += (20.0f - x)*2.0f;
 		}
-		this.playerMovement.setGoal(x, y);
+		this.setGoal(x, y);
 	}
 	
 	/**
@@ -118,13 +124,13 @@ public class Player {
 	 * teammate, in case it applies
 	 * @return
 	 */
-	public void resetNewCoords(){
+	private void resetNewCoords(){
 		double x = getRandomXCoord();
 		double y = getRandomYCoord();
 		if (this.team == TEAM_B){
 			x += (20.0f - x)*2.0f;
 		}
-		this.playerMovement.setGoal(x, y);
+		this.setGoal(x, y);
 	}
 	
 	/**
@@ -424,16 +430,28 @@ public class Player {
 		return playerMovement.y();
 	}
 
-	public void setPlayerMovement(PlayerMovement playerMovement) {
-		this.playerMovement = playerMovement;
+	public void setGoal(double x, double y) {
+		this.playerMovement.setGoal(x, y);
 	}
-
+	
 	public boolean isOnTrajectoryToPlayer(Player senderPlayer, Player allyPlayer){
 		Player enemyPlayer = this;
 		double senderToAllyDirection = senderPlayer.getDirectionToPlayer(allyPlayer);
 		double enemyToAllyDirection = enemyPlayer.getDirectionToPlayer(allyPlayer);
 		
 		if(Math.round(senderToAllyDirection) == Math.round(enemyToAllyDirection)){
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean isOnTrajectoryToGoal(Ball ball, int team){
+		Player enemyPlayer = this;
+		
+		double senderToGoalDirection = ball.getDirectionToGoal(team);
+		double enemyToGoalDirection = enemyPlayer.getDirectionToAllyGoal();			
+		
+		if(Math.round(senderToGoalDirection) == Math.round(enemyToGoalDirection)){
 			return true;
 		}
 		return false;
@@ -461,13 +479,13 @@ public class Player {
 		ArrayList<Player> openPlayers = new ArrayList<Player>();
 		if (this.getTeam() == TEAM_A){
 			for (Player player : teamA) {
-				if(!player.isPlayerBlocked(this, teamB)){
+				if(!player.isBlocked(this, teamB)){
 					openPlayers.add(player);
 				}
 			}	
 		}else{
 			for (Player player : teamB) {
-				if(!player.isPlayerBlocked(this, teamA)){
+				if(!player.isBlocked(this, teamA)){
 					openPlayers.add(player);
 				}
 			}	
@@ -523,7 +541,7 @@ public class Player {
 			return playerA;
 	}
 	
-	public boolean isPlayerBlocked(Player senderPlayer, ArrayList<Player> enemyTeam){
+	public boolean isBlocked(Player senderPlayer, ArrayList<Player> enemyTeam){
 			for (Player enemyPlayer : enemyTeam) {
 				if (enemyPlayer.isOnTrajectoryToPlayer(senderPlayer, this)){
 					return true;
@@ -537,5 +555,112 @@ public class Player {
 			}
 			return false;
 	}
+	
+	public boolean isLastDefender(ArrayList<Player> allyTeam){
+		
+		Player nearestPlayer = this;
+		
+		for (Player ally : allyTeam) {
+				if (!ally.position.equals(Player.KEEPER) && 
+						(nearestPlayer.getDistanceToAllyGoal() < ally.getDistanceToAllyGoal()));
+					nearestPlayer = ally;
+		}
+		
+		if(nearestPlayer == this)
+			return true;
+		else
+			return false;
+	}
+	
+	public void setNewGoal(int option){
+		switch (option) {
+		case NEW_GOAL_GENERAL_AREA:
+			resetRandomCoords();
+			break;
+		case NEW_GOAL_POSITION_AREA:
+			resetNewCoords();
+			break;
+		default:
+			break;
+		}
+	}
+	
+	public void setNewGoal(int option, Ball ball){
+		switch (option) {
+		case NEW_GOAL_INTERCEPT_GOAL:
+			setInterceptGoal(ball);
+			break;
+		default:
+			break;
+		}
+	}
+	
+	public void setNewGoal(int option, Ball ball, Player player){
+		switch (option) {
+		case NEW_GOAL_INTERCEPT_PASS:
+			setInterceptPass(ball, player);
+			break;
+		default:
+			break;
+		}
+	}
+	
+	private void setInterceptGoal(Ball ball){
+		double mFU, mBG, thetaBG, bFU, bBG, myX, myY, goalX, goalY, ballX, ballY;
+		
+		thetaBG = ball.getDirectionToGoal(this.team);
+		mBG = Math.tan(thetaBG);
+		mFU = Math.tan(thetaBG + 90.0f);
+				
+		myX = this.x();
+		myY = this.y();
+		
+		ballX = ball.x();
+		ballY= ball.y();
+		
+		bBG = ballY - (mBG * ballX);
+		bFU = myY- (mFU * myX);
+		
+		goalX = (bBG - bFU) / (mFU - mBG);
+		goalY = mFU * goalX + bFU;
+		
+		setGoal(goalX, goalY);
+		
+	}
+	
+	private void setInterceptPass(Ball ball, Player enemyPlayer){
+		double mFU, mBG, thetaBG, bFU, bBG, myX, myY, goalX, goalY, ballX, ballY;
+		
+		thetaBG = ball.getDirectionToPlayer(enemyPlayer);
+		mBG = Math.tan(thetaBG);
+		mFU = Math.tan(thetaBG + 90.0f);
+				
+		myX = this.x();
+		myY = this.y();
+		
+		ballX = ball.x();
+		ballY= ball.y();
+		
+		bBG = ballY - (mBG * ballX);
+		bFU = myY- (mFU * myX);
+		
+		goalX = (bBG - bFU) / (mFU - mBG);
+		goalY = mFU * goalX + bFU;
+		
+		setGoal(goalX, goalY);
+		
+	}
+	
+	public boolean hasClearShot(ArrayList<Player> enemyTeam, Ball ball){
+		
+		for (Player enemyPlayer : enemyTeam) {
+			if(enemyPlayer.isOnTrajectoryToGoal(ball, this.team))
+				return false;
+		}
+		return true;
+		
+	}
+	
+	
 	
 }
