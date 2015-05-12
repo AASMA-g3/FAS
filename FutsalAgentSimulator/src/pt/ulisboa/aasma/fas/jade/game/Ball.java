@@ -12,14 +12,13 @@ public class Ball {
 	public static final int INTENSITY_SHORT_PASS = 4;
 	public static final int INTENSITY_RUN = 2;
 
+	private Player owner;
+	
 	private BallMovement currentMovement;
 
 	public Ball() {
 		super();
-		long prob = Math.round(Math.random());
-		double direction = 0.0f;
-		if (prob == 0) direction = 180.0f;
-		
+		this.owner = null;
 		currentMovement = new BallMovement(0, 0.0f, 20.0f, 10.0f, 0.0f);
 	}
 	
@@ -86,6 +85,24 @@ public class Ball {
 
 	public void updateCurrentMovement(int intensity, double direction, double x0, double y0, double initialTime) {
 		this.currentMovement.updateCurrentMovement(intensity, direction, x0, y0, initialTime);
+	}
+
+	public boolean hasOwner() {
+		if(this.owner == null)
+			return false;
+		return true;
+	}
+	
+	public Player getOwner() {
+		return owner;
+	}
+
+	public void setOwner(Player owner) {
+		this.owner = owner;
+	}
+	
+	public void cleanOwner(){
+		this.owner = null;
 	}
 	
 }
