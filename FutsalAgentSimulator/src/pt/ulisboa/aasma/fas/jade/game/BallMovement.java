@@ -13,12 +13,13 @@ public class BallMovement {
 	private final Lock ballPosLock = new ReentrantLock();
 	private final Lock ballTimerLock = new ReentrantLock();
 	
-	private final double A = 0.0f; 
+	private final double A = -2.0f; 
 	
 	private double initialTime; //in seconds
 	
 	private double originalIntensity;
-	private double a;
+	private double ax;
+	private double ay;
 	
 	private double vx0;
 	private double vy0;
@@ -33,9 +34,8 @@ public class BallMovement {
 	public BallMovement(int intensity, double direction, double x0, double y0, double initialTime) {
 		super();
 		this.direction = direction;
-		this.a = A;
-		if((direction > 90.0f) && (direction < 270.0f)) 
-			this.a = -a;
+		this.ax = A*Math.cos(Math.toRadians(direction));
+		this.ay = A*Math.sin(Math.toRadians(direction));
 		this.vx0 = intensity*Math.cos(Math.toRadians(direction));
 		this.vy0 = intensity*Math.sin(Math.toRadians(direction));
 		this.x0 = x0;
@@ -119,7 +119,7 @@ public class BallMovement {
 		ballTimerLock.lock();
 		double ret;
 		try{
-			ret = vx0 + (a*t);		
+			ret = vx0 + (ax*t);		
 		} finally{
 			ballVelLock.unlock();
 			ballTimerLock.unlock();
@@ -132,7 +132,7 @@ public class BallMovement {
 		ballTimerLock.lock();
 		double ret;
 		try{
-			ret = vy0 + (a*t);		
+			ret = vy0 + (ay*t);		
 		} finally{
 			ballVelLock.unlock();
 			ballTimerLock.unlock();
@@ -148,12 +148,12 @@ public class BallMovement {
 		ballTimerLock.lock();
 		try{
 			if (!((vx0 >= 0) ^ (vx() < 0))) {
-				double ts = -vx0 / a;
-				X = (a * ts * ts) * (1.0f / 2.0f) + vx0 * ts
+				double ts = -vx0 / ax;
+				X = (ax * ts * ts) * (1.0f / 2.0f) + vx0 * ts
 						+ x0;
 			
 			} else {
-				X = (a * t * t) * (1.0f / 2.0f) + vx0 * t + x0;
+				X = (ax * t * t) * (1.0f / 2.0f) + vx0 * t + x0;
 			}
 		} finally {
 			ballPosLock.unlock();
@@ -186,11 +186,11 @@ public class BallMovement {
 		
 		try{
 			if (!((vy0 >= 0) ^ (vy() < 0))) {
-				double ts = -vy0 / a;
-				Y = (a * ts * ts) * (1.0f / 2.0f) + vy0 * ts
+				double ts = -vy0 / ay;
+				Y = (ay * ts * ts) * (1.0f / 2.0f) + vy0 * ts
 						+ y0;
 			} else {
-				Y = (a * t * t) * (1.0f / 2.0f) + vy0 * t + y0;
+				Y = (ay * t * t) * (1.0f / 2.0f) + vy0 * t + y0;
 			}
 		} finally {
 			ballPosLock.unlock();
@@ -239,9 +239,8 @@ public class BallMovement {
 		ballTimerLock.lock();
 		try{
 			this.direction = direction;
-			this.a = A;
-			if((direction > 90.0f) && (direction < 270.0f)) 
-				this.a = -a;
+			this.ax = A*Math.cos(Math.toRadians(direction));
+			this.ay = A*Math.sin(Math.toRadians(direction));
 			this.vx0 = intensity*Math.cos(Math.toRadians(direction));
 			this.vy0 = intensity*Math.sin(Math.toRadians(direction));
 			this.x0 = x0;

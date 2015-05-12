@@ -127,8 +127,12 @@ public class PlayerMovement {
 	}
 
 	private double getDirectionToGoal() {
-					return Math.toDegrees(Math.atan((this.goalY	- this.myY)
-				/ (this.goalX - this.myX)));
+		double angle;
+		angle= Math.toDegrees(Math.atan2(this.goalY	- this.myY, this.goalX - this.myX));
+		if(angle < 0.0f){
+	        angle += 360.0f;
+	    }
+	    return angle;
 	}
 
 	private void setX(double currentTick) {	
@@ -139,23 +143,16 @@ public class PlayerMovement {
 			
 			double theta = getDirectionToGoal();
 			double cos =  Math.cos(Math.toRadians(theta));
-			if (((Math.round(theta)>= 179.0f) && (Math.round(theta)<=181.0f))
-				|| ((Math.round(theta)>= 0.0f) && (Math.round(theta)<=1.0f)))
-				cos = 1;
 			if (((Math.round(theta)>= 89.0f) && (Math.round(theta)<=91.0f))
-					|| ((Math.round(theta)>= 269.0f) && (Math.round(theta)<=271.0f)))
-					cos = 0;
-			
+				|| ((Math.round(theta)>= 269.0f) && (Math.round(theta)<=271.0f)))
+				cos = 0;
+			if ((Math.round(theta)>= 379.0f) && (Math.round(theta)<=1.0f))
+					cos = 1;
+			if ((Math.round(theta)>= 179.0f) && (Math.round(theta)<=181.0f))
+					cos = -1;
 			double velocity = (this.stamina / 100.0f) * STANDARD_VELOCITY * cos;
-			double time = currentTick - this.lastTick;
-		//	System.out.println(cos + "  " + velocity + "  " + time + "  " + this.myX + "  " + (this.myX+(velocity*time)));
-			
-	
-				if (myX > goalX)
-					velocity = -velocity;
-				 else
-					velocity = Math.abs(velocity);
-			
+			double time = currentTick - this.lastTick;			
+
 			this.myX += velocity*time;
 			
 			if (this.myX < 0.0f)
@@ -181,18 +178,14 @@ public class PlayerMovement {
 			double theta = getDirectionToGoal();
 			double sin =  Math.sin(Math.toRadians(theta));
 			if (((Math.round(theta)>= 179.0f) && (Math.round(theta)<=181.0f))
-					|| ((Math.round(theta)>= 0.0f) && (Math.round(theta)<=1.0f)))
+					|| ((Math.round(theta)>= 379.0f) && (Math.round(theta)<=1.0f)))
 					sin = 0;
-				if (((Math.round(theta)>= 89.0f) && (Math.round(theta)<=91.0f))
-						|| ((Math.round(theta)>= 269.0f) && (Math.round(theta)<=271.0f)))
-						sin = 1;
+			if ((Math.round(theta)>= 89.0f) && (Math.round(theta)<=91.0f))
+					sin = 1;
+			if ((Math.round(theta)>= 269.0f) && (Math.round(theta)<=271.0f))
+					sin = -1;
 			double velocity = (this.stamina / 100.0f) * STANDARD_VELOCITY * sin;
 			double time = currentTick - this.lastTick;
-			
-			if(myY > goalY)
-					velocity = -velocity;
-					else
-						velocity = Math.abs(velocity);
 		
 			this.myY += velocity*time;
 			
