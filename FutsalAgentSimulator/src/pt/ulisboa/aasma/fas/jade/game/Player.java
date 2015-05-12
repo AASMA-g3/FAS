@@ -1,5 +1,6 @@
 package pt.ulisboa.aasma.fas.jade.game;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
@@ -15,6 +16,8 @@ public class Player {
 	
 	public static final int NEW_GOAL_INTERCEPT_GOAL = 2;
 	public static final int NEW_GOAL_INTERCEPT_PASS = 3;
+	
+	public static final int NEW_GOAL_NEW_DIRECTION = 4;
 	
 	public static final String KEEPER = KeeperAgent.class.getName();
 	public static final String DEFENDER = DefenderAgent.class.getName();
@@ -34,6 +37,9 @@ public class Player {
 	
 	public static final float TEAM_A_KEEPER_XPOS = 0.0f;
 	public static final float TEAM_B_KEEPER_XPOS = 38.7f;
+	
+	public static final boolean KEEPER_INCLUDED = true;
+	public static final boolean KEEPER_EXCLUDED = false;
 	
 	private static int PAIR_COUNTING = 1;
 	
@@ -386,6 +392,19 @@ public class Player {
 	    return angle;
 	}
 	
+	public double getDirectionToGoal(int team){
+		double angle;
+		if(team == Player.TEAM_B){
+			angle= Math.toDegrees(Math.atan2(Game.GOAL_Y_MED - this.y(), Game.LIMIT_X - this.x()));
+		} else {
+			angle= Math.toDegrees(Math.atan2(Game.GOAL_Y_MED - this.y(), 0 - this.x()));
+		}
+		if(angle < 0.0f){
+	        angle += 360.0f;
+	    }
+	    return angle;
+	}
+	
 	public double getDistanceToPlayer(Player player){
 		return Math.sqrt(Math.pow((y() - player.y()), 2) +
 				Math.pow((x() - player.x()), 2));
@@ -434,24 +453,25 @@ public class Player {
 		this.playerMovement.setGoal(x, y);
 	}
 	
-	public boolean isOnTrajectoryToPlayer(Player senderPlayer, Player allyPlayer){
-		Player enemyPlayer = this;
-		double senderToAllyDirection = senderPlayer.getDirectionToPlayer(allyPlayer);
-		double enemyToAllyDirection = enemyPlayer.getDirectionToPlayer(allyPlayer);
+	
+	public boolean isInBetweenTwoPlayers(Player originPlayer, Player targetPlayer){
+		Player me = this;
+		double originToTargetDirection = originPlayer.getDirectionToPlayer(targetPlayer);
+		double meToTargetDirection = me.getDirectionToPlayer(targetPlayer);
 		
-		if(Math.round(senderToAllyDirection) == Math.round(enemyToAllyDirection)){
+		if(Math.round(originToTargetDirection) == Math.round(meToTargetDirection)){
 			return true;
 		}
 		return false;
 	}
 	
-	public boolean isOnTrajectoryToGoal(Ball ball, int team){
-		Player enemyPlayer = this;
+	public boolean isInBetweenBallAndGoal(Ball ball, int team){
+		Player me = this;
+		//Goal is the Target, ball is the Origin
+		double ballToGoalDirection = ball.getDirectionToGoal(team);
+		double meToGoalDirection = me.getDirectionToGoal(team);			
 		
-		double senderToGoalDirection = ball.getDirectionToGoal(team);
-		double enemyToGoalDirection = enemyPlayer.getDirectionToAllyGoal();			
-		
-		if(Math.round(senderToGoalDirection) == Math.round(enemyToGoalDirection)){
+		if(Math.round(ballToGoalDirection) == Math.round(meToGoalDirection)){
 			return true;
 		}
 		return false;
@@ -543,7 +563,7 @@ public class Player {
 	
 	public boolean isBlocked(Player senderPlayer, ArrayList<Player> enemyTeam){
 			for (Player enemyPlayer : enemyTeam) {
-				if (enemyPlayer.isOnTrajectoryToPlayer(senderPlayer, this)){
+				if (enemyPlayer.isInBetweenTwoPlayers(senderPlayer, this)){
 					return true;
 				} else {
 					if (enemyPlayer.isAroundPlayer(this)){
@@ -572,6 +592,10 @@ public class Player {
 			return false;
 	}
 	
+	/**
+	 * Sets a new goal for the player based on the option given
+	 * @param NEW_GOAL_GENERAL_AREA or NEW_GOAL_POSITION_AREA
+	 */
 	public void setNewGoal(int option){
 		switch (option) {
 		case NEW_GOAL_GENERAL_AREA:
@@ -585,6 +609,10 @@ public class Player {
 		}
 	}
 	
+	/**
+	 * Sets a new goal for the player based on the option given
+	 * @param NEW_GOAL_GENERAL_AREA or NEW_GOAL_POSITION_AREA
+	 */
 	public void setNewGoal(int option, Ball ball){
 		switch (option) {
 		case NEW_GOAL_INTERCEPT_GOAL:
@@ -605,12 +633,32 @@ public class Player {
 		}
 	}
 	
+	public void setNewGoal(int option, double direction, double distance){
+		switch (option) {
+		case NEW_GOAL_NEW_DIRECTION:
+			setNewDirection(direction, distance);
+			break;
+		default:
+			break;
+		}
+	}
+	
+	public void setNewGoal(int option, double direction){
+		switch (option) {
+		case NEW_GOAL_NEW_DIRECTION:
+			setNewDirection(direction, 1.0f);
+			break;
+		default:
+			break;
+		}
+	}
+	
 	private void setInterceptGoal(Ball ball){
 		double mFU, mBG, thetaBG, bFU, bBG, myX, myY, goalX, goalY, ballX, ballY;
 		
 		thetaBG = ball.getDirectionToGoal(this.team);
-		mBG = Math.tan(thetaBG);
-		mFU = Math.tan(thetaBG + 90.0f);
+		mBG = Math.tan(Math.toRadians(thetaBG));
+		mFU = Math.tan(Math.toRadians(thetaBG + 90.0f));
 				
 		myX = this.x();
 		myY = this.y();
@@ -628,12 +676,25 @@ public class Player {
 		
 	}
 	
+	private void setNewDirection(double direction, double distance){
+		double sin, cos, goalX, goalY;
+		
+		sin = Math.sin(Math.toRadians(direction));
+		cos = Math.cos(Math.toRadians(direction));
+		
+		goalX = x() + (distance * cos);
+		goalY = y() + (distance * cos);
+		
+		setGoal(goalX, goalY);
+		
+	}
+	
 	private void setInterceptPass(Ball ball, Player enemyPlayer){
 		double mFU, mBG, thetaBG, bFU, bBG, myX, myY, goalX, goalY, ballX, ballY;
 		
 		thetaBG = ball.getDirectionToPlayer(enemyPlayer);
-		mBG = Math.tan(thetaBG);
-		mFU = Math.tan(thetaBG + 90.0f);
+		mBG = Math.tan(Math.toRadians(thetaBG));
+		mFU = Math.tan(Math.toRadians(thetaBG + 90.0f));
 				
 		myX = this.x();
 		myY = this.y();
@@ -654,13 +715,34 @@ public class Player {
 	public boolean hasClearShot(ArrayList<Player> enemyTeam, Ball ball){
 		
 		for (Player enemyPlayer : enemyTeam) {
-			if(enemyPlayer.isOnTrajectoryToGoal(ball, this.team))
+			if(!(enemyPlayer.position.equals(Player.KEEPER)) && enemyPlayer.isInBetweenBallAndGoal(ball, this.team))
 				return false;
 		}
 		return true;
 		
 	}
 	
+
+	public boolean isNearestToBall(ArrayList<Player> team, Ball ball, boolean keeperIncluded){
+		Player nearestPlayer = this;
+		
+		if(keeperIncluded == KEEPER_INCLUDED){
+			for (Player player : team) {
+					if (!(player.position.equals(Player.KEEPER)) &&
+							(nearestPlayer.getDistanceToBall(ball)< player.getDistanceToBall(ball)));
+						nearestPlayer = player;
+			}
+		} else{
+			for (Player player : team) {
+				if (nearestPlayer.getDistanceToBall(ball)< player.getDistanceToBall(ball));
+					nearestPlayer = player;
+			}
+		}
 	
-	
+		
+		if(nearestPlayer == this)
+			return true;
+		else
+			return false;
+	}
 }
