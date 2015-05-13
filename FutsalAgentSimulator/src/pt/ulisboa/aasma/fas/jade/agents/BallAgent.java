@@ -39,10 +39,10 @@ public class BallAgent extends Agent{
 		
 		this.addBehaviour(new ReceiveRequestBehaviour(this));
 		this.addBehaviour(new EndGameBehaviour());
-		long prob = Math.round(Math.random());
+		double prob = Math.round(Math.random()*100);
 		double direction = 0.0f;
-		if (prob == 0) direction = 180.0f;
-		ball.updateCurrentMovement(Ball.INTENSITY_SHOOT, direction, 20.0f, 10.0f, match.getGameTime()/1000.0f);
+		if (prob <= 50) direction = 180.0f;
+		ball.updateCurrentMovement(Ball.INTENSITY_LONG_PASS, direction, 20.0f, 10.0f, match.getGameTime()/1000.0f);
 	}
 	
 	

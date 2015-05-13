@@ -502,13 +502,13 @@ public class Player {
 		ArrayList<Player> openPlayers = new ArrayList<Player>();
 		if (this.getTeam() == TEAM_A){
 			for (Player player : teamA) {
-				if(!player.isBlocked(this, teamB)){
+				if(player != this && !player.isBlocked(this, teamB)){
 					openPlayers.add(player);
 				}
 			}	
 		}else{
 			for (Player player : teamB) {
-				if(!player.isBlocked(this, teamA)){
+				if(player != this && !player.isBlocked(this, teamA)){
 					openPlayers.add(player);
 				}
 			}	

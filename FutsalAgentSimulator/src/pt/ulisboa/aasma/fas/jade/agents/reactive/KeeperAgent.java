@@ -104,13 +104,15 @@ public class KeeperAgent extends PlayerAgent {
 				}else if(ball.isOnTrajectoryToGoal(player.getTeam()) &&
 							(ball.getCurrentMovement().getOriginalIntensity() < Ball.INTENSITY_SHOOT) &&
 							(ball.getCurrentMovement().getOriginalIntensity() > Ball.INTENSITY_RUN)){
+					if(distance < 1.0 &&
+							tryCatchBehaviour == PlayerAgent.NOT_TRYING_BEHAVIOUR){
 						//The ball has been passed to me so I have to control it.
-					addBehaviour(new TryReceiveBehaviour(this.myAgent));
+						addBehaviour(new TryReceiveBehaviour(this.myAgent));
+					}
 				}else if(player.hasBall() && tryPassBehaviour == PlayerAgent.NOT_TRYING_BEHAVIOUR) {
 					//I have the ball so let's pass it to a open player, if none open just hold.
 					Player p1 = player.getNearestAllyOpenPlayer(match.getTeamA(), match.getTeamB());
 					if(p1 != null){
-						System.out.println(p1.getName());
 						addBehaviour(new PassBallBehaviour(this.myAgent, p1));
 						player.getPlayerMovement().setGoal(ball.x(), ball.y());
 					}
