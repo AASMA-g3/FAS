@@ -1,7 +1,6 @@
 package pt.ulisboa.aasma.fas.jade.agents.reactive;
 
 import pt.ulisboa.aasma.fas.jade.agents.AgentMessages;
-import pt.ulisboa.aasma.fas.jade.agents.reactive.PlayerAgent.MoveBallBehaviour;
 import pt.ulisboa.aasma.fas.jade.game.Ball;
 import pt.ulisboa.aasma.fas.jade.game.Game;
 import pt.ulisboa.aasma.fas.jade.game.Player;
@@ -68,20 +67,20 @@ public class DefenderAgent extends PlayerAgent {
 		public void action() {
 			
 			if (gameStarted){
-				Ball ball = match.getBall();
-				Player p1 = player.getNearestAllyOpenPlayer(match.getTeamA(), match.getTeamB());
-				
-				if(player.hasBall() && p1 != null && moveBallBehaviour == PlayerAgent.NOT_TRYING_BEHAVIOUR){
-					System.out.println("vou passar para o :" + p1.getName());
-					addBehaviour(new MoveBallBehaviour(
-									this.myAgent,
-									Ball.INTENSITY_LONG_PASS,
-									player.getDirectionToPlayer(p1)));
-				}else if(player.hasBall() && p1 == null){
-					//advance
-					player.setGoal(player.x() + 1.0f , player.y());
-//					addBehaviour(new DribleBehaviour(this, player.x() + 1.0f , player.y()));
-				}
+//				Ball ball = match.getBall();
+//				Player p1 = player.getNearestAllyOpenPlayer(match.getTeamA(), match.getTeamB());
+//				
+//				if(player.hasBall() && p1 != null && moveBallBehaviour == PlayerAgent.NOT_TRYING_BEHAVIOUR){
+//					System.out.println("vou passar para o :" + p1.getName());
+//					addBehaviour(new MoveBallBehaviour(
+//									this.myAgent,
+//									Ball.INTENSITY_LONG_PASS,
+//									player.getDirectionToPlayer(p1)));
+//				}else if(player.hasBall() && p1 == null){
+//					//advance
+//					player.setGoal(player.x() + 1.0f , player.y());
+////					addBehaviour(new DribleBehaviour(this, player.x() + 1.0f , player.y()));
+//				}
 				
 //				public void action() {
 //				
