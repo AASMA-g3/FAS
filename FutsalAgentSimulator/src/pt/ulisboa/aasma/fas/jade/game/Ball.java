@@ -1,15 +1,11 @@
 package pt.ulisboa.aasma.fas.jade.game;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Iterator;
-
 public class Ball {
 	
-	public static final int INTENSITY_SHOOT = 10;
-	public static final int INTENSITY_LONG_PASS = 8;
-	public static final int INTENSITY_MEDIUM_PASS = 6;
-	public static final int INTENSITY_SHORT_PASS = 4;
+	public static final int INTENSITY_SHOOT = 20;
+	public static final int INTENSITY_LONG_PASS = 16;
+	public static final int INTENSITY_MEDIUM_PASS = 12;
+	public static final int INTENSITY_SHORT_PASS = 8;
 	public static final int INTENSITY_RUN = 2;
 
 	private Player owner;

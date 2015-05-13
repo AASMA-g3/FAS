@@ -127,9 +127,9 @@ public class ReporterAgent extends Agent{
 		@Override
 		protected void handleElapsedTimeout() {
 			if(lastGoal == A_GOAL){
-				match.getBall().updateCurrentMovement(Ball.INTENSITY_SHOOT, 180.0f, 20, 10, match.getGameTime()/1000.0f);
+				match.getBall().updateCurrentMovement(Ball.INTENSITY_SHOOT, 0.0f, 20, 10, match.getGameTime()/1000.0f);
 			} else if (lastGoal == B_GOAL){
-				match.getBall().updateCurrentMovement(Ball.INTENSITY_SHOOT, 0.0f, 20, 10, match.getGameTime()/1000.0f);				
+				match.getBall().updateCurrentMovement(Ball.INTENSITY_SHOOT, 180.0f, 20, 10, match.getGameTime()/1000.0f);				
 			}
 			
 			

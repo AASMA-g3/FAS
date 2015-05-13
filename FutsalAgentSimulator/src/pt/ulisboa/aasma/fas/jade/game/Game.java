@@ -44,61 +44,61 @@ public class Game {
 		
 		ArrayList<String> names = getRandomNames();
 		
-		this.teamA.add(new Player(names.get(0), ratios
+		this.teamA.add(new Player("Red1", ratios
 				.get(4), ratios.get(2), ratios.get(0),
 				ratios.get(8), ratios.get(6),
 				Player.KEEPER, Player.TEAM_A,
 				playerNumberCounter));
 		playerNumberCounter++;
-		this.teamA.add(new Player(names.get(1), ratios
+		this.teamA.add(new Player("Red2", ratios
 				.get(4), ratios.get(2), ratios.get(0),
 				ratios.get(8), ratios.get(6),
 				Player.DEFENDER, Player.TEAM_A,
 				playerNumberCounter));
 		playerNumberCounter++;
-		this.teamA.add(new Player(names.get(2), ratios
+		this.teamA.add(new Player("Red3", ratios
 				.get(4), ratios.get(2), ratios.get(0),
 				ratios.get(8), ratios.get(6),
 				Player.DEFENDER, Player.TEAM_A,
 				playerNumberCounter));
 		playerNumberCounter++;
-		this.teamA.add(new Player(names.get(3),ratios
+		this.teamA.add(new Player("Red4",ratios
 				.get(4), ratios.get(2), ratios.get(0),
 				ratios.get(8), ratios.get(6),
 				Player.STRIKER, Player.TEAM_A,
 				playerNumberCounter));
 		playerNumberCounter++;
-		this.teamA.add(new Player(names.get(4),  ratios
+		this.teamA.add(new Player("Red5",  ratios
 				.get(4), ratios.get(2), ratios.get(0),
 				ratios.get(8), ratios.get(6),
 				Player.STRIKER, Player.TEAM_A,
 				playerNumberCounter));
 		playerNumberCounter = 1;
-		this.teamB.add(new Player(names.get(5), ratios
+		this.teamB.add(new Player("Blue1", ratios
 				.get(5), ratios.get(3), ratios.get(1),
 				ratios.get(9), ratios.get(7),
 				Player.KEEPER, Player.TEAM_B,
 				playerNumberCounter));
 		playerNumberCounter++;
-		this.teamB.add(new Player(names.get(6),  ratios
+		this.teamB.add(new Player("Blue2",  ratios
 				.get(5), ratios.get(3), ratios.get(1),
 				ratios.get(9), ratios.get(7),
 				Player.DEFENDER, Player.TEAM_B,
 				playerNumberCounter));
 		playerNumberCounter++;
-		this.teamB.add(new Player(names.get(7),  ratios
+		this.teamB.add(new Player("Blue3",  ratios
 				.get(5), ratios.get(3), ratios.get(1),
 				ratios.get(9), ratios.get(7),
 				Player.DEFENDER, Player.TEAM_B,
 				playerNumberCounter));
 		playerNumberCounter++;
-		this.teamB.add(new Player(names.get(8), ratios
+		this.teamB.add(new Player("Blue4", ratios
 				.get(5), ratios.get(3), ratios.get(1),
 				ratios.get(9), ratios.get(7),
 				Player.STRIKER, Player.TEAM_B,
 				playerNumberCounter));
 		playerNumberCounter++;
-		this.teamB.add(new Player(names.get(9),  ratios
+		this.teamB.add(new Player("Blue5",  ratios
 				.get(5), ratios.get(3), ratios.get(1),
 				ratios.get(9), ratios.get(7),
 				Player.STRIKER, Player.TEAM_B,

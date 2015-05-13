@@ -1,8 +1,6 @@
 package pt.ulisboa.aasma.fas.jade.game;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Random;
 
 import pt.ulisboa.aasma.fas.jade.agents.DefenderAgent;
@@ -198,6 +196,7 @@ public class Player {
 	 * Never used;
 	 * @return
 	 */
+	@SuppressWarnings("unused")
 	private double getNewXCoord(int num){
 		if(position.equals(KEEPER)){
 			double minX = 0.0f;
@@ -251,6 +250,7 @@ public class Player {
 	 * appropriate to his team and position
 	 * @return
 	 */
+	@SuppressWarnings("unused")
 	private double getNewYCoord(){
 		if(position.equals(KEEPER)){
 			double minY = 9.0f;
@@ -453,7 +453,6 @@ public class Player {
 		this.playerMovement.setGoal(x, y);
 	}
 	
-	
 	public boolean isInBetweenTwoPlayers(Player originPlayer, Player targetPlayer){
 		Player me = this;
 		double originToTargetDirection = originPlayer.getDirectionToPlayer(targetPlayer);
@@ -485,6 +484,10 @@ public class Player {
 		else
 			return false;
 
+	}
+	
+	public boolean isAroundBall(Ball ball){
+		return this.getDistanceToBall(ball) < 0.5f; 
 	}
 	
 	public boolean hasBall() {
@@ -683,7 +686,7 @@ public class Player {
 		cos = Math.cos(Math.toRadians(direction));
 		
 		goalX = x() + (distance * cos);
-		goalY = y() + (distance * cos);
+		goalY = y() + (distance * sin);
 		
 		setGoal(goalX, goalY);
 		
@@ -722,7 +725,6 @@ public class Player {
 		
 	}
 	
-
 	public boolean isNearestToBall(ArrayList<Player> team, Ball ball, boolean keeperIncluded){
 		Player nearestPlayer = this;
 		
@@ -744,5 +746,12 @@ public class Player {
 			return true;
 		else
 			return false;
+	}
+
+	public boolean isBehindMidfield(){
+		if(team == TEAM_A)
+			return this.x() < 20;
+		else
+			return this.x() >= 20;
 	}
 }

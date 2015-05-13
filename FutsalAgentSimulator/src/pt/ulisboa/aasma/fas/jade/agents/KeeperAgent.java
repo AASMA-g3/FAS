@@ -57,9 +57,14 @@ public class KeeperAgent extends PlayerAgent {
 						tryReceiveBehaviour = NOT_TRYING_BEHAVIOUR;
 						tryTackleBehaviour = NOT_TRYING_BEHAVIOUR;
 						tryInterceptBehaviour = NOT_TRYING_BEHAVIOUR;
-						moveBallBehaviour = NOT_TRYING_BEHAVIOUR;
+						tryPassBehaviour = NOT_TRYING_BEHAVIOUR;
+						tryShootBehaviour = NOT_TRYING_BEHAVIOUR;
 						gameStarted = true;
+						lostTheBall = false;
 						break;
+					case AgentMessages.LOST_BALL:
+						lostTheBall = true;
+						myAgent.addBehaviour(new CleanLostBallBehaviour(myAgent));
 					default:
 						break;
 				}
@@ -82,7 +87,7 @@ public class KeeperAgent extends PlayerAgent {
 		@Override
 		public void action() {
 
-			if (gameStarted){
+			if (gameStarted && !lostTheBall){
 				Ball ball = match.getBall();
 				double distance = player.getDistanceToBall(ball);
 				
@@ -93,27 +98,21 @@ public class KeeperAgent extends PlayerAgent {
 					if(distance < 1.0 &&
 							tryCatchBehaviour == PlayerAgent.NOT_TRYING_BEHAVIOUR){
 						//The ball is close enough so let's try to catch it!
-						System.out.println("Remate!");
 						addBehaviour(new TryCatchBehaviour(this.myAgent));
-					}else{
-						if (player.getTeam() == Player.TEAM_A){
-							player.setGoal(Player.TEAM_A_KEEPER_XPOS, Game.GOAL_Y_MED);
-						}	
-						else{
-							player.getPlayerMovement().setGoal(Player.TEAM_B_KEEPER_XPOS, Game.GOAL_Y_MED);
-						}
 					}
 				}else if(ball.isOnTrajectoryToGoal(player.getTeam()) &&
 							(ball.getCurrentMovement().getOriginalIntensity() < Ball.INTENSITY_SHOOT) &&
 							(ball.getCurrentMovement().getOriginalIntensity() > Ball.INTENSITY_RUN)){
 						//The ball has been passed to me so I have to control it.
 					addBehaviour(new TryReceiveBehaviour(this.myAgent));
-				}else if(player.hasBall() && moveBallBehaviour == PlayerAgent.NOT_TRYING_BEHAVIOUR) {
+				}else if(player.hasBall() && tryPassBehaviour == PlayerAgent.NOT_TRYING_BEHAVIOUR) {
 					//I have the ball so let's pass it to a open player, if none open just hold.
 					Player p1 = player.getNearestAllyOpenPlayer(match.getTeamA(), match.getTeamB());
-					if(p1 != null)
-						addBehaviour(new MoveBallBehaviour(this.myAgent, Ball.INTENSITY_LONG_PASS,
-								player.getDirectionToPlayer(p1)));
+					if(p1 != null){
+						System.out.println(p1.getName());
+						addBehaviour(new PassBallBehaviour(this.myAgent, p1));
+						player.getPlayerMovement().setGoal(ball.x(), ball.y());
+					}
 				}else{
 					//Nothing of notice so I'll position myself 
 					if (player.getTeam() == Player.TEAM_A){
