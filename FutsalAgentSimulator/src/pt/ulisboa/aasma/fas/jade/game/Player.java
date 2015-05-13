@@ -3,9 +3,9 @@ package pt.ulisboa.aasma.fas.jade.game;
 import java.util.ArrayList;
 import java.util.Random;
 
-import pt.ulisboa.aasma.fas.jade.agents.DefenderAgent;
-import pt.ulisboa.aasma.fas.jade.agents.KeeperAgent;
-import pt.ulisboa.aasma.fas.jade.agents.StrikerAgent;
+import pt.ulisboa.aasma.fas.jade.agents.reactive.DefenderAgent;
+import pt.ulisboa.aasma.fas.jade.agents.reactive.KeeperAgent;
+import pt.ulisboa.aasma.fas.jade.agents.reactive.StrikerAgent;
 
 public class Player {
 	

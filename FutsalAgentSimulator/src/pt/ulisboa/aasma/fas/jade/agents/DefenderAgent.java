@@ -64,12 +64,12 @@ public class DefenderAgent extends PlayerAgent {
 		private static final long serialVersionUID = 1L;
 
 		@Override
-		public void action() {
-			
-			if (gameStarted  && !lostTheBall){
-				Ball ball = match.getBall();
-				ArrayList<Player> myTeam = (player.getTeam() == Player.TEAM_A)? match.getTeamA() : match.getTeamB();
-				
+//		public void action() {
+//			
+//			if (gameStarted  && !lostTheBall){
+//				Ball ball = match.getBall();
+//				ArrayList<Player> myTeam = (player.getTeam() == Player.TEAM_A)? match.getTeamA() : match.getTeamB();
+//				
 				
 //				if(ball.isOnTrajectoryToPlayer(player) && (Ball.INTENSITY_SHORT_PASS <= ball.getOriginalIntensity())
 //						&& (ball.getOriginalIntensity() <= Ball.INTENSITY_LONG_PASS) && player.isAroundBall(ball) &&
