@@ -1,9 +1,10 @@
-package pt.ulisboa.aasma.fas.jade.agents;
+package pt.ulisboa.aasma.fas.jade.agents.reactive;
 
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
+import pt.ulisboa.aasma.fas.jade.agents.AgentMessages;
 import pt.ulisboa.aasma.fas.jade.game.Ball;
 import pt.ulisboa.aasma.fas.jade.game.Game;
 import pt.ulisboa.aasma.fas.jade.game.Player;

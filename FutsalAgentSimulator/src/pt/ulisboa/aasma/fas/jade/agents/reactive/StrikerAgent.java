@@ -1,5 +1,6 @@
-package pt.ulisboa.aasma.fas.jade.agents;
+package pt.ulisboa.aasma.fas.jade.agents.reactive;
 
+import pt.ulisboa.aasma.fas.jade.agents.AgentMessages;
 import pt.ulisboa.aasma.fas.jade.game.Ball;
 import pt.ulisboa.aasma.fas.jade.game.Player;
 import jade.core.Agent;

@@ -1,4 +1,4 @@
-package pt.ulisboa.aasma.fas.jade.agents;
+package pt.ulisboa.aasma.fas.jade.agents.reactive;
 
 import jade.core.AID;
 import jade.core.Agent;
@@ -8,6 +8,7 @@ import jade.core.behaviours.WakerBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import pt.ulisboa.aasma.fas.exceptions.FutsalAgentSimulatorException;
+import pt.ulisboa.aasma.fas.jade.agents.AgentMessages;
 import pt.ulisboa.aasma.fas.jade.game.Ball;
 import pt.ulisboa.aasma.fas.jade.game.Game;
 import pt.ulisboa.aasma.fas.jade.game.Player;
