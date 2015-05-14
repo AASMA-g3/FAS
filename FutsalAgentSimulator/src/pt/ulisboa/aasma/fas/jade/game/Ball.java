@@ -8,13 +8,15 @@ public class Ball {
 	public static final int INTENSITY_SHORT_PASS = 8;
 	public static final int INTENSITY_RUN = 2;
 
+	public static final Player NO_OWNER = null;
+	
 	private Player owner;
 	
 	private BallMovement currentMovement;
 
 	public Ball() {
 		super();
-		this.owner = null;
+		this.owner = NO_OWNER;
 		currentMovement = new BallMovement(0, 0.0f, 20.0f, 10.0f, 0.0f);
 	}
 	
@@ -99,6 +101,52 @@ public class Ball {
 	
 	public void cleanOwner(){
 		this.owner = null;
+	}
+	
+	public boolean isOnQuadrant(int quadrant){
+		if((this.x() >= 20.0f) && (this.x() <= 40.0f)){
+			//FIRST AND FOURTH
+			if(quadrant == Player.QUADRANT_FIRST_AND_FOURTH)
+				return true;
+			
+			if((this.y() >= 10.0f) && (this.y() <= 20.0f)){
+				//FIRST
+				if(quadrant == Player.QUADRANT_FIRST)
+					return true;
+			} 
+			
+			if((this.y() >= 0.0f) && (this.y() <= 10.0f)){
+				//FOURTH
+				if(quadrant == Player.QUADRANT_FOURTH)
+					return true;
+			} 
+		}
+		if ((this.x() >= 0.0f) && (this.x() <= 20.0f)){
+			//SECOND AND THIRD
+			if(quadrant == Player.QUADRANT_SECOND_AND_THIRD)
+				return true;
+			
+			if((this.y() >= 10.0f) && (this.y() <= 20.0f)){
+				//SECOND
+				if(quadrant == Player.QUADRANT_SECOND)
+					return true;
+			} 
+			
+			if((this.y() >= 0.0f) && (this.y() <= 10.0f)){
+				//THIRD
+				if(quadrant == Player.QUADRANT_THIRD)
+					return true;
+			} 
+		} 
+		return false;
+	}
+	
+	public boolean enemyHasBall(int team){
+		if(this.owner == NO_OWNER)
+			return false;
+		if (this.owner.getTeam() == team)
+			return false;
+		return true;
 	}
 	
 }
