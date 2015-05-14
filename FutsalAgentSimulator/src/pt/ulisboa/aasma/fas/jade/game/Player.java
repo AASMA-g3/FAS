@@ -11,11 +11,11 @@ public class Player {
 	
 	public static final int NEW_GOAL_GENERAL_AREA = 0;
 	public static final int NEW_GOAL_POSITION_AREA = 1;
-	
 	public static final int NEW_GOAL_INTERCEPT_GOAL = 2;
 	public static final int NEW_GOAL_INTERCEPT_PASS = 3;
-	
 	public static final int NEW_GOAL_NEW_DIRECTION = 4;
+	public static final int NEW_GOAL_CHASE_PLAYER = 5;
+	public static final int NEW_GOAL_CHASE_BALL = 6;
 	
 	public static final String KEEPER = KeeperAgent.class.getName();
 	public static final String DEFENDER = DefenderAgent.class.getName();
@@ -509,8 +509,26 @@ public class Player {
 		return openPlayers;
 	}
 	
+	public ArrayList<Player> getEnemyPlayersOnQuadrant(ArrayList<Player> teamA, ArrayList<Player> teamB){
+		ArrayList<Player> enemiesOnQuadrant = new ArrayList<Player>();
+		if (this.getTeam() == TEAM_B){
+			for (Player player : teamA) {
+				if(player.isOnQuadrant(this.quadrant)){
+					enemiesOnQuadrant.add(player);
+				}
+			}	
+		}else{
+			for (Player player : teamB) {
+				if(player.isOnQuadrant(this.quadrant)){
+					enemiesOnQuadrant.add(player);
+				}
+			}	
+		}
+		return enemiesOnQuadrant;
+	}
+	
 	public Player getNearestAllyOpenPlayer(ArrayList<Player> teamA, ArrayList<Player> teamB){
-		ArrayList<Player> openPlayers = getOpenAllyPlayers(teamA, teamB);
+		ArrayList<Player> openPlayers = this.getOpenAllyPlayers(teamA, teamB);
 		if(openPlayers.isEmpty()){
 			return null;
 		}
@@ -526,10 +544,53 @@ public class Player {
 		return nearestPlayer;
 	}
 	
+
+	public Player getNearestEnemyPlayerOnQuadrant(ArrayList<Player> teamA, ArrayList<Player> teamB){
+		ArrayList<Player> enemiesOnQuadrant = this.getEnemyPlayersOnQuadrant(teamA, teamB);
+		if(enemiesOnQuadrant.isEmpty()){
+			return null;
+		}
+		
+		Player nearestPlayer = null;
+		for (Player player : enemiesOnQuadrant) {
+			if(nearestPlayer == null){
+				nearestPlayer = player;
+				continue;
+			}
+			nearestPlayer = getClosestPlayer(nearestPlayer, player);	
+		}
+		return nearestPlayer;
+	}
+	
+	
 	public Player getNearestAllyPlayer(ArrayList<Player> teamA, ArrayList<Player> teamB){
 		
 		Player nearestPlayer = null;
 		if(this.team == TEAM_A){
+			for (Player player : teamA) {
+				if(nearestPlayer == null){
+					nearestPlayer = player;
+					continue;
+				}
+				nearestPlayer = getClosestPlayer(nearestPlayer, player);	
+			}	
+		} else {
+			for (Player player : teamB) {
+				if(nearestPlayer == null){
+					nearestPlayer = player;
+					continue;
+				}
+				nearestPlayer = getClosestPlayer(nearestPlayer, player);	
+			}	
+		}
+		
+		return nearestPlayer;
+	}
+	
+	public Player getNearestEnemyPlayer(ArrayList<Player> teamA, ArrayList<Player> teamB){
+		
+		Player nearestPlayer = null;
+		if(this.team == TEAM_B){
 			for (Player player : teamA) {
 				if(nearestPlayer == null){
 					nearestPlayer = player;
@@ -614,6 +675,9 @@ public class Player {
 		case NEW_GOAL_INTERCEPT_GOAL:
 			setInterceptGoal(ball);
 			break;
+		case NEW_GOAL_CHASE_BALL:
+			this.setGoal(ball.x(), ball.y());
+			break;
 		default:
 			break;
 		}
@@ -623,6 +687,17 @@ public class Player {
 		switch (option) {
 		case NEW_GOAL_INTERCEPT_PASS:
 			setInterceptPass(ball, player);
+			break;
+		default:
+			break;
+		}
+	}
+	
+
+	public void setNewGoal(int option, Player player){
+		switch (option) {
+		case NEW_GOAL_CHASE_PLAYER:
+			this.setGoal(player.x(), player.y());
 			break;
 		default:
 			break;
@@ -758,7 +833,7 @@ public class Player {
 		this.quadrant = quadrant;
 	}
 	
-	public boolean isOnQuadrant(){
+	public boolean isOnHisQuadrant(){
 		if((this.x() >= 20.0f) && (this.x() <= 40.0f)){
 			//FIRST AND FOURTH
 			if(this.quadrant == QUADRANT_FIRST_AND_FOURTH)
@@ -770,7 +845,7 @@ public class Player {
 					return true;
 			} 
 			
-			if((y() >= 0.0f) && (this.y() <= 10.0f)){
+			if((this.y() >= 0.0f) && (this.y() <= 10.0f)){
 				//FOURTH
 				if(this.quadrant == QUADRANT_FOURTH)
 					return true;
@@ -787,7 +862,7 @@ public class Player {
 					return true;
 			} 
 			
-			if((y() >= 0.0f) && (this.y() <= 10.0f)){
+			if((this.y() >= 0.0f) && (this.y() <= 10.0f)){
 				//THIRD
 				if(this.quadrant == QUADRANT_THIRD)
 					return true;
@@ -866,6 +941,44 @@ public class Player {
 			if((y >= 0.0f) && (y <= 10.0f)){
 				//THIRD
 				if(this.quadrant == QUADRANT_THIRD)
+					return true;
+			} 
+		} 
+		return false;
+	}
+	
+	public boolean isOnQuadrant(int quadrant){
+		if((this.x() >= 20.0f) && (this.x() <= 40.0f)){
+			//FIRST AND FOURTH
+			if(quadrant == QUADRANT_FIRST_AND_FOURTH)
+				return true;
+			
+			if((this.y() >= 10.0f) && (this.y() <= 20.0f)){
+				//FIRST
+				if(quadrant == QUADRANT_FIRST)
+					return true;
+			} 
+			
+			if((this.y() >= 0.0f) && (this.y() <= 10.0f)){
+				//FOURTH
+				if(quadrant == QUADRANT_FOURTH)
+					return true;
+			} 
+		}
+		if ((this.x() >= 0.0f) && (this.x() <= 20.0f)){
+			//SECOND AND THIRD
+			if(quadrant == QUADRANT_SECOND_AND_THIRD)
+				return true;
+			
+			if((this.y() >= 10.0f) && (this.y() <= 20.0f)){
+				//SECOND
+				if(quadrant == QUADRANT_SECOND)
+					return true;
+			} 
+			
+			if((this.y() >= 0.0f) && (this.y() <= 10.0f)){
+				//THIRD
+				if(quadrant == QUADRANT_THIRD)
 					return true;
 			} 
 		} 
