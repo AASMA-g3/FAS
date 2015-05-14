@@ -237,9 +237,9 @@ public class PlayerAgent extends Agent {
 	protected class DribleBehaviour extends OneShotBehaviour{
 		private static final long serialVersionUID = 1L;
 		
-		private float direction;
+		private double direction;
 		
-		public DribleBehaviour(Agent agent, float direction) {
+		public DribleBehaviour(Agent agent, double direction) {
 			super(agent);
 			this.direction = direction;
 		}

@@ -82,19 +82,54 @@ public class DefenderAgent extends PlayerAgent {
 			if (gameStarted && !lostTheBall){
 				if(player.hasBall()){
 					//pass
+					Player p1 = player.getNearestAllyOpenPlayer(match.getTeamA(), match.getTeamB());
+					if(p1 != null){
+						myAgent.addBehaviour(new PassBallBehaviour(myAgent, p1));
+					}else{
+						p1 = player.getNearestAllyPlayer(match.getTeamA(), match.getTeamB());
+						myAgent.addBehaviour(new PassBallBehaviour(myAgent, p1));
+					}
+					
+//					Vai andar para trás e para a frente....
+//					Player p1 = player.getNearestAllyOpenPlayer(match.getTeamA(), match.getTeamB());
+//					if(p1 != null){
+//						myAgent.addBehaviour(new PassBallBehaviour(myAgent, p1));
+//					}else{
+//						double direction = player.getDirectionToEnemyGoal();
+//						player.setNewGoal(Player.NEW_GOAL_NEW_DIRECTION, direction);
+//						if(player.isGoalOnQuadrant()){
+//							myAgent.addBehaviour(new DribleBehaviour(myAgent, direction));
+//						} else{ 
+//							direction = player.getDirectionToAllyGoal();
+//							myAgent.addBehaviour(new DribleBehaviour(myAgent, direction));
+//						}
+//					}
 				}else if(ball.isOnQuadrant(player.getQuadrant()) && 
 						ball.enemyHasBall(player.getTeam())){
 					//Chase and Tackle
+					if(player.isAroundBall(ball) && tryTackleBehaviour == PlayerAgent.NOT_TRYING_BEHAVIOUR){
+						myAgent.addBehaviour(new TryTackleBehaviour(myAgent));
+						System.out.println("Tackle!");
+					}else{
+						player.getPlayerMovement().setGoal(ball.x(), ball.y());
+					}
 				}else if(ball.isOnQuadrant(player.getQuadrant()) && 
 						!ball.enemyHasBall(player.getTeam())){
 					//chase and receive
-				}else{ //The ball is not on the quadrantste
+					if(player.isAroundBall(ball) && tryReceiveBehaviour == PlayerAgent.NOT_TRYING_BEHAVIOUR){
+						myAgent.addBehaviour(new TryReceiveBehaviour(myAgent));
+						System.out.println("Receive Ball!");
+					}else{
+						player.getPlayerMovement().setGoal(ball.x(), ball.y());
+					}
+				}else{ //The ball is not on the quadrant
 					Player enemyPlayer = player.getNearestEnemyPlayerOnQuadrant(
 							match.getTeamA(), match.getTeamB());
 					if(enemyPlayer != null){
 						player.getPlayerMovement().setGoal(enemyPlayer.x(), enemyPlayer.y());
 					}else{
-						player.setNewGoal(Player.NEW_GOAL_POSITION_AREA);
+						if(player.isOnGoal())
+							player.setNewGoal(Player.NEW_GOAL_POSITION_AREA);
 					}
 				}
 			}

@@ -1,6 +1,9 @@
 package pt.ulisboa.aasma.fas.jade.agents.reactive;
 
 import pt.ulisboa.aasma.fas.jade.agents.AgentMessages;
+import pt.ulisboa.aasma.fas.jade.agents.reactive.PlayerAgent.CleanLostBallBehaviour;
+import pt.ulisboa.aasma.fas.jade.agents.reactive.PlayerAgent.TryReceiveBehaviour;
+import pt.ulisboa.aasma.fas.jade.agents.reactive.PlayerAgent.TryTackleBehaviour;
 import pt.ulisboa.aasma.fas.jade.game.Ball;
 import pt.ulisboa.aasma.fas.jade.game.Player;
 import jade.core.Agent;
@@ -45,7 +48,6 @@ public class StrikerAgent extends PlayerAgent {
 						addBehaviour(new MainCycle());
 						break;
 					case AgentMessages.END_GAME:
-						System.out.println("vou morrer!");
 						doDelete();
 						break;
 					case AgentMessages.PAUSE_GAME:
@@ -53,7 +55,18 @@ public class StrikerAgent extends PlayerAgent {
 						player.setNewGoal(Player.NEW_GOAL_POSITION_AREA);
 						break;
 					case AgentMessages.RESTART_GAME:
+						tryCatchBehaviour = NOT_TRYING_BEHAVIOUR;
+						tryReceiveBehaviour = NOT_TRYING_BEHAVIOUR;
+						tryTackleBehaviour = NOT_TRYING_BEHAVIOUR;
+						tryInterceptBehaviour = NOT_TRYING_BEHAVIOUR;
+						tryPassBehaviour = NOT_TRYING_BEHAVIOUR;
+						tryShootBehaviour = NOT_TRYING_BEHAVIOUR;
 						gameStarted = true;
+						lostTheBall = false;
+						break;
+					case AgentMessages.LOST_BALL:
+						lostTheBall = true;
+						myAgent.addBehaviour(new CleanLostBallBehaviour(myAgent));
 						break;
 					default:
 						break;
@@ -68,30 +81,38 @@ public class StrikerAgent extends PlayerAgent {
 		@Override
 		public void action() {
 			
-			if (gameStarted){
-			Ball ball = match.getBall();
-			/*if(moving && (player.getPlayerMovement().getGoalX() - player.x()) < 0.8
-					&& (player.getPlayerMovement().getGoalY() - player.y()) < 0.8){
-				moving = false;
+			if (gameStarted && !lostTheBall){
+				Ball ball = match.getBall();
+				Player p1 = player.getNearestAllyOpenPlayer(match.getTeamA(), match.getTeamB());
 				
-			}else if(!moving){
-				player.resetCoords();
-				moving = true;
-			}*/
-			
-			player.setGoal(ball.x(), ball.y());
-			
-			/*Ball ball = match.getBall();
-
-			double distance = ball.getDistanceToBall(player);
-		
-			if((distance < 1.0f) && !(hasBall) && (tryCatchBehaviour == null)){
-					tryCatchBehaviour = new TryCatchBehaviour(this.myAgent);
-					this.myAgent.addBehaviour(tryCatchBehaviour);
-			} else {
-				player.getPlayerMovement().setGoal(ball.x(), ball.y());
-			}
-			*/
+				if(player.hasBall() && player.isNearEnemyGoal()){
+					addBehaviour(new ShootBallBehaviour(this.myAgent));
+				}else if(player.hasBall() && p1 != null){
+					addBehaviour(new PassBallBehaviour(this.myAgent, p1));
+				}else if(player.hasBall()){
+					//advance
+				}else if(ball.isOnQuadrant(player.getQuadrant()) && 
+						ball.enemyHasBall(player.getTeam())){
+					if(player.isAroundBall(ball) && tryTackleBehaviour == PlayerAgent.NOT_TRYING_BEHAVIOUR){
+						myAgent.addBehaviour(new TryTackleBehaviour(myAgent));
+						System.out.println("Tackle!");
+					}else{
+						player.getPlayerMovement().setGoal(ball.x(), ball.y());
+					}
+				}else if(ball.isOnQuadrant(player.getQuadrant()) && 
+						!ball.enemyHasBall(player.getTeam())){
+					//chase and receive
+					if(player.isAroundBall(ball) && tryReceiveBehaviour == PlayerAgent.NOT_TRYING_BEHAVIOUR){
+						myAgent.addBehaviour(new TryReceiveBehaviour(myAgent));
+						System.out.println("Receive Ball!");
+					}else{
+						player.getPlayerMovement().setGoal(ball.x(), ball.y());
+					}
+				}else{
+					//open line
+					if(player.isOnGoal())
+						player.setNewGoal(Player.NEW_GOAL_STRIKER_OFFENSIVE);
+				}
 			}
 		}
 	}

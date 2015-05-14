@@ -97,7 +97,7 @@ public class KeeperAgent extends PlayerAgent {
 						(ball.getCurrentMovement().getOriginalIntensity() == Ball.INTENSITY_SHOOT)){
 						//The ball has been shot to the goal so we have to catch it!
 
-					if(distance < 1.0 &&
+					if(player.isAroundBall(ball) &&
 							tryCatchBehaviour == PlayerAgent.NOT_TRYING_BEHAVIOUR){
 						//The ball is close enough so let's try to catch it!
 						addBehaviour(new TryCatchBehaviour(this.myAgent));
@@ -105,7 +105,7 @@ public class KeeperAgent extends PlayerAgent {
 				}else if(ball.isOnTrajectoryToGoal(player.getTeam()) &&
 							(ball.getCurrentMovement().getOriginalIntensity() < Ball.INTENSITY_SHOOT) &&
 							(ball.getCurrentMovement().getOriginalIntensity() > Ball.INTENSITY_RUN)){
-					if(distance < 1.0 &&
+					if(player.isAroundBall(ball) &&
 							tryCatchBehaviour == PlayerAgent.NOT_TRYING_BEHAVIOUR){
 						//The ball has been passed to me so I have to control it.
 						addBehaviour(new TryReceiveBehaviour(this.myAgent));
