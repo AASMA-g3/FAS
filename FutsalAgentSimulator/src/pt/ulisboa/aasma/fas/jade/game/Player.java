@@ -39,6 +39,13 @@ public class Player {
 	public static final boolean KEEPER_INCLUDED = true;
 	public static final boolean KEEPER_EXCLUDED = false;
 	
+	public static final int QUADRANT_FIRST = 1;
+	public static final int QUADRANT_SECOND = 2;
+	public static final int QUADRANT_THIRD = 3;
+	public static final int QUADRANT_FOURTH = 4;
+	public static final int QUADRANT_FIRST_AND_FOURTH = 5;
+	public static final int QUADRANT_SECOND_AND_THIRD = 6;
+	
 	private static int PAIR_COUNTING = 1;
 	
 	private int team;
@@ -58,6 +65,8 @@ public class Player {
 	private int playerNumber;
 	
 	private boolean hasBall;
+	
+	private int quadrant;
 
 	public Player(String name, int shootingRatio, int defendingRatio,
 			int goalKeepingRatio, int passingRatio, int dribblingRatio, String position, int team, int playerNumber) {
@@ -75,13 +84,53 @@ public class Player {
 		if (PAIR_COUNTING == 6)
 			PAIR_COUNTING = 1;
 		
+		switch (PAIR_COUNTING) {
+		case 1:
+			if (this.team == TEAM_A){
+				quadrant = QUADRANT_SECOND_AND_THIRD;
+			} else {
+				quadrant = QUADRANT_FIRST_AND_FOURTH;
+			}
+			break;
+		case 2:
+			if (this.team == TEAM_A){
+				quadrant = QUADRANT_THIRD;
+			} else {
+				quadrant = QUADRANT_FOURTH;
+			}
+			break;
+		case 3:
+			if (this.team == TEAM_A){
+				quadrant = QUADRANT_SECOND;
+			} else {
+				quadrant = QUADRANT_FIRST;
+			}
+			break;
+		case 4:
+			if (this.team == TEAM_A){
+				quadrant = QUADRANT_THIRD;
+			} else {
+				quadrant = QUADRANT_FOURTH;
+			}
+			break;
+		case 5:
+			if (this.team == TEAM_A){
+				quadrant = QUADRANT_SECOND;
+			} else {
+				quadrant = QUADRANT_FIRST;
+			}
+			break;
+		default:
+			break;
+		}
+
 		double x = getNewXCoord();
-		double y = getNewYCoord(PAIR_COUNTING);
-		PAIR_COUNTING++;
+		double y = getNewYCoord();
 		
 		if (this.team == TEAM_B){
 			x += (20.0f - x)*2.0f;
 		}
+		PAIR_COUNTING++;
 		this.playerMovement = new PlayerMovement(x, y);
 		
 		shootingRatio = shootingRatio*RATIO_MULTIPLIER;
@@ -129,8 +178,8 @@ public class Player {
 	 * @return
 	 */
 	private void resetNewCoords(){
-		double x = getRandomXCoord();
-		double y = getRandomYCoord();
+		double x = getNewXCoord();
+		double y = getNewYCoord();
 		if (this.team == TEAM_B){
 			x += (20.0f - x)*2.0f;
 		}
@@ -188,40 +237,6 @@ public class Player {
 	}
 	
 	/**
-	 * Returns a new coordinate in x for the player, 
-	 * appropriate to his team and position, 
-	 * taking also in consideration the other position
-	 * teammate, in case it applies
-	 * Only used internally when a Player is created.
-	 * Never used;
-	 * @return
-	 */
-	@SuppressWarnings("unused")
-	private double getNewXCoord(int num){
-		if(position.equals(KEEPER)){
-			double minX = 0.0f;
-			double maxX = 2.0f;
-			Random rand = new Random();
-			return rand.nextDouble() * (maxX - minX) + minX;
-		} else if (position.equals(DEFENDER)){
-			if(PAIR_COUNTING == 1){
-				double minX = 10.0f;
-				double maxX = 11.0f;
-				Random rand = new Random();
-				return rand.nextDouble() * (maxX - minX) + minX;
-			}else{
-				
-			}
-		} else if (position.equals(STRIKER)) {
-			double minX = 17.0f;
-			double maxX = 19.0f;
-			Random rand = new Random();
-			return rand.nextDouble() * (maxX - minX) + minX;
-		}
-		return -1;
-	}
-	
-	/**
 	 * Returns a new coordinate in y for the player, 
 	 * in his position general area
 	 * @return
@@ -245,31 +260,7 @@ public class Player {
 		}
 		return -1;
 	}
-	/**
-	 * Returns a new coordinate in y for the player, 
-	 * appropriate to his team and position
-	 * @return
-	 */
-	@SuppressWarnings("unused")
-	private double getNewYCoord(){
-		if(position.equals(KEEPER)){
-			double minY = 9.0f;
-			double maxY = 11.0f;
-			Random rand = new Random();
-			return rand.nextDouble() * (maxY - minY) + minY;
-		} else if (position.equals(DEFENDER)){
-			double minY = 5.0f;
-			double maxY = 15.0f;
-			Random rand = new Random();
-			return rand.nextDouble() * (maxY - minY) + minY;
-		} else if (position.equals(STRIKER)) {
-			double minY = 5.0f;
-			double maxY = 15.0f;
-			Random rand = new Random();
-			return rand.nextDouble() * (maxY - minY) + minY;
-		}
-		return -1;
-	}
+
 	/**
 	 * Returns a new coordinate in y for the player, 
 	 * appropriate to his team and position, 
@@ -278,14 +269,15 @@ public class Player {
      * Only used internally when a Player is created.
 	 * @return
 	 */
-	private double getNewYCoord(int num){
+	private double getNewYCoord(){
 		if(position.equals(KEEPER)){
 			double minY = 9.0f;
 			double maxY = 11.0f;
 			Random rand = new Random();
 			return rand.nextDouble() * (maxY - minY) + minY;
 		} else if (position.equals(DEFENDER)){
-			if(PAIR_COUNTING == 2){
+			if((quadrant == QUADRANT_THIRD) ||
+					(quadrant == QUADRANT_FOURTH)){
 				double minY = 5.0f;
 				double maxY = 7.0f;
 				Random rand = new Random();
@@ -297,7 +289,8 @@ public class Player {
 				return rand.nextDouble() * (maxY - minY) + minY;
 			}
 		} else if (position.equals(STRIKER)) {
-			if(PAIR_COUNTING == 4){
+			if((quadrant == QUADRANT_THIRD) ||
+					(quadrant == QUADRANT_FOURTH)){
 				double minY = 5.0f;
 				double maxY = 7.0f;
 				Random rand = new Random();
@@ -753,5 +746,129 @@ public class Player {
 			return this.x() < 20;
 		else
 			return this.x() >= 20;
+	}
+
+
+
+	public int getQuadrant() {
+		return quadrant;
+	}
+
+	public void setQuadrant(int quadrant) {
+		this.quadrant = quadrant;
+	}
+	
+	public boolean isOnQuadrant(){
+		if((this.x() >= 20.0f) && (this.x() <= 40.0f)){
+			//FIRST AND FOURTH
+			if(this.quadrant == QUADRANT_FIRST_AND_FOURTH)
+				return true;
+			
+			if((this.y() >= 10.0f) && (this.y() <= 20.0f)){
+				//FIRST
+				if(this.quadrant == QUADRANT_FIRST)
+					return true;
+			} 
+			
+			if((y() >= 0.0f) && (this.y() <= 10.0f)){
+				//FOURTH
+				if(this.quadrant == QUADRANT_FOURTH)
+					return true;
+			} 
+		}
+		if ((this.x() >= 0.0f) && (this.x() <= 20.0f)){
+			//SECOND AND THIRD
+			if(this.quadrant == QUADRANT_SECOND_AND_THIRD)
+				return true;
+			
+			if((this.y() >= 10.0f) && (this.y() <= 20.0f)){
+				//SECOND
+				if(this.quadrant == QUADRANT_SECOND)
+					return true;
+			} 
+			
+			if((y() >= 0.0f) && (this.y() <= 10.0f)){
+				//THIRD
+				if(this.quadrant == QUADRANT_THIRD)
+					return true;
+			} 
+		} 
+		return false;
+	}
+	
+	public boolean isGoalOnQuadrant(){
+		if((this.playerMovement.getGoalX() >= 20.0f) && (this.playerMovement.getGoalX() <= 40.0f)){
+			//FIRST AND FOURTH
+			if(this.quadrant == QUADRANT_FIRST_AND_FOURTH)
+				return true;
+			
+			if((this.playerMovement.getGoalY() >= 10.0f) && (this.playerMovement.getGoalY() <= 20.0f)){
+				//FIRST
+				if(this.quadrant == QUADRANT_FIRST)
+					return true;
+			} 
+			
+			if((this.playerMovement.getGoalY() >= 0.0f) && (this.playerMovement.getGoalY() <= 10.0f)){
+				//FOURTH
+				if(this.quadrant == QUADRANT_FOURTH)
+					return true;
+			} 
+		}
+		if ((this.playerMovement.getGoalX() >= 0.0f) && (this.playerMovement.getGoalX() <= 20.0f)){
+			//SECOND AND THIRD
+			if(this.quadrant == QUADRANT_SECOND_AND_THIRD)
+				return true;
+			
+			if((this.playerMovement.getGoalY() >= 10.0f) && (this.playerMovement.getGoalY() <= 20.0f)){
+				//SECOND
+				if(this.quadrant == QUADRANT_SECOND)
+					return true;
+			} 
+			
+			if((this.playerMovement.getGoalY() >= 0.0f) && (this.playerMovement.getGoalY() <= 10.0f)){
+				//THIRD
+				if(this.quadrant == QUADRANT_THIRD)
+					return true;
+			} 
+		} 
+		return false;
+	}
+	
+	public boolean isPointOnQuadrant(double x, double y){
+		if((x >= 20.0f) && (x <= 40.0f)){
+			//FIRST AND FOURTH
+			if(this.quadrant == QUADRANT_FIRST_AND_FOURTH)
+				return true;
+			
+			if((y >= 10.0f) && (y <= 20.0f)){
+				//FIRST
+				if(this.quadrant == QUADRANT_FIRST)
+					return true;
+			} 
+			
+			if((y >= 0.0f) && (y <= 10.0f)){
+				//FOURTH
+				if(this.quadrant == QUADRANT_FOURTH)
+					return true;
+			} 
+		}
+		if ((x >= 0.0f) && (x <= 20.0f)){
+			//SECOND AND THIRD
+			if(this.quadrant == QUADRANT_SECOND_AND_THIRD)
+				return true;
+			
+			if((y >= 10.0f) && (y <= 20.0f)){
+				//SECOND
+				if(this.quadrant == QUADRANT_SECOND)
+					return true;
+			} 
+			
+			if((y >= 0.0f) && (y <= 10.0f)){
+				//THIRD
+				if(this.quadrant == QUADRANT_THIRD)
+					return true;
+			} 
+		} 
+		return false;
 	}
 }
