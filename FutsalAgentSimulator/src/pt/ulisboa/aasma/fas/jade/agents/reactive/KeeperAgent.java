@@ -66,6 +66,7 @@ public class KeeperAgent extends PlayerAgent {
 					case AgentMessages.LOST_BALL:
 						lostTheBall = true;
 						myAgent.addBehaviour(new CleanLostBallBehaviour(myAgent));
+						break;
 					default:
 						break;
 				}

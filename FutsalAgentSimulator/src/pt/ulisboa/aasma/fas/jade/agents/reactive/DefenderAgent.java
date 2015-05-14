@@ -1,6 +1,7 @@
 package pt.ulisboa.aasma.fas.jade.agents.reactive;
 
 import pt.ulisboa.aasma.fas.jade.agents.AgentMessages;
+import pt.ulisboa.aasma.fas.jade.agents.reactive.PlayerAgent.CleanLostBallBehaviour;
 import pt.ulisboa.aasma.fas.jade.game.Ball;
 import pt.ulisboa.aasma.fas.jade.game.Game;
 import pt.ulisboa.aasma.fas.jade.game.Player;
@@ -51,7 +52,18 @@ public class DefenderAgent extends PlayerAgent {
 						player.setNewGoal(Player.NEW_GOAL_POSITION_AREA);
 						break;
 					case AgentMessages.RESTART_GAME:
+						tryCatchBehaviour = NOT_TRYING_BEHAVIOUR;
+						tryReceiveBehaviour = NOT_TRYING_BEHAVIOUR;
+						tryTackleBehaviour = NOT_TRYING_BEHAVIOUR;
+						tryInterceptBehaviour = NOT_TRYING_BEHAVIOUR;
+						tryPassBehaviour = NOT_TRYING_BEHAVIOUR;
+						tryShootBehaviour = NOT_TRYING_BEHAVIOUR;
 						gameStarted = true;
+						lostTheBall = false;
+						break;
+					case AgentMessages.LOST_BALL:
+						lostTheBall = true;
+						myAgent.addBehaviour(new CleanLostBallBehaviour(myAgent));
 						break;
 					default:
 						break;
@@ -65,8 +77,28 @@ public class DefenderAgent extends PlayerAgent {
 
 		@Override
 		public void action() {
+			Ball ball = match.getBall();
 			
-			if (gameStarted){
+			if (gameStarted && !lostTheBall){
+				if(player.hasBall()){
+					//pass
+				}else if(ball.isOnQuadrant(player.getQuadrant()) && 
+						ball.enemyHasBall(player.getTeam())){
+					//Chase and Tackle
+				}else if(ball.isOnQuadrant(player.getQuadrant()) && 
+						!ball.enemyHasBall(player.getTeam())){
+					//chase and receive
+				}else{ //The ball is not on the quadrantste
+					Player enemyPlayer = player.getNearestEnemyPlayerOnQuadrant(
+							match.getTeamA(), match.getTeamB());
+					if(enemyPlayer != null){
+						player.getPlayerMovement().setGoal(enemyPlayer.x(), enemyPlayer.y());
+					}else{
+						player.setNewGoal(Player.NEW_GOAL_POSITION_AREA);
+					}
+				}
+			}
+			
 //				Ball ball = match.getBall();
 //				Player p1 = player.getNearestAllyOpenPlayer(match.getTeamA(), match.getTeamB());
 //				
@@ -208,8 +240,6 @@ public class DefenderAgent extends PlayerAgent {
 //					}else{ // Nobody has the ball
 //						
 //					}
-			
-			}
 			
 		}
 	}
