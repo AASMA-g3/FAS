@@ -8,6 +8,8 @@ import pt.ulisboa.aasma.fas.jade.agents.reactive.KeeperAgent;
 import pt.ulisboa.aasma.fas.jade.agents.reactive.StrikerAgent;
 
 public class Player {
+
+	public static final double PLAYER_SIZE = 1.0f;
 	
 	public static final int NEW_GOAL_GENERAL_AREA = 0;
 	public static final int NEW_GOAL_POSITION_AREA = 1;
@@ -16,6 +18,7 @@ public class Player {
 	public static final int NEW_GOAL_NEW_DIRECTION = 4;
 	public static final int NEW_GOAL_CHASE_PLAYER = 5;
 	public static final int NEW_GOAL_CHASE_BALL = 6;
+	public static final int NEW_GOAL_STRIKER_OFFENSIVE = 7;
 	
 	public static final String KEEPER = KeeperAgent.class.getName();
 	public static final String DEFENDER = DefenderAgent.class.getName();
@@ -108,16 +111,16 @@ public class Player {
 			break;
 		case 4:
 			if (this.team == TEAM_A){
-				quadrant = QUADRANT_THIRD;
-			} else {
 				quadrant = QUADRANT_FOURTH;
+			} else {
+				quadrant = QUADRANT_THIRD;
 			}
 			break;
 		case 5:
 			if (this.team == TEAM_A){
-				quadrant = QUADRANT_SECOND;
-			} else {
 				quadrant = QUADRANT_FIRST;
+			} else {
+				quadrant = QUADRANT_SECOND;
 			}
 			break;
 		default:
@@ -305,6 +308,37 @@ public class Player {
 		return -1;
 	}
 	
+	private double getNewXOffensiveCoord(){
+			double minX = 10.0f;
+			double maxX = 11.0f;
+			Random rand = new Random();
+			return rand.nextDouble() * (maxX - minX) + minX;
+	}
+	
+	private double getNewYOffensiveCoord(){
+			if((quadrant == QUADRANT_THIRD) ||
+					(quadrant == QUADRANT_FOURTH)){
+				double minY = 5.0f;
+				double maxY = 7.0f;
+				Random rand = new Random();
+				return rand.nextDouble() * (maxY - minY) + minY;
+			} else {
+				double minY = 13.0f;
+				double maxY = 15.0f;
+				Random rand = new Random();
+				return rand.nextDouble() * (maxY - minY) + minY;
+			}
+	}
+	
+	private void setCoordsOffensive(){
+		double x = getNewXOffensiveCoord();
+		double y = getNewYOffensiveCoord();
+		if (this.team == TEAM_A){
+			x += (20.0f - x)*2.0f;
+		}
+		this.setGoal(x, y);
+	}
+	
 	public int getShootingRatio() {
 		return shootingRatio;
 	}
@@ -472,15 +506,23 @@ public class Player {
 	public boolean isAroundPlayer(Player allyPlayer){
 		Player enemyPlayer = this;
 		
-		if (enemyPlayer.getDistanceToPlayer(allyPlayer) <= 1.0f)
+		if (enemyPlayer.getDistanceToPlayer(allyPlayer) <= Player.PLAYER_SIZE)
 			return true;
 		else
 			return false;
 
 	}
 	
+	public boolean isNearEnemyGoal(){
+		return this.getDistanceToEnemyGoal() < 10.0f; 
+	}
+	
+	public boolean isNearAllyGoal(){
+		return this.getDistanceToEnemyGoal() < 10.0f; 
+	}
+	
 	public boolean isAroundBall(Ball ball){
-		return this.getDistanceToBall(ball) < 0.5f; 
+		return this.getDistanceToAllyGoal() < Player.PLAYER_SIZE; 
 	}
 	
 	public boolean hasBall() {
@@ -661,6 +703,9 @@ public class Player {
 		case NEW_GOAL_POSITION_AREA:
 			resetNewCoords();
 			break;
+		case NEW_GOAL_STRIKER_OFFENSIVE:
+			setCoordsOffensive();
+			break;
 		default:
 			break;
 		}
@@ -717,7 +762,7 @@ public class Player {
 	public void setNewGoal(int option, double direction){
 		switch (option) {
 		case NEW_GOAL_NEW_DIRECTION:
-			setNewDirection(direction, 1.0f);
+			setNewDirection(direction, Player.PLAYER_SIZE);
 			break;
 		default:
 			break;
@@ -983,5 +1028,9 @@ public class Player {
 			} 
 		} 
 		return false;
+	}
+	
+	public boolean isOnGoal(){
+		return this.playerMovement.isOnGoal();
 	}
 }

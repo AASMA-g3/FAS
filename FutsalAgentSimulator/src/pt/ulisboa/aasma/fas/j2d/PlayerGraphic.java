@@ -11,7 +11,7 @@ import pt.ulisboa.aasma.fas.jade.game.Player;
 
 public class PlayerGraphic implements Sprite {
 	private static final double SPEED = 200; //Velocidade em 20 pixels / segundo
-	private static final int SIZE = 20;
+	private static final double SIZE = Player.PLAYER_SIZE * GameRunner.SCREEN_RATIO_X;
 	
 	private Player player;
 	
