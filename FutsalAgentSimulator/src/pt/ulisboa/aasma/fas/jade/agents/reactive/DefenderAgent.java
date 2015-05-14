@@ -89,25 +89,13 @@ public class DefenderAgent extends PlayerAgent {
 						p1 = player.getNearestAllyPlayer(match.getTeamA(), match.getTeamB());
 						myAgent.addBehaviour(new PassBallBehaviour(myAgent, p1));
 					}
-					
-//					Vai andar para trás e para a frente....
-//					Player p1 = player.getNearestAllyOpenPlayer(match.getTeamA(), match.getTeamB());
-//					if(p1 != null){
-//						myAgent.addBehaviour(new PassBallBehaviour(myAgent, p1));
-//					}else{
-//						double direction = player.getDirectionToEnemyGoal();
-//						player.setNewGoal(Player.NEW_GOAL_NEW_DIRECTION, direction);
-//						if(player.isGoalOnQuadrant()){
-//							myAgent.addBehaviour(new DribleBehaviour(myAgent, direction));
-//						} else{ 
-//							direction = player.getDirectionToAllyGoal();
-//							myAgent.addBehaviour(new DribleBehaviour(myAgent, direction));
-//						}
-//					}
 				}else if(ball.isOnQuadrant(player.getQuadrant()) && 
 						ball.enemyHasBall(player.getTeam())){
 					//Chase and Tackle
-					if(player.isAroundBall(ball) && tryTackleBehaviour == PlayerAgent.NOT_TRYING_BEHAVIOUR){
+					if(player.isAroundBall(ball) && tryTackleBehaviour == PlayerAgent.NOT_TRYING_BEHAVIOUR
+//							&& (tryPassBehaviour != PlayerAgent.NOT_TRYING_BEHAVIOUR
+//							|| tryShootBehaviour != PlayerAgent.NOT_TRYING_BEHAVIOUR)
+							){
 						myAgent.addBehaviour(new TryTackleBehaviour(myAgent));
 						System.out.println("Tackle!");
 					}else{
@@ -116,7 +104,10 @@ public class DefenderAgent extends PlayerAgent {
 				}else if(ball.isOnQuadrant(player.getQuadrant()) && 
 						!ball.enemyHasBall(player.getTeam())){
 					//chase and receive
-					if(player.isAroundBall(ball) && tryReceiveBehaviour == PlayerAgent.NOT_TRYING_BEHAVIOUR){
+					if(player.isAroundBall(ball) && tryReceiveBehaviour == PlayerAgent.NOT_TRYING_BEHAVIOUR
+//							&& (tryPassBehaviour != PlayerAgent.NOT_TRYING_BEHAVIOUR
+//							|| tryShootBehaviour != PlayerAgent.NOT_TRYING_BEHAVIOUR)
+							){
 						myAgent.addBehaviour(new TryReceiveBehaviour(myAgent));
 						System.out.println("Receive Ball!");
 					}else{

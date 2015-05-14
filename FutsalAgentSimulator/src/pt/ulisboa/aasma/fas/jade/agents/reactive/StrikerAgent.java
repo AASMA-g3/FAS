@@ -93,7 +93,10 @@ public class StrikerAgent extends PlayerAgent {
 					//advance
 				}else if(ball.isOnQuadrant(player.getQuadrant()) && 
 						ball.enemyHasBall(player.getTeam())){
-					if(player.isAroundBall(ball) && tryTackleBehaviour == PlayerAgent.NOT_TRYING_BEHAVIOUR){
+					if(player.isAroundBall(ball) && tryTackleBehaviour == PlayerAgent.NOT_TRYING_BEHAVIOUR
+//							&& (tryPassBehaviour != PlayerAgent.NOT_TRYING_BEHAVIOUR
+//							|| tryShootBehaviour != PlayerAgent.NOT_TRYING_BEHAVIOUR)
+							){
 						myAgent.addBehaviour(new TryTackleBehaviour(myAgent));
 						System.out.println("Tackle!");
 					}else{
@@ -102,7 +105,10 @@ public class StrikerAgent extends PlayerAgent {
 				}else if(ball.isOnQuadrant(player.getQuadrant()) && 
 						!ball.enemyHasBall(player.getTeam())){
 					//chase and receive
-					if(player.isAroundBall(ball) && tryReceiveBehaviour == PlayerAgent.NOT_TRYING_BEHAVIOUR){
+					if(player.isAroundBall(ball) && tryReceiveBehaviour == PlayerAgent.NOT_TRYING_BEHAVIOUR
+//							&& (tryPassBehaviour != PlayerAgent.NOT_TRYING_BEHAVIOUR
+//							|| tryShootBehaviour != PlayerAgent.NOT_TRYING_BEHAVIOUR)
+							){
 						myAgent.addBehaviour(new TryReceiveBehaviour(myAgent));
 						System.out.println("Receive Ball!");
 					}else{

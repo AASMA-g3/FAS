@@ -140,7 +140,7 @@ public class PlayerMovement {
 		playerPosLock.lock();
 		playerTimerLock.lock();
 		try{
-		if (isOnGoal()){
+		if (!isOnGoal()){
 			
 			double theta = getDirectionToGoal();
 			double cos =  Math.cos(Math.toRadians(theta));
@@ -174,7 +174,7 @@ public class PlayerMovement {
 		playerPosLock.lock();
 		playerTimerLock.lock();
 		try{
-			if (isOnGoal()){
+			if (!isOnGoal()){
 			
 			double theta = getDirectionToGoal();
 			double sin =  Math.sin(Math.toRadians(theta));

@@ -518,11 +518,11 @@ public class Player {
 	}
 	
 	public boolean isNearAllyGoal(){
-		return this.getDistanceToEnemyGoal() < 10.0f; 
+		return this.getDistanceToAllyGoal() < 10.0f; 
 	}
 	
 	public boolean isAroundBall(Ball ball){
-		return this.getDistanceToAllyGoal() < Player.PLAYER_SIZE; 
+		return this.getDistanceToBall(ball) < Player.PLAYER_SIZE; 
 	}
 	
 	public boolean hasBall() {

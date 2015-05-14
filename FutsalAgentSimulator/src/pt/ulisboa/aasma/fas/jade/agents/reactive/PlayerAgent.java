@@ -89,6 +89,7 @@ public class PlayerAgent extends Agent {
 				msg.addReceiver(ballAgent);
 				msg.setOntology(AgentMessages.TRY_CATCH);	
 				send(msg);
+				System.out.println(myAgent.getName() + ": Try Catch");
 		}
 	}
 	
@@ -109,6 +110,7 @@ public class PlayerAgent extends Agent {
 				msg.addReceiver(ballAgent);
 				msg.setOntology(AgentMessages.TRY_RECEIVE);	
 				send(msg);
+				System.out.println(myAgent.getName() + ": Try Receive");
 		}
 	}
 	
@@ -129,6 +131,7 @@ public class PlayerAgent extends Agent {
 				msg.addReceiver(ballAgent);
 				msg.setOntology(AgentMessages.TRY_TACKLE);	
 				send(msg);
+				System.out.println(myAgent.getName() + ": Try Tackle");
 		}
 	}
 
@@ -149,6 +152,7 @@ public class PlayerAgent extends Agent {
 				msg.addReceiver(ballAgent);
 				msg.setOntology(AgentMessages.TRY_INTERCEPT);	
 				send(msg);
+				System.out.println(myAgent.getName() + ": Try Intercept");
 		}
 	}
 	
@@ -196,6 +200,7 @@ public class PlayerAgent extends Agent {
 				msg.setOntology(AgentMessages.PASS);
 				msg.setContent(intensity + " " + direction);
 				send(msg);
+				System.out.println(myAgent.getName() + ": Try Pass");
 			} else {
 				tryPassBehaviour = PlayerAgent.FAILED;
 				myAgent.addBehaviour(new CleanPassBehaviour(myAgent));
@@ -226,7 +231,7 @@ public class PlayerAgent extends Agent {
 				msg.setOntology(AgentMessages.SHOOT);
 				msg.setContent(Ball.INTENSITY_SHOOT + " " + direction);
 				send(msg);
-				
+				System.out.println(myAgent.getName() + ": Try Shoot");
 			} else {
 				tryShootBehaviour = PlayerAgent.FAILED;
 				myAgent.addBehaviour(new CleanShootBehaviour(myAgent));
@@ -252,6 +257,7 @@ public class PlayerAgent extends Agent {
 				msg.setOntology(AgentMessages.DRIBLE);
 				msg.setContent(Ball.INTENSITY_RUN + " " + direction);
 				send(msg);
+				System.out.println(myAgent.getName() + ": Try Drible");
 			}
 		}
 		
@@ -364,7 +370,7 @@ public class PlayerAgent extends Agent {
 		private static final long serialVersionUID = 1L;
 
 		public CleanCatchBehaviour(Agent arg0) {
-			super(arg0, 500);
+			super(arg0, 300);
 		}
 
 		@Override
@@ -378,7 +384,7 @@ public class PlayerAgent extends Agent {
 		private static final long serialVersionUID = 1L;
 
 		public CleanInterceptBehaviour(Agent arg0) {
-			super(arg0, 500);
+			super(arg0, 300);
 		}
 
 		@Override
@@ -392,7 +398,7 @@ public class PlayerAgent extends Agent {
 		private static final long serialVersionUID = 1L;
 
 		public CleanReceiveBehaviour(Agent arg0) {
-			super(arg0, 500);
+			super(arg0, 300);
 		}
 
 		@Override
@@ -406,7 +412,7 @@ public class PlayerAgent extends Agent {
 		private static final long serialVersionUID = 1L;
 
 		public CleanTackleBehaviour(Agent arg0) {
-			super(arg0, 500);
+			super(arg0, 300);
 		}
 
 		@Override
@@ -420,7 +426,7 @@ public class PlayerAgent extends Agent {
 		private static final long serialVersionUID = 1L;
 
 		public CleanPassBehaviour(Agent arg0) {
-			super(arg0, 500);
+			super(arg0, 300);
 		}
 
 		@Override
@@ -434,7 +440,7 @@ public class PlayerAgent extends Agent {
 		private static final long serialVersionUID = 1L;
 
 		public CleanShootBehaviour(Agent arg0) {
-			super(arg0, 500);
+			super(arg0, 300);
 		}
 
 		@Override
