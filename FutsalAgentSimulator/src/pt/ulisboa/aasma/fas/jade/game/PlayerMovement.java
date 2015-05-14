@@ -10,6 +10,7 @@ public class PlayerMovement {
 	public static final double STANDARD_VELOCITY = 5.0f;
 	public static final double STAMINA_DECAY = 0.2f;
 
+	
 	private final Lock playerVelLock = new ReentrantLock();
 	private final Lock playerPosLock = new ReentrantLock();
 	private final Lock playerTimerLock = new ReentrantLock();
@@ -134,12 +135,12 @@ public class PlayerMovement {
 	    }
 	    return angle;
 	}
-
+	
 	private void setX(double currentTick) {	
 		playerPosLock.lock();
 		playerTimerLock.lock();
 		try{
-		if (Math.round(this.myX) != Math.round(this.goalX)){
+		if (isOnGoal()){
 			
 			double theta = getDirectionToGoal();
 			double cos =  Math.cos(Math.toRadians(theta));
@@ -173,7 +174,7 @@ public class PlayerMovement {
 		playerPosLock.lock();
 		playerTimerLock.lock();
 		try{
-			if (Math.round(this.myY) != Math.round(this.goalY)){
+			if (isOnGoal()){
 			
 			double theta = getDirectionToGoal();
 			double sin =  Math.sin(Math.toRadians(theta));
@@ -203,4 +204,12 @@ public class PlayerMovement {
 		}
 	}
 
+	public boolean isOnGoal(){
+		if(((myX - Player.PLAYER_SIZE) < goalX) &&
+			((myX + Player.PLAYER_SIZE) > goalX) &&
+			((myY - Player.PLAYER_SIZE) < goalY) &&
+			((myY + Player.PLAYER_SIZE) > goalY))
+			return true;
+		return false;
+	}
 }
