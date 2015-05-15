@@ -9,6 +9,7 @@ public class KeeperAgentBDI extends PlayerAgentBDI {
 	
 	public KeeperAgentBDI(Game game, Player player){
 		super(game, player);
+		this.setCapability(new PlayFutsalCapability());	
 	}
 	
 }
