@@ -3,6 +3,9 @@ package pt.ulisboa.aasma.fas.jade.game;
 import java.util.ArrayList;
 import java.util.Random;
 
+import pt.ulisboa.aasma.fas.jade.agents.bdi.DefenderAgentBDI;
+import pt.ulisboa.aasma.fas.jade.agents.bdi.KeeperAgentBDI;
+import pt.ulisboa.aasma.fas.jade.agents.bdi.StrikerAgentBDI;
 import pt.ulisboa.aasma.fas.jade.agents.reactive.DefenderAgentReactive;
 import pt.ulisboa.aasma.fas.jade.agents.reactive.KeeperAgentReactive;
 import pt.ulisboa.aasma.fas.jade.agents.reactive.StrikerAgentReactive;
@@ -22,9 +25,17 @@ public class Player {
 	public static final int NEW_GOAL_STRIKER_OFFENSIVE = 7;
 	public static final int NEW_GOAL_DEFENDER_DEFENSE = 8;
 
-	public static final String KEEPER = KeeperAgentReactive.class.getName();
-	public static final String DEFENDER = DefenderAgentReactive.class.getName();
-	public static final String STRIKER = StrikerAgentReactive.class.getName();
+	public static final String KEEPER = "Keeper";
+	public static final String DEFENDER = "Defender";
+	public static final String STRIKER = "Striker";
+	
+	public static final String KEEPER_REACTIVE = KeeperAgentReactive.class.getName();
+	public static final String DEFENDER_REACTIVE = DefenderAgentReactive.class.getName();
+	public static final String STRIKER_REACTIVE = StrikerAgentReactive.class.getName();
+	
+	public static final String KEEPER_DELIBERATIVE = KeeperAgentBDI.class.getName();
+	public static final String DEFENDER_DELIBERATIVE = DefenderAgentBDI.class.getName();
+	public static final String STRIKER_DELIBERATIVE = StrikerAgentBDI.class.getName();
 	
 	public static final int TEAM_A = 0;
 	public static final int TEAM_B = 1;
@@ -36,7 +47,7 @@ public class Player {
 	
 	public static final int STRIKER_DR = -20;
 	
-	public static final int RATIO_MULTIPLIER = 20;
+	public static final int RATIO_MULTIPLIER = 10;
 	
 	public static final float TEAM_A_KEEPER_XPOS = 0.0f;
 	public static final float TEAM_B_KEEPER_XPOS = 38.7f;
