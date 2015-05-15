@@ -39,8 +39,8 @@ public class MenuFrame extends JFrame {
 	private Game currentGame;
 	
 	private static final int MIN_ATTR = 0;
-	private static final int MED_ATTR = 2;
-	private static final int MAX_ATTR = 5;
+	private static final int MED_ATTR = 5;
+	private static final int MAX_ATTR = 10;
 	
 	//JPanel
 	private JPanel pnlControl = new JPanel();
@@ -52,6 +52,14 @@ public class MenuFrame extends JFrame {
 	public final AtomicBoolean restartPressed = new AtomicBoolean(false);
 	
 	private ArrayList<Integer> sliders = new ArrayList<Integer>();
+	
+	/*ARGUMENTS REPRESENTING EACH TEAM MODE
+	  sliders_status[0] - get team A status
+	  sliders_status[1] - get team B status
+	  if attribute = 1 -> the team has a reactive behaviour
+	  if attribute = 2 -> the team has a hybrid behaviour
+	  if attribute = 3 -> the team has a deliberative behaviour*/
+	private ArrayList<Integer> sliders_status = new ArrayList<Integer>();
 	
 	private boolean gameInProgress = false;
 	
@@ -68,17 +76,23 @@ public class MenuFrame extends JFrame {
 	    btnRun.setBounds(60, 400, 220, 30);
 
 	    //JPanel bounds
-	    pnlControl.setBounds(800, 800, 200, 100);
+	    pnlControl.setBounds(1000, 1000, 200, 100);
 
 	    for (int i=0; i<10; i++){
 	    	sliders.add(new Integer(MED_ATTR));
 	    }
+	    
+	    sliders_status.add(new Integer(2));
+	    sliders_status.add(new Integer(2));
 	   
 	    Box boxGK = Box.createVerticalBox();
 	    Box boxDef = Box.createVerticalBox();
 	    Box boxAtk = Box.createVerticalBox();
 	    Box boxDri = Box.createVerticalBox();
 	    Box boxPas = Box.createVerticalBox();
+	    Box boxStat = Box.createVerticalBox();
+	    
+	
 
 	    JSlider s1a = sliderCreate(MIN_ATTR, MAX_ATTR, MED_ATTR, "GK TeamA", boxGK);
 	    boxGK.add(new JLabel(" "));
@@ -105,6 +119,22 @@ public class MenuFrame extends JFrame {
 	    boxPas.add(new JLabel(" "));
 	    boxPas.add(new JLabel(" "));
 	    JSlider s5b = sliderCreate(MIN_ATTR, MAX_ATTR, MED_ATTR, "Pas TeamB", boxPas);
+	    
+	    
+	    JSlider s6a = sliderCreate(1, 3, 2, "Ag TeamA", boxStat);
+	    
+		Hashtable<Integer, JLabel> labelTable = new Hashtable<Integer, JLabel>();
+		labelTable.put( new Integer( 1 ), new JLabel("Rea"));
+		labelTable.put( new Integer( 2 ), new JLabel("Hyb") );
+		labelTable.put( new Integer( 3 ), new JLabel("Del") );
+		s6a.setLabelTable(labelTable);
+		
+	    boxStat.add(new JLabel(" "));
+	    boxStat.add(new JLabel(" "));
+	    boxStat.add(new JLabel(" "));
+	    
+	    JSlider s6b = sliderCreate(1, 3, 2, "Ag TeamB", boxStat);
+		s6b.setLabelTable(labelTable);
 
 
 
@@ -117,6 +147,7 @@ public class MenuFrame extends JFrame {
 	    pnlControl.add(boxAtk);
 	    pnlControl.add(boxDri);
 	    pnlControl.add(boxPas);
+	    pnlControl.add(boxStat);
 	    pnlControl.add(btnBox);
 	    add(pnlControl, BorderLayout.CENTER);
 	    
@@ -272,6 +303,21 @@ public class MenuFrame extends JFrame {
 	    	public void stateChanged(ChangeEvent e) {
 	    		JSlider source = (JSlider)e.getSource();
 	    		sliders.set(9, source.getValue());
+	    	}
+	    });
+	    
+	    s6a.addChangeListener(new ChangeListener(){
+	    	public void stateChanged(ChangeEvent e) {
+	    		JSlider source = (JSlider)e.getSource();
+	    		sliders_status.set(0, source.getValue());
+	    	}
+	    });
+	    
+	    
+	    s6b.addChangeListener(new ChangeListener(){
+	    	public void stateChanged(ChangeEvent e) {
+	    		JSlider source = (JSlider)e.getSource();
+	    		sliders_status.set(1, source.getValue());
 	    	}
 	    });
 
