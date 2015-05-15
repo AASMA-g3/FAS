@@ -7,12 +7,12 @@ import pt.ulisboa.aasma.fas.exceptions.PlayerDoesNotExistException;
 
 public class Game {
 
-	public static final double GAME_TIME = 120000.0f;
+	public static final int GAME_TIME = 120000;
 	
 	public static final int LIMIT_X = 40;
 	public static final int LIMIT_Y = 20;
 	
-	public static final long TICK_TIME = 10;
+	public static final int TICK_TIME = 10;
 	public static final int PLAYERS_PER_TEAM = 5;
 	
 	public static final int GOAL_Y_MIN = 9;
@@ -30,7 +30,7 @@ public class Game {
 	
 	private int playerNumberCounter = 1;
 	
-	private double gameTime = 0;
+	private int gameTime = 0;
 	
 	public final AtomicBoolean isEnded = new AtomicBoolean(false);
 	
@@ -190,11 +190,11 @@ public class Game {
 		throw new PlayerDoesNotExistException(playerName);
 	}
 
-	public double getGameTime() {
+	public int getGameTime() {
 		return gameTime;
 	}
 
-	public void setGameTime(double gameTime) {
+	public void setGameTime(int gameTime) {
 		this.gameTime = gameTime;
 	}
 

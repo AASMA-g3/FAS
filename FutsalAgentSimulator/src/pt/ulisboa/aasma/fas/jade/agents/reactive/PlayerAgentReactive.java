@@ -162,11 +162,11 @@ public class PlayerAgentReactive extends Agent {
 			
 			double dist = player.getDistanceToBall(match.getBall());
 			
-			if (dist < 2)
-				this.intensity = Ball.INTENSITY_SHORT_PASS;
-			else if (dist >= 2 && dist <= 5)
-				this.intensity = Ball.INTENSITY_MEDIUM_PASS;
-			else
+//			if (dist < 2)
+//				this.intensity = Ball.INTENSITY_SHORT_PASS;
+//			else if (dist >= 2 && dist <= 5)
+//				this.intensity = Ball.INTENSITY_MEDIUM_PASS;
+//			else
 				this.intensity = Ball.INTENSITY_LONG_PASS;
 			
 			
