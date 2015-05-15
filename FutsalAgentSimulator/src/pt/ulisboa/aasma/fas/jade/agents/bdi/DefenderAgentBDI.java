@@ -9,11 +9,11 @@ import jade.core.behaviours.CyclicBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 
-public class DefenderAgent extends PlayerAgent {
+public class DefenderAgentBDI extends PlayerAgentBDI {
 	
 	private static final long serialVersionUID = 1L;
 	
-	public DefenderAgent(Game game) {
+	public DefenderAgentBDI(Game game) {
 		super(game);
 		this.addBehaviour(new ReceiveInformBehaviour(this));
 	}

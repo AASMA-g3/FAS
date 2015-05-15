@@ -1,9 +1,9 @@
 package pt.ulisboa.aasma.fas.jade.agents.reactive;
 
 import pt.ulisboa.aasma.fas.jade.agents.AgentMessages;
-import pt.ulisboa.aasma.fas.jade.agents.reactive.PlayerAgent.CleanLostBallBehaviour;
-import pt.ulisboa.aasma.fas.jade.agents.reactive.PlayerAgent.TryReceiveBehaviour;
-import pt.ulisboa.aasma.fas.jade.agents.reactive.PlayerAgent.TryTackleBehaviour;
+import pt.ulisboa.aasma.fas.jade.agents.reactive.PlayerAgentReactive.CleanLostBallBehaviour;
+import pt.ulisboa.aasma.fas.jade.agents.reactive.PlayerAgentReactive.TryReceiveBehaviour;
+import pt.ulisboa.aasma.fas.jade.agents.reactive.PlayerAgentReactive.TryTackleBehaviour;
 import pt.ulisboa.aasma.fas.jade.game.Ball;
 import pt.ulisboa.aasma.fas.jade.game.Player;
 import jade.core.Agent;
@@ -11,7 +11,7 @@ import jade.core.behaviours.CyclicBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 
-public class StrikerAgent extends PlayerAgent {
+public class StrikerAgentReactive extends PlayerAgentReactive {
 	
 	private static final long serialVersionUID = 1L;
 //	private Boolean moving = false;
@@ -61,7 +61,7 @@ public class StrikerAgent extends PlayerAgent {
 //						tryInterceptBehaviour = NOT_TRYING_BEHAVIOUR;
 //						tryPassBehaviour = NOT_TRYING_BEHAVIOUR;
 //						tryShootBehaviour = NOT_TRYING_BEHAVIOUR;
-						tryBehaviour = PlayerAgent.NOT_TRYING_BEHAVIOUR;
+						tryBehaviour = PlayerAgentReactive.NOT_TRYING_BEHAVIOUR;
 						gameStarted = true;
 						lostTheBall = false;
 						break;
@@ -82,7 +82,7 @@ public class StrikerAgent extends PlayerAgent {
 		@Override
 		public void action() {
 			
-			if (gameStarted && !lostTheBall && tryBehaviour == PlayerAgent.NOT_TRYING_BEHAVIOUR){
+			if (gameStarted && !lostTheBall && tryBehaviour == PlayerAgentReactive.NOT_TRYING_BEHAVIOUR){
 				Ball ball = match.getBall();
 				Player p1 = player.getNearestAllyOpenPlayer(match.getTeamA(), match.getTeamB());
 				double dir = player.getDirectionToEnemyGoal();

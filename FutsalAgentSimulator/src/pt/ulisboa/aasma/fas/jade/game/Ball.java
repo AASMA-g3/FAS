@@ -32,6 +32,16 @@ public class Ball {
 		return currentMovement.y();
 	}
 	
+	public double v(){
+		double vx = currentMovement.vx();
+		double vy = currentMovement.vy();
+		double direction = currentMovement.getDirection();
+		vx = vx/Math.cos(Math.toRadians(direction));
+		vy = vy/Math.sin(Math.toRadians(direction));
+		return vx+vy;
+		
+	}
+	
 	public double getOriginalIntensity() {
 		return currentMovement.getOriginalIntensity();
 	}

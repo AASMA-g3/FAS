@@ -9,12 +9,12 @@ import pt.ulisboa.aasma.fas.jade.game.Ball;
 import pt.ulisboa.aasma.fas.jade.game.Game;
 import pt.ulisboa.aasma.fas.jade.game.Player;
 
-public class StrikerAgent extends PlayerAgent {
+public class StrikerAgentBDI extends PlayerAgentBDI {
 	
 	private static final long serialVersionUID = 1L;
 //	private Boolean moving = false;	
 
-	public StrikerAgent(Game game){
+	public StrikerAgentBDI(Game game){
 		super(game);
 
 		this.addBehaviour(new ReceiveInformBehaviour(this));

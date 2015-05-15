@@ -21,7 +21,7 @@ import pt.ulisboa.aasma.fas.jade.game.Player;
  * @author Fábio
  *
  */
-public class PlayerAgent extends Agent {
+public class PlayerAgentReactive extends Agent {
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -88,7 +88,7 @@ public class PlayerAgent extends Agent {
 		public TryCatchBehaviour(Agent agent) {
 			super(agent);
 //			tryCatchBehaviour = PlayerAgent.WAITING_ANSWER;
-			tryBehaviour = PlayerAgent.WAITING_ANSWER;
+			tryBehaviour = PlayerAgentReactive.WAITING_ANSWER;
 		}
 		
 		@Override
@@ -111,7 +111,7 @@ public class PlayerAgent extends Agent {
 		public TryReceiveBehaviour(Agent agent) {
 			super(agent);
 //			tryReceiveBehaviour = PlayerAgent.WAITING_ANSWER;
-			tryBehaviour = PlayerAgent.WAITING_ANSWER;
+			tryBehaviour = PlayerAgentReactive.WAITING_ANSWER;
 		}
 		@Override
 		public void action() {
@@ -133,7 +133,7 @@ public class PlayerAgent extends Agent {
 		public TryTackleBehaviour(Agent agent) {
 			super(agent);
 //			tryTackleBehaviour = PlayerAgent.WAITING_ANSWER;
-			tryBehaviour = PlayerAgent.WAITING_ANSWER;
+			tryBehaviour = PlayerAgentReactive.WAITING_ANSWER;
 		}
 		@Override
 		public void action() {
@@ -155,7 +155,7 @@ public class PlayerAgent extends Agent {
 		public TryInterceptBehaviour(Agent agent) {
 			super(agent);
 //			tryInterceptBehaviour = PlayerAgent.WAITING_ANSWER;
-			tryBehaviour = PlayerAgent.WAITING_ANSWER;
+			tryBehaviour = PlayerAgentReactive.WAITING_ANSWER;
 		}
 		@Override
 		public void action() {
@@ -181,7 +181,7 @@ public class PlayerAgent extends Agent {
 		public PassBallBehaviour(Agent agent, Player p1) {
 			super(agent);
 //			tryPassBehaviour = PlayerAgent.WAITING_ANSWER;
-			tryBehaviour = PlayerAgent.WAITING_ANSWER;
+			tryBehaviour = PlayerAgentReactive.WAITING_ANSWER;
 			
 			double dist = player.getDistanceToBall(match.getBall());
 			
@@ -216,7 +216,7 @@ public class PlayerAgent extends Agent {
 //				System.out.println(myAgent.getName() + ": Try Pass");
 			} else {
 //				tryPassBehaviour = PlayerAgent.FAILED;
-				tryBehaviour = PlayerAgent.FAILED;
+				tryBehaviour = PlayerAgentReactive.FAILED;
 				myAgent.addBehaviour(new CleanPassBehaviour(myAgent, SMALL_BEHAVIOUR_DELAY));
 			}
 		}
@@ -230,7 +230,7 @@ public class PlayerAgent extends Agent {
 		public ShootBallBehaviour(Agent agent) {
 			super(agent);
 //			tryShootBehaviour = PlayerAgent.WAITING_ANSWER;
-			tryBehaviour = PlayerAgent.WAITING_ANSWER;
+			tryBehaviour = PlayerAgentReactive.WAITING_ANSWER;
 			
 			this.direction = player.getDirectionToEnemyGoal();
 		}
@@ -250,7 +250,7 @@ public class PlayerAgent extends Agent {
 //				System.out.println(myAgent.getName() + ": Try Shoot");
 			} else {
 //				tryShootBehaviour = PlayerAgent.FAILED;
-				tryBehaviour = PlayerAgent.FAILED;
+				tryBehaviour = PlayerAgentReactive.FAILED;
 				myAgent.addBehaviour(new CleanShootBehaviour(myAgent, SMALL_BEHAVIOUR_DELAY));
 			}
 		}
@@ -302,35 +302,35 @@ public class PlayerAgent extends Agent {
 					case AgentMessages.TRY_CATCH:
 						player.setHasBall(true);
 //						tryCatchBehaviour = PlayerAgent.SUCCEDED;
-						tryBehaviour = PlayerAgent.SUCCEDED;
+						tryBehaviour = PlayerAgentReactive.SUCCEDED;
 						myAgent.addBehaviour(new CleanCatchBehaviour(myAgent, BIG_BEHAVIOUR_DELAY));
 						break;
 					case AgentMessages.TRY_RECEIVE:
 						player.setHasBall(true);
 //						tryReceiveBehaviour = PlayerAgent.SUCCEDED;
-						tryBehaviour = PlayerAgent.SUCCEDED;
+						tryBehaviour = PlayerAgentReactive.SUCCEDED;
 						myAgent.addBehaviour(new CleanReceiveBehaviour(myAgent, SMALL_BEHAVIOUR_DELAY));
 						break;
 					case AgentMessages.TRY_TACKLE:
-						tryBehaviour = PlayerAgent.SUCCEDED;
+						tryBehaviour = PlayerAgentReactive.SUCCEDED;
 						player.setHasBall(true);
 						myAgent.addBehaviour(new CleanTackleBehaviour(myAgent, SMALL_BEHAVIOUR_DELAY));
 						break;
 					case AgentMessages.TRY_INTERCEPT:
-						tryBehaviour = PlayerAgent.SUCCEDED;
+						tryBehaviour = PlayerAgentReactive.SUCCEDED;
 						player.setHasBall(true);
 						myAgent.addBehaviour(new CleanInterceptBehaviour(myAgent, SMALL_BEHAVIOUR_DELAY));
 						break;
 					case AgentMessages.PASS:
 						player.setHasBall(false);
 //						tryPassBehaviour = PlayerAgent.SUCCEDED;
-						tryBehaviour = PlayerAgent.SUCCEDED;
+						tryBehaviour = PlayerAgentReactive.SUCCEDED;
 						myAgent.addBehaviour(new CleanPassBehaviour(myAgent, BIG_BEHAVIOUR_DELAY));
 						break;
 					case AgentMessages.SHOOT:
 						player.setHasBall(false);
 //						tryShootBehaviour = PlayerAgent.SUCCEDED;
-						tryBehaviour = PlayerAgent.SUCCEDED;
+						tryBehaviour = PlayerAgentReactive.SUCCEDED;
 						myAgent.addBehaviour(new CleanShootBehaviour(myAgent, BIG_BEHAVIOUR_DELAY));
 						break;
 					default:
@@ -361,32 +361,32 @@ public class PlayerAgent extends Agent {
 				switch (msg.getOntology()) {
 				case AgentMessages.TRY_CATCH:
 //					tryCatchBehaviour = PlayerAgent.FAILED;
-					tryBehaviour = PlayerAgent.FAILED;
+					tryBehaviour = PlayerAgentReactive.FAILED;
 					myAgent.addBehaviour(new CleanCatchBehaviour(myAgent, BIG_BEHAVIOUR_DELAY));
 					break;
 				case AgentMessages.TRY_RECEIVE:
 //					tryReceiveBehaviour = PlayerAgent.FAILED;
-					tryBehaviour = PlayerAgent.FAILED;
+					tryBehaviour = PlayerAgentReactive.FAILED;
 					myAgent.addBehaviour(new CleanReceiveBehaviour(myAgent, MEDIUM_BEHAVIOUR_DELAY));
 					break;
 				case AgentMessages.TRY_TACKLE:
 //					tryTackleBehaviour = PlayerAgent.FAILED;
-					tryBehaviour = PlayerAgent.FAILED;
+					tryBehaviour = PlayerAgentReactive.FAILED;
 					myAgent.addBehaviour(new CleanTackleBehaviour(myAgent, BIG_BEHAVIOUR_DELAY));
 					break;
 				case AgentMessages.TRY_INTERCEPT:
 //					tryInterceptBehaviour = PlayerAgent.FAILED;
-					tryBehaviour = PlayerAgent.FAILED;
+					tryBehaviour = PlayerAgentReactive.FAILED;
 					myAgent.addBehaviour(new CleanInterceptBehaviour(myAgent, MEDIUM_BEHAVIOUR_DELAY));
 					break;
 				case AgentMessages.PASS:
 //					tryPassBehaviour = PlayerAgent.FAILED;
-					tryBehaviour = PlayerAgent.FAILED;
+					tryBehaviour = PlayerAgentReactive.FAILED;
 					myAgent.addBehaviour(new CleanPassBehaviour(myAgent, MEDIUM_BEHAVIOUR_DELAY));
 					break;
 				case AgentMessages.SHOOT:
 //					tryShootBehaviour = PlayerAgent.FAILED;
-					tryBehaviour = PlayerAgent.FAILED;
+					tryBehaviour = PlayerAgentReactive.FAILED;
 					myAgent.addBehaviour(new CleanShootBehaviour(myAgent, BIG_BEHAVIOUR_DELAY));
 					break;
 				default:
@@ -407,7 +407,7 @@ public class PlayerAgent extends Agent {
 		protected void onWake() {
 			super.onWake();
 //			tryCatchBehaviour = NOT_TRYING_BEHAVIOUR;
-			tryBehaviour = PlayerAgent.NOT_TRYING_BEHAVIOUR;
+			tryBehaviour = PlayerAgentReactive.NOT_TRYING_BEHAVIOUR;
 		}
 	}
 	
@@ -422,7 +422,7 @@ public class PlayerAgent extends Agent {
 		protected void onWake() {
 			super.onWake();
 //			tryInterceptBehaviour = NOT_TRYING_BEHAVIOUR;
-			tryBehaviour = PlayerAgent.NOT_TRYING_BEHAVIOUR;
+			tryBehaviour = PlayerAgentReactive.NOT_TRYING_BEHAVIOUR;
 		}
 	}
 	
@@ -437,7 +437,7 @@ public class PlayerAgent extends Agent {
 		protected void onWake() {
 			super.onWake();
 //			tryReceiveBehaviour = NOT_TRYING_BEHAVIOUR;
-			tryBehaviour = PlayerAgent.NOT_TRYING_BEHAVIOUR;
+			tryBehaviour = PlayerAgentReactive.NOT_TRYING_BEHAVIOUR;
 		}
 	}
 	
@@ -452,7 +452,7 @@ public class PlayerAgent extends Agent {
 		protected void onWake() {
 			super.onWake();
 //			tryTackleBehaviour = NOT_TRYING_BEHAVIOUR;
-			tryBehaviour = PlayerAgent.NOT_TRYING_BEHAVIOUR;
+			tryBehaviour = PlayerAgentReactive.NOT_TRYING_BEHAVIOUR;
 		}
 	}
 	
@@ -467,7 +467,7 @@ public class PlayerAgent extends Agent {
 		protected void onWake() {
 			super.onWake();
 //			tryPassBehaviour = NOT_TRYING_BEHAVIOUR;
-			tryBehaviour = PlayerAgent.NOT_TRYING_BEHAVIOUR;
+			tryBehaviour = PlayerAgentReactive.NOT_TRYING_BEHAVIOUR;
 		}
 	}
 	
@@ -482,7 +482,7 @@ public class PlayerAgent extends Agent {
 		protected void onWake() {
 			super.onWake();
 //			tryShootBehaviour = NOT_TRYING_BEHAVIOUR;
-			tryBehaviour = PlayerAgent.NOT_TRYING_BEHAVIOUR;
+			tryBehaviour = PlayerAgentReactive.NOT_TRYING_BEHAVIOUR;
 		}
 	}
 	
