@@ -84,7 +84,6 @@ public class MenuFrame extends JFrame {
 		  r = new RunJade(true, "30000");
 		  home = r.getHome();
 			 
-		
 		 //ControlPanel setbounds
 	    btnRestart.setBounds(60, 400, 220, 30);
 	    btnRun.setBounds(60, 400, 220, 30);
@@ -395,7 +394,7 @@ public class MenuFrame extends JFrame {
 	    });
 
 	    // JFrame properties
-	    setSize(600, 550);
+	    setSize(600, 600);
 	    setBackground(Color.BLACK);
 	    setTitle("FutsalAgentSimulator Controller");
 	    setLocationRelativeTo(null);
