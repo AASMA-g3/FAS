@@ -52,12 +52,13 @@ public class DefenderAgent extends PlayerAgent {
 						player.setNewGoal(Player.NEW_GOAL_POSITION_AREA);
 						break;
 					case AgentMessages.RESTART_GAME:
-						tryCatchBehaviour = NOT_TRYING_BEHAVIOUR;
-						tryReceiveBehaviour = NOT_TRYING_BEHAVIOUR;
-						tryTackleBehaviour = NOT_TRYING_BEHAVIOUR;
-						tryInterceptBehaviour = NOT_TRYING_BEHAVIOUR;
-						tryPassBehaviour = NOT_TRYING_BEHAVIOUR;
-						tryShootBehaviour = NOT_TRYING_BEHAVIOUR;
+//						tryCatchBehaviour = NOT_TRYING_BEHAVIOUR;
+//						tryReceiveBehaviour = NOT_TRYING_BEHAVIOUR;
+//						tryTackleBehaviour = NOT_TRYING_BEHAVIOUR;
+//						tryInterceptBehaviour = NOT_TRYING_BEHAVIOUR;
+//						tryPassBehaviour = NOT_TRYING_BEHAVIOUR;
+//						tryShootBehaviour = NOT_TRYING_BEHAVIOUR;
+						tryBehaviour = PlayerAgent.NOT_TRYING_BEHAVIOUR;
 						gameStarted = true;
 						lostTheBall = false;
 						break;
@@ -79,8 +80,13 @@ public class DefenderAgent extends PlayerAgent {
 		public void action() {
 			Ball ball = match.getBall();
 			
-			if (gameStarted && !lostTheBall){
-				if(player.hasBall()){
+			if (gameStarted && !lostTheBall && tryBehaviour == PlayerAgent.NOT_TRYING_BEHAVIOUR){
+				if(player.hasBall()
+//						&& tryBehaviour == PlayerAgent.NOT_TRYING_BEHAVIOUR
+//						&& tryTackleBehaviour == PlayerAgent.NOT_TRYING_BEHAVIOUR
+//						&& tryPassBehaviour == PlayerAgent.NOT_TRYING_BEHAVIOUR
+//						&& tryShootBehaviour == PlayerAgent.NOT_TRYING_BEHAVIOUR
+						){
 					//pass
 					Player p1 = player.getNearestAllyOpenPlayer(match.getTeamA(), match.getTeamB());
 					if(p1 != null){
@@ -89,41 +95,66 @@ public class DefenderAgent extends PlayerAgent {
 						p1 = player.getNearestAllyPlayer(match.getTeamA(), match.getTeamB());
 						myAgent.addBehaviour(new PassBallBehaviour(myAgent, p1));
 					}
-				}else if(ball.isOnQuadrant(player.getQuadrant()) && 
-						ball.enemyHasBall(player.getTeam())){
+				}else if(ball.isOnQuadrant(player.getQuadrant()) 
+						&& ball.enemyHasBall(player.getTeam())){
 					//Chase and Tackle
-					if(player.isAroundBall(ball) && tryTackleBehaviour == PlayerAgent.NOT_TRYING_BEHAVIOUR
-//							&& (tryPassBehaviour != PlayerAgent.NOT_TRYING_BEHAVIOUR
-//							|| tryShootBehaviour != PlayerAgent.NOT_TRYING_BEHAVIOUR)
+					if(player.isAroundBall(ball)
+//							&& tryBehaviour == PlayerAgent.NOT_TRYING_BEHAVIOUR
+//							&& tryTackleBehaviour == PlayerAgent.NOT_TRYING_BEHAVIOUR
+//							&& tryPassBehaviour == PlayerAgent.NOT_TRYING_BEHAVIOUR
+//							&& tryShootBehaviour == PlayerAgent.NOT_TRYING_BEHAVIOUR
 							){
 						myAgent.addBehaviour(new TryTackleBehaviour(myAgent));
-						System.out.println("Tackle!");
 					}else{
 						player.getPlayerMovement().setGoal(ball.x(), ball.y());
 					}
 				}else if(ball.isOnQuadrant(player.getQuadrant()) && 
 						!ball.enemyHasBall(player.getTeam())){
 					//chase and receive
-					if(player.isAroundBall(ball) && tryReceiveBehaviour == PlayerAgent.NOT_TRYING_BEHAVIOUR
-//							&& (tryPassBehaviour != PlayerAgent.NOT_TRYING_BEHAVIOUR
-//							|| tryShootBehaviour != PlayerAgent.NOT_TRYING_BEHAVIOUR)
+					if(player.isAroundBall(ball) 
+//							&& tryBehaviour == PlayerAgent.NOT_TRYING_BEHAVIOUR 
+//							&& tryReceiveBehaviour == PlayerAgent.NOT_TRYING_BEHAVIOUR
+//							&& tryPassBehaviour != PlayerAgent.NOT_TRYING_BEHAVIOUR
+//							&& tryShootBehaviour != PlayerAgent.NOT_TRYING_BEHAVIOUR
 							){
 						myAgent.addBehaviour(new TryReceiveBehaviour(myAgent));
-						System.out.println("Receive Ball!");
 					}else{
 						player.getPlayerMovement().setGoal(ball.x(), ball.y());
 					}
 				}else{ //The ball is not on the quadrant
-					Player enemyPlayer = player.getNearestEnemyPlayerOnQuadrant(
-							match.getTeamA(), match.getTeamB());
-					if(enemyPlayer != null){
-						player.getPlayerMovement().setGoal(enemyPlayer.x(), enemyPlayer.y());
-					}else{
-						if(player.isOnGoal())
-							player.setNewGoal(Player.NEW_GOAL_POSITION_AREA);
-					}
+					player.setNewGoal(Player.NEW_GOAL_DEFENDER_DEFENSE);
 				}
 			}
+		}
+	}
+}
+					
+					
+					
+					
+					
+					
+					
+//					Player enemyPlayer = player.getNearestEnemyPlayerOnQuadrant(
+//							match.getTeamA(), match.getTeamB());
+//					if(enemyPlayer != null){
+//						player.getPlayerMovement().setGoal(enemyPlayer.x(), enemyPlayer.y());
+//					}else{
+//						if(player.isOnGoal()){
+//							player.setNewGoal(Player.NEW_GOAL_POSITION_AREA);
+//							System.out.println(player.getName() + "x: " + player.getPlayerMovement().getGoalX()
+//									+ " y: " + player.getPlayerMovement().getGoalY());
+//							System.out.println("ball x: " + ball.x() + " ball y: " + ball.y());
+//							System.out.println(player.getName() +player.getDistanceToBall(ball));
+//						}else{
+//							System.out.println(player.getName() + "Estou a ir para o objectivo");
+//						}
+//					}
+
+					
+				
+//				System.out.println(player.getName() + " " + tryBehaviour);
+			
 			
 //				Ball ball = match.getBall();
 //				Player p1 = player.getNearestAllyOpenPlayer(match.getTeamA(), match.getTeamB());
@@ -266,7 +297,3 @@ public class DefenderAgent extends PlayerAgent {
 //					}else{ // Nobody has the ball
 //						
 //					}
-			
-		}
-	}
-}

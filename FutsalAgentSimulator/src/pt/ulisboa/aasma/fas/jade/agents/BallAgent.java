@@ -42,7 +42,7 @@ public class BallAgent extends Agent{
 		double prob = Math.round(Math.random()*100);
 		double direction = 0.0f;
 		if (prob <= 50) direction = 180.0f;
-		ball.updateCurrentMovement(Ball.INTENSITY_LONG_PASS, direction, 20.0f, 10.0f, match.getGameTime()/1000.0f);
+		ball.updateCurrentMovement(Ball.INTENSITY_SHORT_PASS, direction, 20.0f, 10.0f, match.getGameTime()/1000.0f);
 	}
 	
 	
@@ -124,12 +124,21 @@ public class BallAgent extends Agent{
 
 		@Override
 		public void action() {
-			ball.updateCurrentMovement(Ball.INTENSITY_RUN, dir, p1.x(), p1.y(), match.getGameTime()/1000.0f);
-			
-			ACLMessage msg = new ACLMessage(ACLMessage.AGREE);
-			msg.addReceiver(new AID(p1.getName(), AID.ISLOCALNAME));
-			msg.setOntology(AgentMessages.DRIBLE);
-			send(msg);
+			ACLMessage msg;
+			if (ball.hasOwner() && ball.getOwner().getName().equals(p1.getName())){
+				ball.updateCurrentMovement(Ball.INTENSITY_RUN, dir, p1.x(), p1.y(), match.getGameTime()/1000.0f);
+				
+				msg = new ACLMessage(ACLMessage.AGREE);
+				msg.addReceiver(new AID(p1.getName(), AID.ISLOCALNAME));
+				msg.setOntology(AgentMessages.DRIBLE);
+				send(msg);
+	//			System.out.println(myAgent.getName() + ": Drible!" );
+			} else {
+				msg = new ACLMessage(ACLMessage.REFUSE);
+				msg.addReceiver(new AID(p1.getName(), AID.ISLOCALNAME));
+				msg.setOntology(AgentMessages.DRIBLE);
+				send(msg);
+			}
 			return;
 		}
 	}
@@ -147,13 +156,22 @@ public class BallAgent extends Agent{
 
 		@Override
 		public void action() {
-			ball.updateCurrentMovement(Ball.INTENSITY_SHOOT, dir, p1.x(), p1.y(), match.getGameTime()/1000.0f);
-			ball.setOwner(null);
-			
-			ACLMessage msg = new ACLMessage(ACLMessage.AGREE);
-			msg.addReceiver(new AID(p1.getName(), AID.ISLOCALNAME));
-			msg.setOntology(AgentMessages.SHOOT);
-			send(msg);
+			ACLMessage msg;
+			if(ball.hasOwner() && ball.getOwner().getName().equals(p1.getName())){
+				ball.updateCurrentMovement(Ball.INTENSITY_SHOOT, dir, p1.x(), p1.y(), match.getGameTime()/1000.0f);
+				ball.setOwner(null);
+				
+				msg = new ACLMessage(ACLMessage.AGREE);
+				msg.addReceiver(new AID(p1.getName(), AID.ISLOCALNAME));
+				msg.setOntology(AgentMessages.SHOOT);
+				send(msg);
+	//			System.out.println(myAgent.getName() + ": Shoot!" );
+			}else {
+				msg = new ACLMessage(ACLMessage.REFUSE);
+				msg.addReceiver(new AID(p1.getName(), AID.ISLOCALNAME));
+				msg.setOntology(AgentMessages.SHOOT);
+				send(msg);
+			}
 			return;
 		}
 	}
@@ -174,13 +192,22 @@ public class BallAgent extends Agent{
 
 		@Override
 		public void action() {
-			ball.updateCurrentMovement(i, dir, p1.x(), p1.y(), match.getGameTime()/1000.0f);
-			ball.setOwner(null);
-
-			ACLMessage msg = new ACLMessage(ACLMessage.AGREE);
-			msg.addReceiver(new AID(p1.getName(), AID.ISLOCALNAME));
-			msg.setOntology(AgentMessages.PASS);
-			send(msg);
+			ACLMessage msg;
+			if(ball.hasOwner() && ball.getOwner().getName().equals(p1.getName())){
+				ball.updateCurrentMovement(i, dir, p1.x(), p1.y(), match.getGameTime()/1000.0f);
+				ball.setOwner(null);
+	
+				msg = new ACLMessage(ACLMessage.AGREE);
+				msg.addReceiver(new AID(p1.getName(), AID.ISLOCALNAME));
+				msg.setOntology(AgentMessages.PASS);
+				send(msg);
+	//			System.out.println(myAgent.getName() + ": Pass!" );
+			} else{
+				msg = new ACLMessage(ACLMessage.REFUSE);
+				msg.addReceiver(new AID(p1.getName(), AID.ISLOCALNAME));
+				msg.setOntology(AgentMessages.PASS);
+				send(msg);
+			}
 			return;
 		}
 	}
@@ -202,22 +229,26 @@ public class BallAgent extends Agent{
 
 		@Override
 		public void action() {
+			ACLMessage msg;
 			if (!ball.hasOwner()){
 				int prob = (int)(Math.random()*100);
 				if(prob < player.getGoalKeepingRatio()){
 					ball.updateCurrentMovement(0, 0.0f, player.x(), player.y(), match.getGameTime()/1000.0f);
 					ball.setOwner(player);
-					ACLMessage msg = new ACLMessage(ACLMessage.AGREE);
+					
+					msg = new ACLMessage(ACLMessage.AGREE);
 					msg.addReceiver(new AID(player.getName(), AID.ISLOCALNAME));
 					msg.setOntology(AgentMessages.TRY_CATCH);
 					send(msg);
+//					System.out.println(myAgent.getName() + ": Catch!" );
 					return;
 				}
+			}else{
+				msg = new ACLMessage(ACLMessage.REFUSE);
+				msg.addReceiver(new AID(player.getName(), AID.ISLOCALNAME));
+				msg.setOntology(AgentMessages.TRY_CATCH);
+				send(msg);
 			}
-			ACLMessage msg = new ACLMessage(ACLMessage.REFUSE);
-			msg.addReceiver(new AID(player.getName(), AID.ISLOCALNAME));
-			msg.setOntology(AgentMessages.TRY_CATCH);
-			send(msg);
 			return;
 		}
 	}
@@ -239,22 +270,25 @@ public class BallAgent extends Agent{
 
 		@Override
 		public void action() {
+			ACLMessage msg;
 			if (!ball.hasOwner()){
-				int prob = (int)(Math.random()*100);
-				if(prob < player.getPassingRatio()){
+//				int prob = (int)(Math.random()*100);
+//				if(prob < player.getPassingRatio()){
 					ball.updateCurrentMovement(0, 0.0f, player.x(), player.y(), match.getGameTime()/1000.0f);
 					ball.setOwner(player);
-					ACLMessage msg = new ACLMessage(ACLMessage.AGREE);
+					msg = new ACLMessage(ACLMessage.AGREE);
 					msg.addReceiver(new AID(player.getName(), AID.ISLOCALNAME));
 					msg.setOntology(AgentMessages.TRY_RECEIVE);
 					send(msg);
-					return;
-				}
+//					System.out.println(myAgent.getName() + ": Receive!" );
+//				}
+			}else{
+				msg = new ACLMessage(ACLMessage.REFUSE);
+				msg.addReceiver(new AID(player.getName(), AID.ISLOCALNAME));
+				msg.setOntology(AgentMessages.TRY_RECEIVE);
+				send(msg);
 			}
-			ACLMessage msg = new ACLMessage(ACLMessage.REFUSE);
-			msg.addReceiver(new AID(player.getName(), AID.ISLOCALNAME));
-			msg.setOntology(AgentMessages.TRY_RECEIVE);
-			send(msg);
+			
 		}
 	}
 
@@ -266,25 +300,23 @@ public class BallAgent extends Agent{
 	 */
 	protected class TryTackleBehaviour extends OneShotBehaviour{
 		private static final long serialVersionUID = 1L;
-		private Player player;
+		private Player p1;
 		
-		public TryTackleBehaviour(Agent agent, Player player) {
+		public TryTackleBehaviour(Agent agent, Player p1) {
 			super(agent);
-			this.player = player;
+			this.p1 = p1;
 		}
 
 		@Override
 		public void action() {
-			int prob = (int)(Math.random()*100);
-			if(prob > player.getDribblingRatio()){
-				ACLMessage msg = new ACLMessage(ACLMessage.REFUSE);
-				msg.addReceiver(new AID(player.getName(), AID.ISLOCALNAME));
-				msg.setOntology(AgentMessages.TRY_TACKLE);
-				send(msg);
-				return;
-			} else {
-				ACLMessage msg = new ACLMessage(ACLMessage.AGREE);
-				msg.addReceiver(new AID(player.getName(), AID.ISLOCALNAME));
+			ACLMessage msg;
+//			int prob = (int)(Math.random()*100);
+			
+			if(ball.hasOwner() && !ball.getOwner().getName().equals(p1)
+					&& (ball.getOwner().getDribblingRatio() > p1.getDefendingRatio())){
+				
+				msg = new ACLMessage(ACLMessage.AGREE);
+				msg.addReceiver(new AID(p1.getName(), AID.ISLOCALNAME));
 				msg.setOntology(AgentMessages.TRY_TACKLE);
 				send(msg);
 				
@@ -293,10 +325,16 @@ public class BallAgent extends Agent{
 				msg.addReceiver(new AID(ball.getOwner().getName(), AID.ISLOCALNAME));
 				msg.setOntology(AgentMessages.LOST_BALL);
 				send(msg);
-				ball.updateCurrentMovement(0, 0.0f, player.x(), player.y(), match.getGameTime()/1000.0f);
-				ball.setOwner(player);
-				return;
+				ball.updateCurrentMovement(0, 0.0f, p1.x(), p1.y(), match.getGameTime()/1000.0f);
+				ball.setOwner(p1);
+//				System.out.println(myAgent.getName() + ": Tackle!" );
+			} else {
+				msg = new ACLMessage(ACLMessage.REFUSE);
+				msg.addReceiver(new AID(p1.getName(), AID.ISLOCALNAME));
+				msg.setOntology(AgentMessages.TRY_TACKLE);
+				send(msg);
 			}
+			return;
 		}
 	}
 	
@@ -307,29 +345,33 @@ public class BallAgent extends Agent{
 	 */
 	protected class TryInterceptBehaviour extends OneShotBehaviour{
 		private static final long serialVersionUID = 1L;
-		private Player player;
+		private Player p1;
 		
-		public TryInterceptBehaviour(Agent agent, Player player) {
+		public TryInterceptBehaviour(Agent agent, Player p1) {
 			super(agent);
-			this.player = player;
+			this.p1 = p1;
 		}
 
 		@Override
 		public void action() {
+			ACLMessage msg;
 			int prob = (int)(Math.random()*100);
-			if(prob > player.getDefendingRatio()){
-				ACLMessage msg = new ACLMessage(ACLMessage.REFUSE);
-				msg.addReceiver(new AID(player.getName(), AID.ISLOCALNAME));
+			
+			if(ball.hasOwner() && (prob > p1.getDefendingRatio())){
+				msg = new ACLMessage(ACLMessage.REFUSE);
+				msg.addReceiver(new AID(p1.getName(), AID.ISLOCALNAME));
 				msg.setOntology(AgentMessages.TRY_INTERCEPT);
 				send(msg);
 				return;
+			}else{
+				msg = new ACLMessage(ACLMessage.AGREE);
+				msg.addReceiver(new AID(p1.getName(), AID.ISLOCALNAME));
+				msg.setOntology(AgentMessages.TRY_INTERCEPT);
+				send(msg);
+				ball.updateCurrentMovement(0, 0.0f, p1.x(), p1.y(), match.getGameTime()/1000.0f);
+				ball.setOwner(p1);
+	//			System.out.println(myAgent.getName() + ": Intercept!" );
 			}
-			ball.updateCurrentMovement(0, 0.0f, player.x(), player.y(), match.getGameTime()/1000.0f);
-			ball.setOwner(player);
-			ACLMessage msg = new ACLMessage(ACLMessage.AGREE);
-			msg.addReceiver(new AID(player.getName(), AID.ISLOCALNAME));
-			msg.setOntology(AgentMessages.TRY_INTERCEPT);
-			send(msg);
 			return;
 		}
 	}

@@ -98,7 +98,7 @@ public class ReporterAgent extends Agent{
 					match.setTeamAScore(match.getTeamAScore()+1);
 					((ReporterAgent)this.myAgent).lastGoal = A_GOAL;
 				}
-				restartBall = new RestartBall(this.myAgent, 2000);
+				restartBall = new RestartBall(this.myAgent, 4000);
 				match.getBall().updateCurrentMovement(0, 0.0f, 20.0f, 10.0f, match.getGameTime()/1000.0f);
 				
 				ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
@@ -127,9 +127,9 @@ public class ReporterAgent extends Agent{
 		@Override
 		protected void handleElapsedTimeout() {
 			if(lastGoal == A_GOAL){
-				match.getBall().updateCurrentMovement(Ball.INTENSITY_LONG_PASS, 0.0f, 20, 10, match.getGameTime()/1000.0f);
+				match.getBall().updateCurrentMovement(Ball.INTENSITY_SHORT_PASS, 0.0f, 20, 10, match.getGameTime()/1000.0f);
 			} else if (lastGoal == B_GOAL){
-				match.getBall().updateCurrentMovement(Ball.INTENSITY_LONG_PASS, 180.0f, 20, 10, match.getGameTime()/1000.0f);				
+				match.getBall().updateCurrentMovement(Ball.INTENSITY_SHORT_PASS, 180.0f, 20, 10, match.getGameTime()/1000.0f);				
 			}
 			
 			

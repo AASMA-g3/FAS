@@ -205,10 +205,10 @@ public class PlayerMovement {
 	}
 
 	public boolean isOnGoal(){
-		if(((myX - Player.PLAYER_SIZE) < goalX) &&
-			((myX + Player.PLAYER_SIZE) > goalX) &&
-			((myY - Player.PLAYER_SIZE) < goalY) &&
-			((myY + Player.PLAYER_SIZE) > goalY))
+		if(((myX - Player.PLAYER_REACH) < goalX) &&
+			((myX + Player.PLAYER_REACH) > goalX) &&
+			((myY - Player.PLAYER_REACH) < goalY) &&
+			((myY + Player.PLAYER_REACH) > goalY))
 			return true;
 		return false;
 	}

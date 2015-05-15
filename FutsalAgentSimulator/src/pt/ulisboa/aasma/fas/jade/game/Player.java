@@ -10,7 +10,8 @@ import pt.ulisboa.aasma.fas.jade.agents.reactive.StrikerAgent;
 public class Player {
 
 	public static final double PLAYER_SIZE = 1.0f;
-	
+	public static final double PLAYER_REACH = 0.1f;
+
 	public static final int NEW_GOAL_GENERAL_AREA = 0;
 	public static final int NEW_GOAL_POSITION_AREA = 1;
 	public static final int NEW_GOAL_INTERCEPT_GOAL = 2;
@@ -19,7 +20,8 @@ public class Player {
 	public static final int NEW_GOAL_CHASE_PLAYER = 5;
 	public static final int NEW_GOAL_CHASE_BALL = 6;
 	public static final int NEW_GOAL_STRIKER_OFFENSIVE = 7;
-	
+	public static final int NEW_GOAL_DEFENDER_DEFENSE = 8;
+
 	public static final String KEEPER = KeeperAgent.class.getName();
 	public static final String DEFENDER = DefenderAgent.class.getName();
 	public static final String STRIKER = StrikerAgent.class.getName();
@@ -308,36 +310,47 @@ public class Player {
 		return -1;
 	}
 	
-	private double getNewXOffensiveCoord(){
-			double minX = 10.0f;
-			double maxX = 11.0f;
+	private double getNewXZoneCoord(){
+			double minX = 5.0f;
+			double maxX = 19.0f;
 			Random rand = new Random();
 			return rand.nextDouble() * (maxX - minX) + minX;
 	}
-	
-	private double getNewYOffensiveCoord(){
+
+	private double getNewYZoneCoord(){
 			if((quadrant == QUADRANT_THIRD) ||
 					(quadrant == QUADRANT_FOURTH)){
-				double minY = 5.0f;
-				double maxY = 7.0f;
+				double minY = 1.0f;
+				double maxY = 9.0f;
 				Random rand = new Random();
 				return rand.nextDouble() * (maxY - minY) + minY;
 			} else {
-				double minY = 13.0f;
-				double maxY = 15.0f;
+				double minY = 11.0f;
+				double maxY = 19.0f;
 				Random rand = new Random();
 				return rand.nextDouble() * (maxY - minY) + minY;
 			}
 	}
-	
+
 	private void setCoordsOffensive(){
-		double x = getNewXOffensiveCoord();
-		double y = getNewYOffensiveCoord();
+		double x = getNewXZoneCoord();
+		double y = getNewYZoneCoord();
 		if (this.team == TEAM_A){
 			x += (20.0f - x)*2.0f;
 		}
 		this.setGoal(x, y);
 	}
+	
+	
+	private void setCoordsDefensive(){
+		double x = getNewXZoneCoord();
+		double y = getNewXZoneCoord();
+		if (this.team == TEAM_B){
+			x += (20.0f - x)*2.0f;
+		}
+		this.setGoal(x, y);
+	}
+	
 	
 	public int getShootingRatio() {
 		return shootingRatio;
@@ -395,7 +408,7 @@ public class Player {
 	
 	public double getDirectionToAllyGoal(){
 		double angle;
-		if(this.getTeam() == Player.TEAM_A){
+		if(this.getTeam() == Player.TEAM_B){
 			angle= Math.toDegrees(Math.atan2(Game.GOAL_Y_MED - this.y(), Game.LIMIT_X - this.x()));
 		} else {
 			angle= Math.toDegrees(Math.atan2(Game.GOAL_Y_MED - this.y(), 0 - this.x()));
@@ -408,7 +421,7 @@ public class Player {
 	
 	public double getDirectionToEnemyGoal(){
 		double angle;
-		if(this.getTeam() == Player.TEAM_B){
+		if(this.getTeam() == Player.TEAM_A){
 			angle= Math.toDegrees(Math.atan2(Game.GOAL_Y_MED - this.y(), Game.LIMIT_X - this.x()));
 		} else {
 			angle= Math.toDegrees(Math.atan2(Game.GOAL_Y_MED - this.y(), 0 - this.x()));
@@ -514,11 +527,11 @@ public class Player {
 	}
 	
 	public boolean isNearEnemyGoal(){
-		return this.getDistanceToEnemyGoal() < 10.0f; 
+		return this.getDistanceToEnemyGoal() < 7.0f; 
 	}
 	
 	public boolean isNearAllyGoal(){
-		return this.getDistanceToAllyGoal() < 10.0f; 
+		return this.getDistanceToAllyGoal() < 7.0f; 
 	}
 	
 	public boolean isAroundBall(Ball ball){
@@ -604,6 +617,53 @@ public class Player {
 		return nearestPlayer;
 	}
 	
+	public Player getFurthestAllyPlayer(ArrayList<Player> teamA, ArrayList<Player> teamB){
+		
+		Player nearestPlayer = null;
+		if(this.team == TEAM_A){
+			for (Player player : teamA) {
+				if(nearestPlayer == null){
+					nearestPlayer = player;
+					continue;
+				}
+				nearestPlayer = getClosestPlayer(nearestPlayer, player);	
+			}	
+		} else {
+			for (Player player : teamB) {
+				if(nearestPlayer == null){
+					nearestPlayer = player;
+					continue;
+				}
+				nearestPlayer = getClosestPlayer(nearestPlayer, player);	
+			}	
+		}
+		
+		return nearestPlayer;
+	}
+	
+	public Player getFurthestEnemyPlayer(ArrayList<Player> teamA, ArrayList<Player> teamB){
+		
+		Player nearestPlayer = null;
+		if(this.team == TEAM_B){
+			for (Player player : teamA) {
+				if(nearestPlayer == null){
+					nearestPlayer = player;
+					continue;
+				}
+				nearestPlayer = getClosestPlayer(nearestPlayer, player);	
+			}	
+		} else {
+			for (Player player : teamB) {
+				if(nearestPlayer == null){
+					nearestPlayer = player;
+					continue;
+				}
+				nearestPlayer = getClosestPlayer(nearestPlayer, player);	
+			}	
+		}
+		
+		return nearestPlayer;
+	}
 	
 	public Player getNearestAllyPlayer(ArrayList<Player> teamA, ArrayList<Player> teamB){
 		
@@ -705,6 +765,9 @@ public class Player {
 			break;
 		case NEW_GOAL_STRIKER_OFFENSIVE:
 			setCoordsOffensive();
+			break;
+		case NEW_GOAL_DEFENDER_DEFENSE:
+			setCoordsDefensive();
 			break;
 		default:
 			break;
