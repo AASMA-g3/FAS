@@ -23,6 +23,8 @@ public class BallAgent extends Agent{
 	private Game match;
 	private Ball ball;
 	
+	private boolean catched = false;
+	
 	@Override
 	protected void setup() {
 		super.setup();

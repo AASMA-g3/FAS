@@ -31,6 +31,7 @@ public class DefenderAgentReactive extends PlayerAgentReactive {
 
 		public ReceiveInformBehaviour(Agent agent) {
 			super(agent);
+			
 		}
 		
 		@Override
@@ -88,11 +89,11 @@ public class DefenderAgentReactive extends PlayerAgentReactive {
 //						&& tryShootBehaviour == PlayerAgent.NOT_TRYING_BEHAVIOUR
 						){
 					//pass
-					Player p1 = player.getNearestAllyOpenPlayer(match.getTeamA(), match.getTeamB());
+					Player p1 = player.getFurthestAllyOpenPlayer(match.getTeamA(), match.getTeamB());
 					if(p1 != null){
 						myAgent.addBehaviour(new PassBallBehaviour(myAgent, p1));
 					}else{
-						p1 = player.getNearestAllyPlayer(match.getTeamA(), match.getTeamB());
+						p1 = player.getFurthestAllyPlayer(match.getTeamA(), match.getTeamB());
 						myAgent.addBehaviour(new PassBallBehaviour(myAgent, p1));
 					}
 				}else if(ball.isOnQuadrant(player.getQuadrant()) 

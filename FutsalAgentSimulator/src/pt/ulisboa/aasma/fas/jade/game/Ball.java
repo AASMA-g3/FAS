@@ -4,8 +4,8 @@ public class Ball {
 	
 	public static final int INTENSITY_SHOOT = 18;
 	public static final int INTENSITY_LONG_PASS = 11;
-	public static final int INTENSITY_MEDIUM_PASS = 8;
-	public static final int INTENSITY_SHORT_PASS = 5;
+	public static final int INTENSITY_MEDIUM_PASS = 9;
+	public static final int INTENSITY_SHORT_PASS = 6;
 	public static final int INTENSITY_RUN = 2;
 
 	public static final Player NO_OWNER = null;
