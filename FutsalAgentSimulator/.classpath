@@ -2,15 +2,15 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="C:/Users/Luis/Projects/Eclipse/FAS/FutsalAgentSimulator/lib/bdi4jade.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Luis/Projects/Eclipse/FAS/FutsalAgentSimulator/lib/bdi4jade-examples.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Luis/Projects/Eclipse/FAS/FutsalAgentSimulator/lib/bdi4jade-extensions.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Luis/Projects/Eclipse/FAS/FutsalAgentSimulator/lib/commons-codec-1.3.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Luis/Projects/Eclipse/FAS/FutsalAgentSimulator/lib/commons-logging-1.0.4.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Luis/Projects/Eclipse/FAS/FutsalAgentSimulator/lib/http.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Luis/Projects/Eclipse/FAS/FutsalAgentSimulator/lib/iiop.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Luis/Projects/Eclipse/FAS/FutsalAgentSimulator/lib/jade.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Luis/Projects/Eclipse/FAS/FutsalAgentSimulator/lib/jadeTools.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Luis/Projects/Eclipse/FAS/FutsalAgentSimulator/lib/log4j-1.2.15.jar"/>
+	<classpathentry kind="lib" path="lib/bdi4jade-examples.jar"/>
+	<classpathentry kind="lib" path="lib/bdi4jade-extensions.jar"/>
+	<classpathentry kind="lib" path="lib/bdi4jade.jar"/>
+	<classpathentry kind="lib" path="lib/commons-codec-1.3.jar"/>
+	<classpathentry kind="lib" path="lib/commons-logging-1.0.4.jar"/>
+	<classpathentry kind="lib" path="lib/http.jar"/>
+	<classpathentry kind="lib" path="lib/iiop.jar"/>
+	<classpathentry kind="lib" path="lib/jade.jar"/>
+	<classpathentry kind="lib" path="lib/jadeTools.jar"/>
+	<classpathentry kind="lib" path="lib/log4j-1.2.15.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>
