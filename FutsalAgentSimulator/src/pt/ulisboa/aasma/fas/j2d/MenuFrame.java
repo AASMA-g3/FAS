@@ -52,9 +52,9 @@ public class MenuFrame extends JFrame {
 	private static final int TEAM_A = 0;
 	private static final int TEAM_B = 1;
 	
-	private static final int REACTIVE = 1;
-	private static final int HYBRID = 2;
-	private static final int DELIBERATIVE = 3;
+	private static final int REACTIVE = 2;
+	private static final int HYBRID = 1;
+	private static final int DELIBERATIVE = 0;
 	
 	//JPanel
 	private JPanel pnlControl = new JPanel();
@@ -133,21 +133,19 @@ public class MenuFrame extends JFrame {
 	    JSlider s5b = sliderCreate(MIN_ATTR, MAX_ATTR, MED_ATTR, "Pas TeamB", boxPas);
 	    
 	    
-	    JSlider s6a = sliderCreate(1, 3, REACTIVE, "Agents TeamA", boxStat);
-	    s6a.setValue(REACTIVE);
+	    JSlider s6a = sliderCreate(0, 2, REACTIVE, "Agents TeamA", boxStat);
 
 		Hashtable<Integer, JLabel> labelTable = new Hashtable<Integer, JLabel>();
-		labelTable.put( new Integer( 1 ), new JLabel("Reactive"));
-		labelTable.put( new Integer( 2 ), new JLabel("Hybrid") );
-		labelTable.put( new Integer( 3 ), new JLabel("Deliberative") );
+		labelTable.put( new Integer( DELIBERATIVE ), new JLabel("DELIBERATIVE"));
+		labelTable.put( new Integer( HYBRID ), new JLabel("HYBRID") );
+		labelTable.put( new Integer( REACTIVE ), new JLabel("REACTIVE") );
 		s6a.setLabelTable(labelTable);
 		
 	    boxStat.add(new JLabel(" "));
 	    boxStat.add(new JLabel(" "));
 	    boxStat.add(new JLabel(" "));
 	    
-	    JSlider s6b = sliderCreate(1, 3, REACTIVE, "Agents TeamB", boxStat);
-	    s6b.setValue(REACTIVE);
+	    JSlider s6b = sliderCreate(0, 2, REACTIVE, "Agents TeamB", boxStat);
 		s6b.setLabelTable(labelTable);
 
 
