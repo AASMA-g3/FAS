@@ -528,6 +528,7 @@ public class PlayerAgentReactive extends Agent {
 		@Override
 		protected void onWake() {
 			super.onWake();
+			tryBehaviour  = PlayerAgentReactive.NOT_TRYING_BEHAVIOUR;
 			lostTheBall = false;
 		}
 	}

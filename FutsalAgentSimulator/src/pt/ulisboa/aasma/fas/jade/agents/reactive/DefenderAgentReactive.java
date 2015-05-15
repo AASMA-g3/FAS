@@ -30,7 +30,6 @@ public class DefenderAgentReactive extends PlayerAgentReactive {
 		public void action() {
 			Ball ball = match.getBall();
 			Player p1 = player.getFurthestAllyOpenPlayer(match.getTeamA(), match.getTeamB());
-			
 			if (gameStarted && !lostTheBall && tryBehaviour == PlayerAgentReactive.NOT_TRYING_BEHAVIOUR){
 				if(player.hasBall() && p1 != null){
 						myAgent.addBehaviour(new PassBallBehaviour(myAgent, p1));
