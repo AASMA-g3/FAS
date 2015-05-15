@@ -1,5 +1,6 @@
 package pt.ulisboa.aasma.fas.j2d;
 
+import jade.core.Agent;
 import jade.wrapper.AgentController;
 import jade.wrapper.ContainerController;
 import jade.wrapper.ControllerException;
@@ -25,6 +26,12 @@ import javax.swing.event.ChangeListener;
 import pt.ulisboa.aasma.fas.bootstrap.RunJade;
 import pt.ulisboa.aasma.fas.jade.agents.BallAgent;
 import pt.ulisboa.aasma.fas.jade.agents.ReporterAgent;
+import pt.ulisboa.aasma.fas.jade.agents.bdi.DefenderAgentBDI;
+import pt.ulisboa.aasma.fas.jade.agents.bdi.KeeperAgentBDI;
+import pt.ulisboa.aasma.fas.jade.agents.bdi.StrikerAgentBDI;
+import pt.ulisboa.aasma.fas.jade.agents.reactive.DefenderAgentReactive;
+import pt.ulisboa.aasma.fas.jade.agents.reactive.KeeperAgentReactive;
+import pt.ulisboa.aasma.fas.jade.agents.reactive.StrikerAgentReactive;
 import pt.ulisboa.aasma.fas.jade.game.Game;
 import pt.ulisboa.aasma.fas.jade.game.Player;
 
@@ -41,6 +48,13 @@ public class MenuFrame extends JFrame {
 	private static final int MIN_ATTR = 0;
 	private static final int MED_ATTR = 5;
 	private static final int MAX_ATTR = 10;
+	
+	private static final int TEAM_A = 0;
+	private static final int TEAM_B = 1;
+	
+	private static final int REACTIVE = 1;
+	private static final int HYBRID = 2;
+	private static final int DELIBERATIVE = 3;
 	
 	//JPanel
 	private JPanel pnlControl = new JPanel();
@@ -91,8 +105,6 @@ public class MenuFrame extends JFrame {
 	    Box boxDri = Box.createVerticalBox();
 	    Box boxPas = Box.createVerticalBox();
 	    Box boxStat = Box.createVerticalBox();
-	    
-	
 
 	    JSlider s1a = sliderCreate(MIN_ATTR, MAX_ATTR, MED_ATTR, "GK TeamA", boxGK);
 	    boxGK.add(new JLabel(" "));
@@ -121,19 +133,21 @@ public class MenuFrame extends JFrame {
 	    JSlider s5b = sliderCreate(MIN_ATTR, MAX_ATTR, MED_ATTR, "Pas TeamB", boxPas);
 	    
 	    
-	    JSlider s6a = sliderCreate(1, 3, 2, "Ag TeamA", boxStat);
-	    
+	    JSlider s6a = sliderCreate(1, 3, REACTIVE, "Agents TeamA", boxStat);
+	    s6a.setValue(REACTIVE);
+
 		Hashtable<Integer, JLabel> labelTable = new Hashtable<Integer, JLabel>();
-		labelTable.put( new Integer( 1 ), new JLabel("Rea"));
-		labelTable.put( new Integer( 2 ), new JLabel("Hyb") );
-		labelTable.put( new Integer( 3 ), new JLabel("Del") );
+		labelTable.put( new Integer( 1 ), new JLabel("Reactive"));
+		labelTable.put( new Integer( 2 ), new JLabel("Hybrid") );
+		labelTable.put( new Integer( 3 ), new JLabel("Deliberative") );
 		s6a.setLabelTable(labelTable);
 		
 	    boxStat.add(new JLabel(" "));
 	    boxStat.add(new JLabel(" "));
 	    boxStat.add(new JLabel(" "));
 	    
-	    JSlider s6b = sliderCreate(1, 3, 2, "Ag TeamB", boxStat);
+	    JSlider s6b = sliderCreate(1, 3, REACTIVE, "Agents TeamB", boxStat);
+	    s6b.setValue(REACTIVE);
 		s6b.setLabelTable(labelTable);
 
 
@@ -153,7 +167,7 @@ public class MenuFrame extends JFrame {
 	    
 		btnRestart.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
+				
 				if (gameInProgress) {
 					currentGame.isEnded.set(true);
 					gr.setGameInProgress(false);
@@ -190,13 +204,21 @@ public class MenuFrame extends JFrame {
 		this.btnRun.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
+				if((sliders_status.get(TEAM_A).intValue() == HYBRID) ||
+						(sliders_status.get(TEAM_B).intValue() == HYBRID)){
+					System.out.println("Hybrid not implemented. Please change agent type and reset.");
+					return;
+				}
+				
 				if(!gameInProgress){
 				currentGame = new Game(getSliders());
 
 				gr.startGame(currentGame);
 
 				Object[] agentParams = { currentGame };
-
+				
+				
+				
 				try {
 					AgentController a;
 
@@ -204,23 +226,76 @@ public class MenuFrame extends JFrame {
 							ReporterAgent.class.getName(),
 							agentParams);
 					a.start();
-
-					for (Player player : currentGame.getTeamA()) {
-						a = home.createNewAgent(
-								player.getName(),
-								player.getPosition(),
-								agentParams);
-						a.start();
+					
+					
+					if(sliders_status.get(TEAM_A).intValue() == REACTIVE){
+						for (Player player : currentGame.getTeamA()) {
+							if(player.getPosition().equals(Player.KEEPER)){
+								KeeperAgentReactive pa = new KeeperAgentReactive(currentGame, player);
+								a = home.acceptNewAgent(player.getName(), (Agent)pa);
+							} else if (player.getPosition().equals(Player.DEFENDER)){
+								DefenderAgentReactive pa = new DefenderAgentReactive(currentGame, player);
+								a = home.acceptNewAgent(player.getName(), (Agent)pa);
+							} else if (player.getPosition().equals(Player.STRIKER)){
+								StrikerAgentReactive pa = new StrikerAgentReactive(currentGame, player);
+								a = home.acceptNewAgent(player.getName(), (Agent)pa);
+							}
+							a.start();
+						}
+					} else if (sliders_status.get(TEAM_A).intValue() == DELIBERATIVE){
+						for (Player player : currentGame.getTeamA()) {
+							if(player.getPosition().equals(Player.KEEPER)){
+								KeeperAgentBDI pa = new KeeperAgentBDI(currentGame, player);
+								a = home.acceptNewAgent(player.getName(), (Agent)pa);
+							} else if (player.getPosition().equals(Player.DEFENDER)){
+								DefenderAgentBDI pa = new DefenderAgentBDI(currentGame, player);
+								a = home.acceptNewAgent(player.getName(), (Agent)pa);
+							} else if (player.getPosition().equals(Player.STRIKER)){
+								StrikerAgentBDI pa = new StrikerAgentBDI(currentGame, player);
+								a = home.acceptNewAgent(player.getName(), (Agent)pa);
+							}
+							a.start();
+						}
+					} else {
+						System.out.println("Hybrid not implemented. Please change teamA agent type and reset.");
 					}
 
-					for (Player player : currentGame.getTeamB()) {
-						a = home.createNewAgent(
-								player.getName(),
-								player.getPosition(),
-								agentParams);
-						a.start();
+					
+					if(sliders_status.get(TEAM_B).intValue() == REACTIVE){
+						for (Player player : currentGame.getTeamB()) {
+							if(player.getPosition().equals(Player.KEEPER)){
+								KeeperAgentReactive pa = new KeeperAgentReactive(currentGame, player);
+								a = home.acceptNewAgent(player.getName(), (Agent)pa);
+							} else if (player.getPosition().equals(Player.DEFENDER)){
+								DefenderAgentReactive pa = new DefenderAgentReactive(currentGame, player);
+								a = home.acceptNewAgent(player.getName(), (Agent)pa);
+							} else if (player.getPosition().equals(Player.STRIKER)){
+								StrikerAgentReactive pa = new StrikerAgentReactive(currentGame, player);
+								a = home.acceptNewAgent(player.getName(), (Agent)pa);
+							}
+							a.start();
+						}
+					} else if (sliders_status.get(TEAM_B).intValue() == DELIBERATIVE){
+						for (Player player : currentGame.getTeamB()) {
+							if(player.getPosition().equals(Player.KEEPER)){
+								KeeperAgentBDI pa = new KeeperAgentBDI(currentGame, player);
+								a = home.acceptNewAgent(player.getName(), (Agent)pa);
+							} else if (player.getPosition().equals(Player.DEFENDER)){
+								DefenderAgentBDI pa = new DefenderAgentBDI(currentGame, player);
+								a = home.acceptNewAgent(player.getName(), (Agent)pa);
+							} else if (player.getPosition().equals(Player.STRIKER)){
+								StrikerAgentBDI pa = new StrikerAgentBDI(currentGame, player);
+								a = home.acceptNewAgent(player.getName(), (Agent)pa);
+							}
+							a.start();
+						}
+					} else {
+						System.out.println("Hybrid not implemented. Please change teamB agent type and reset.");
 					}
 
+					
+					
+					
 					a = home.createNewAgent("Ball",
 							BallAgent.class.getName(),
 							agentParams);

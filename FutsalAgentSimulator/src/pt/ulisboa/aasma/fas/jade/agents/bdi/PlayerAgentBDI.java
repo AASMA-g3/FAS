@@ -7,8 +7,10 @@ import jade.core.behaviours.OneShotBehaviour;
 import jade.core.behaviours.WakerBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
-import pt.ulisboa.aasma.fas.exceptions.FutsalAgentSimulatorException;
 import pt.ulisboa.aasma.fas.jade.agents.AgentMessages;
+import pt.ulisboa.aasma.fas.jade.agents.reactive.DefenderAgentReactive;
+import pt.ulisboa.aasma.fas.jade.agents.reactive.KeeperAgentReactive;
+import pt.ulisboa.aasma.fas.jade.agents.reactive.StrikerAgentReactive;
 import pt.ulisboa.aasma.fas.jade.game.Ball;
 import pt.ulisboa.aasma.fas.jade.game.Game;
 import pt.ulisboa.aasma.fas.jade.game.Player;
@@ -24,7 +26,12 @@ import bdi4jade.core.SingleCapabilityAgent;
  */
 public class PlayerAgentBDI extends SingleCapabilityAgent {
 	
+
 	private static final long serialVersionUID = 1L;
+	
+	protected static final int SMALL_BEHAVIOUR_DELAY = 500;
+	protected static final int MEDIUM_BEHAVIOUR_DELAY = 1000;
+	protected static final int BIG_BEHAVIOUR_DELAY = 1500;
 	
 	protected static final int NOT_TRYING_BEHAVIOUR = 0;
 	protected static final int WAITING_ANSWER = 1;
@@ -36,32 +43,24 @@ public class PlayerAgentBDI extends SingleCapabilityAgent {
 	Player player;
 	protected Boolean gameStarted = false;
 	
-	protected int tryCatchBehaviour = NOT_TRYING_BEHAVIOUR;
-	protected int tryReceiveBehaviour = NOT_TRYING_BEHAVIOUR;
-	protected int tryTackleBehaviour = NOT_TRYING_BEHAVIOUR;
-	protected int tryInterceptBehaviour = NOT_TRYING_BEHAVIOUR;
-	protected int tryPassBehaviour = NOT_TRYING_BEHAVIOUR;
-	protected int tryShootBehaviour = NOT_TRYING_BEHAVIOUR;
+	protected int tryBehaviour = NOT_TRYING_BEHAVIOUR;
+	
 	protected boolean lostTheBall = false;
 
 	/**
 	 * Set's up the agents, checking the existence of the Agent in the game structure
 	 * Also adds the behaviour to listen to the END_GAME message
 	 */
-	public PlayerAgentBDI(Game game) {
+	public PlayerAgentBDI(Game game, Player player) {
 		super.setup();
 		
-		match = game;
-	
-		try{
-			player = match.getPlayer(getLocalName());
-		} catch (FutsalAgentSimulatorException f){
-			System.out.println(f.getMessage());
-			return;
-		}
+		this.match = game;
+		this.player = player;
 		
 		addBehaviour(new ReceiveAgreeBehaviour(this));
 		addBehaviour(new ReceiveRefuseBehaviour(this));
+		addBehaviour(new ReceiveInformBehaviour(this));
+		
 	}
 	
 	/**
@@ -74,7 +73,8 @@ public class PlayerAgentBDI extends SingleCapabilityAgent {
 		
 		public TryCatchBehaviour(Agent agent) {
 			super(agent);
-			tryCatchBehaviour = PlayerAgentBDI.WAITING_ANSWER;
+//			tryCatchBehaviour = PlayerAgent.WAITING_ANSWER;
+			tryBehaviour = WAITING_ANSWER;
 		}
 		
 		@Override
@@ -83,6 +83,7 @@ public class PlayerAgentBDI extends SingleCapabilityAgent {
 				msg.addReceiver(ballAgent);
 				msg.setOntology(AgentMessages.TRY_CATCH);	
 				send(msg);
+//				System.out.println(myAgent.getName() + ": Try Catch!");
 		}
 	}
 	
@@ -95,7 +96,8 @@ public class PlayerAgentBDI extends SingleCapabilityAgent {
 		private static final long serialVersionUID = 1L;
 		public TryReceiveBehaviour(Agent agent) {
 			super(agent);
-			tryReceiveBehaviour = PlayerAgentBDI.WAITING_ANSWER;
+//			tryReceiveBehaviour = PlayerAgent.WAITING_ANSWER;
+			tryBehaviour = WAITING_ANSWER;
 		}
 		@Override
 		public void action() {
@@ -103,6 +105,7 @@ public class PlayerAgentBDI extends SingleCapabilityAgent {
 				msg.addReceiver(ballAgent);
 				msg.setOntology(AgentMessages.TRY_RECEIVE);	
 				send(msg);
+//				System.out.println(myAgent.getName() + ": Try Receive");
 		}
 	}
 	
@@ -115,7 +118,8 @@ public class PlayerAgentBDI extends SingleCapabilityAgent {
 		private static final long serialVersionUID = 1L;
 		public TryTackleBehaviour(Agent agent) {
 			super(agent);
-			tryTackleBehaviour = PlayerAgentBDI.WAITING_ANSWER;
+//			tryTackleBehaviour = PlayerAgent.WAITING_ANSWER;
+			tryBehaviour = WAITING_ANSWER;
 		}
 		@Override
 		public void action() {
@@ -123,6 +127,7 @@ public class PlayerAgentBDI extends SingleCapabilityAgent {
 				msg.addReceiver(ballAgent);
 				msg.setOntology(AgentMessages.TRY_TACKLE);	
 				send(msg);
+//				System.out.println(myAgent.getName() + ": Try Tackle");
 		}
 	}
 
@@ -135,7 +140,8 @@ public class PlayerAgentBDI extends SingleCapabilityAgent {
 		private static final long serialVersionUID = 1L;
 		public TryInterceptBehaviour(Agent agent) {
 			super(agent);
-			tryInterceptBehaviour = PlayerAgentBDI.WAITING_ANSWER;
+//			tryInterceptBehaviour = PlayerAgent.WAITING_ANSWER;
+			tryBehaviour = WAITING_ANSWER;
 		}
 		@Override
 		public void action() {
@@ -143,6 +149,7 @@ public class PlayerAgentBDI extends SingleCapabilityAgent {
 				msg.addReceiver(ballAgent);
 				msg.setOntology(AgentMessages.TRY_INTERCEPT);	
 				send(msg);
+//				System.out.println(myAgent.getName() + ": Try Intercept");
 		}
 	}
 	
@@ -151,15 +158,16 @@ public class PlayerAgentBDI extends SingleCapabilityAgent {
 	 * @author Fábio
 	 *
 	 */
-	protected class PassBallBehaviour extends WakerBehaviour{
+	protected class PassBallBehaviour extends OneShotBehaviour{
 		private static final long serialVersionUID = 1L;
 		
 		private int intensity;
 		private double direction;
 		
 		public PassBallBehaviour(Agent agent, Player p1) {
-			super(agent, 300);
-			tryPassBehaviour = PlayerAgentBDI.WAITING_ANSWER;
+			super(agent);
+//			tryPassBehaviour = PlayerAgent.WAITING_ANSWER;
+			tryBehaviour = WAITING_ANSWER;
 			
 			double dist = player.getDistanceToBall(match.getBall());
 			
@@ -174,8 +182,9 @@ public class PlayerAgentBDI extends SingleCapabilityAgent {
 			this.direction = player.getDirectionToPlayer(p1);
 			
 		}
-		
-		public void onWake() {
+
+		@Override
+		public void action() {
 			if(player.hasBall()){
 				int prob = (int)(Math.random()*100);
 				if (prob <= 50) 
@@ -190,26 +199,30 @@ public class PlayerAgentBDI extends SingleCapabilityAgent {
 				msg.setOntology(AgentMessages.PASS);
 				msg.setContent(intensity + " " + direction);
 				send(msg);
+//				System.out.println(myAgent.getName() + ": Try Pass");
 			} else {
-				tryPassBehaviour = PlayerAgentBDI.FAILED;
-				myAgent.addBehaviour(new CleanPassBehaviour(myAgent));
+//				tryPassBehaviour = PlayerAgent.FAILED;
+				tryBehaviour = FAILED;
+				myAgent.addBehaviour(new CleanPassBehaviour(myAgent, SMALL_BEHAVIOUR_DELAY));
 			}
 		}
 	}
 	
-	protected class ShootBallBehaviour extends WakerBehaviour{
+	protected class ShootBallBehaviour extends OneShotBehaviour{
 		private static final long serialVersionUID = 1L;
 		
 		private double direction;
 		
 		public ShootBallBehaviour(Agent agent) {
-			super(agent, 300);
-			tryShootBehaviour = PlayerAgentBDI.WAITING_ANSWER;
+			super(agent);
+//			tryShootBehaviour = PlayerAgent.WAITING_ANSWER;
+			tryBehaviour = WAITING_ANSWER;
 			
 			this.direction = player.getDirectionToEnemyGoal();
 		}
 		
-		public void onWake() {
+		@Override
+		public void action() {
 			if(player.hasBall()){
 				int prob = (int)(Math.random());
 				if (prob == 0) prob = -1;
@@ -220,10 +233,11 @@ public class PlayerAgentBDI extends SingleCapabilityAgent {
 				msg.setOntology(AgentMessages.SHOOT);
 				msg.setContent(Ball.INTENSITY_SHOOT + " " + direction);
 				send(msg);
-				
+//				System.out.println(myAgent.getName() + ": Try Shoot");
 			} else {
-				tryShootBehaviour = PlayerAgentBDI.FAILED;
-				myAgent.addBehaviour(new CleanShootBehaviour(myAgent));
+//				tryShootBehaviour = PlayerAgent.FAILED;
+				tryBehaviour = FAILED;
+				myAgent.addBehaviour(new CleanShootBehaviour(myAgent, SMALL_BEHAVIOUR_DELAY));
 			}
 		}
 	}
@@ -231,9 +245,9 @@ public class PlayerAgentBDI extends SingleCapabilityAgent {
 	protected class DribleBehaviour extends OneShotBehaviour{
 		private static final long serialVersionUID = 1L;
 		
-		private float direction;
+		private double direction;
 		
-		public DribleBehaviour(Agent agent, float direction) {
+		public DribleBehaviour(Agent agent, double direction) {
 			super(agent);
 			this.direction = direction;
 		}
@@ -246,6 +260,8 @@ public class PlayerAgentBDI extends SingleCapabilityAgent {
 				msg.setOntology(AgentMessages.DRIBLE);
 				msg.setContent(Ball.INTENSITY_RUN + " " + direction);
 				send(msg);
+				player.setNewGoal(Player.NEW_GOAL_NEW_DIRECTION, direction);
+//				System.out.println(myAgent.getName() + ": Try Drible");
 			}
 		}
 		
@@ -271,31 +287,37 @@ public class PlayerAgentBDI extends SingleCapabilityAgent {
 				switch (msg.getOntology()) {
 					case AgentMessages.TRY_CATCH:
 						player.setHasBall(true);
-						tryCatchBehaviour = PlayerAgentBDI.SUCCEDED;
-						myAgent.addBehaviour(new CleanCatchBehaviour(myAgent));
+//						tryCatchBehaviour = PlayerAgent.SUCCEDED;
+						tryBehaviour = SUCCEDED;
+						myAgent.addBehaviour(new CleanCatchBehaviour(myAgent, BIG_BEHAVIOUR_DELAY));
 						break;
 					case AgentMessages.TRY_RECEIVE:
 						player.setHasBall(true);
-						tryReceiveBehaviour = PlayerAgentBDI.SUCCEDED;
-						myAgent.addBehaviour(new CleanReceiveBehaviour(myAgent));
+//						tryReceiveBehaviour = PlayerAgent.SUCCEDED;
+						tryBehaviour = SUCCEDED;
+						myAgent.addBehaviour(new CleanReceiveBehaviour(myAgent, SMALL_BEHAVIOUR_DELAY));
 						break;
 					case AgentMessages.TRY_TACKLE:
+						tryBehaviour = SUCCEDED;
 						player.setHasBall(true);
-						myAgent.addBehaviour(new CleanTackleBehaviour(myAgent));
+						myAgent.addBehaviour(new CleanTackleBehaviour(myAgent, SMALL_BEHAVIOUR_DELAY));
 						break;
 					case AgentMessages.TRY_INTERCEPT:
+						tryBehaviour = SUCCEDED;
 						player.setHasBall(true);
-						myAgent.addBehaviour(new CleanInterceptBehaviour(myAgent));
+						myAgent.addBehaviour(new CleanInterceptBehaviour(myAgent, SMALL_BEHAVIOUR_DELAY));
 						break;
 					case AgentMessages.PASS:
 						player.setHasBall(false);
-						tryPassBehaviour = PlayerAgentBDI.SUCCEDED;
-						myAgent.addBehaviour(new CleanPassBehaviour(myAgent));
+//						tryPassBehaviour = PlayerAgent.SUCCEDED;
+						tryBehaviour = SUCCEDED;
+						myAgent.addBehaviour(new CleanPassBehaviour(myAgent, BIG_BEHAVIOUR_DELAY));
 						break;
 					case AgentMessages.SHOOT:
 						player.setHasBall(false);
-						tryShootBehaviour = PlayerAgentBDI.SUCCEDED;
-						myAgent.addBehaviour(new CleanShootBehaviour(myAgent));
+//						tryShootBehaviour = PlayerAgent.SUCCEDED;
+						tryBehaviour = SUCCEDED;
+						myAgent.addBehaviour(new CleanShootBehaviour(myAgent, BIG_BEHAVIOUR_DELAY));
 						break;
 					default:
 						break;
@@ -324,28 +346,34 @@ public class PlayerAgentBDI extends SingleCapabilityAgent {
 			else{
 				switch (msg.getOntology()) {
 				case AgentMessages.TRY_CATCH:
-					tryCatchBehaviour = PlayerAgentBDI.FAILED;
-					myAgent.addBehaviour(new CleanCatchBehaviour(myAgent));
+//					tryCatchBehaviour = PlayerAgent.FAILED;
+					tryBehaviour = FAILED;
+					myAgent.addBehaviour(new CleanCatchBehaviour(myAgent, BIG_BEHAVIOUR_DELAY));
 					break;
 				case AgentMessages.TRY_RECEIVE:
-					tryReceiveBehaviour = PlayerAgentBDI.FAILED;
-					myAgent.addBehaviour(new CleanReceiveBehaviour(myAgent));
+//					tryReceiveBehaviour = PlayerAgent.FAILED;
+					tryBehaviour = FAILED;
+					myAgent.addBehaviour(new CleanReceiveBehaviour(myAgent, MEDIUM_BEHAVIOUR_DELAY));
 					break;
 				case AgentMessages.TRY_TACKLE:
-					tryTackleBehaviour = PlayerAgentBDI.FAILED;
-					myAgent.addBehaviour(new CleanTackleBehaviour(myAgent));
+//					tryTackleBehaviour = PlayerAgent.FAILED;
+					tryBehaviour = FAILED;
+					myAgent.addBehaviour(new CleanTackleBehaviour(myAgent, BIG_BEHAVIOUR_DELAY));
 					break;
 				case AgentMessages.TRY_INTERCEPT:
-					tryInterceptBehaviour = PlayerAgentBDI.FAILED;
-					myAgent.addBehaviour(new CleanInterceptBehaviour(myAgent));
+//					tryInterceptBehaviour = PlayerAgent.FAILED;
+					tryBehaviour = FAILED;
+					myAgent.addBehaviour(new CleanInterceptBehaviour(myAgent, MEDIUM_BEHAVIOUR_DELAY));
 					break;
 				case AgentMessages.PASS:
-					tryPassBehaviour = PlayerAgentBDI.FAILED;
-					myAgent.addBehaviour(new CleanPassBehaviour(myAgent));
+//					tryPassBehaviour = PlayerAgent.FAILED;
+					tryBehaviour = FAILED;
+					myAgent.addBehaviour(new CleanPassBehaviour(myAgent, MEDIUM_BEHAVIOUR_DELAY));
 					break;
 				case AgentMessages.SHOOT:
-					tryShootBehaviour = PlayerAgentBDI.FAILED;
-					myAgent.addBehaviour(new CleanShootBehaviour(myAgent));
+//					tryShootBehaviour = PlayerAgent.FAILED;
+					tryBehaviour = FAILED;
+					myAgent.addBehaviour(new CleanShootBehaviour(myAgent, BIG_BEHAVIOUR_DELAY));
 					break;
 				default:
 					break;
@@ -354,87 +382,139 @@ public class PlayerAgentBDI extends SingleCapabilityAgent {
 		}
 	}
 	
+	
+	/**
+	 * This Behaviour receives general information about the game flow
+	 * @author Fábio
+	 *
+	 */
+	protected class ReceiveInformBehaviour extends CyclicBehaviour{
+		private static final long serialVersionUID = 1L;
+
+		public ReceiveInformBehaviour(Agent agent) {
+			super(agent);
+		}
+		
+		@Override
+		public void action() {
+			ACLMessage msg = this.myAgent.receive(MessageTemplate.MatchPerformative(ACLMessage.INFORM));
+			if(msg == null)
+				block();
+			else{
+				switch (msg.getOntology()) {
+				case AgentMessages.START_GAME:
+					gameStarted = true;
+					break;
+					case AgentMessages.END_GAME:
+						doDelete();
+						break;
+					case AgentMessages.PAUSE_GAME:
+						gameStarted = false;
+						player.setNewGoal(Player.NEW_GOAL_POSITION_AREA);
+						break;
+					case AgentMessages.RESTART_GAME:
+						tryBehaviour = NOT_TRYING_BEHAVIOUR;
+						gameStarted = true;
+						lostTheBall = false;
+						break;
+					case AgentMessages.LOST_BALL:
+						lostTheBall = true;
+						myAgent.addBehaviour(new CleanLostBallBehaviour(myAgent));
+						break;
+					default:
+						break;
+				}
+			}
+		}
+	}
+	
 	protected class CleanCatchBehaviour extends WakerBehaviour{
 		private static final long serialVersionUID = 1L;
 
-		public CleanCatchBehaviour(Agent arg0) {
-			super(arg0, 500);
+		public CleanCatchBehaviour(Agent arg0, int timer) {
+			super(arg0, timer);
 		}
 
 		@Override
 		protected void onWake() {
 			super.onWake();
-			tryCatchBehaviour = NOT_TRYING_BEHAVIOUR;
+//			tryCatchBehaviour = NOT_TRYING_BEHAVIOUR;
+			tryBehaviour = NOT_TRYING_BEHAVIOUR;
 		}
 	}
 	
 	protected class CleanInterceptBehaviour extends WakerBehaviour{
 		private static final long serialVersionUID = 1L;
 
-		public CleanInterceptBehaviour(Agent arg0) {
-			super(arg0, 500);
+		public CleanInterceptBehaviour(Agent arg0, int timer) {
+			super(arg0, timer);
 		}
 
 		@Override
 		protected void onWake() {
 			super.onWake();
-			tryInterceptBehaviour = NOT_TRYING_BEHAVIOUR;
+//			tryInterceptBehaviour = NOT_TRYING_BEHAVIOUR;
+			tryBehaviour = NOT_TRYING_BEHAVIOUR;
 		}
 	}
 	
 	protected class CleanReceiveBehaviour extends WakerBehaviour{
 		private static final long serialVersionUID = 1L;
 
-		public CleanReceiveBehaviour(Agent arg0) {
-			super(arg0, 500);
+		public CleanReceiveBehaviour(Agent arg0, int timer) {
+			super(arg0, timer);
 		}
 
 		@Override
 		protected void onWake() {
 			super.onWake();
-			tryReceiveBehaviour = NOT_TRYING_BEHAVIOUR;
+//			tryReceiveBehaviour = NOT_TRYING_BEHAVIOUR;
+			tryBehaviour = NOT_TRYING_BEHAVIOUR;
 		}
 	}
 	
 	protected class CleanTackleBehaviour extends WakerBehaviour{
 		private static final long serialVersionUID = 1L;
 
-		public CleanTackleBehaviour(Agent arg0) {
-			super(arg0, 500);
+		public CleanTackleBehaviour(Agent arg0, int timer) {
+			super(arg0, timer);
 		}
 
 		@Override
 		protected void onWake() {
 			super.onWake();
-			tryTackleBehaviour = NOT_TRYING_BEHAVIOUR;
+//			tryTackleBehaviour = NOT_TRYING_BEHAVIOUR;
+			tryBehaviour = NOT_TRYING_BEHAVIOUR;
 		}
 	}
 	
 	protected class CleanPassBehaviour extends WakerBehaviour{
 		private static final long serialVersionUID = 1L;
 
-		public CleanPassBehaviour(Agent arg0) {
-			super(arg0, 500);
+		public CleanPassBehaviour(Agent arg0, int timer) {
+			super(arg0, timer);
 		}
 
 		@Override
 		protected void onWake() {
 			super.onWake();
-			tryPassBehaviour = NOT_TRYING_BEHAVIOUR;
+//			tryPassBehaviour = NOT_TRYING_BEHAVIOUR;
+			tryBehaviour = NOT_TRYING_BEHAVIOUR;
 		}
 	}
 	
 	protected class CleanShootBehaviour extends WakerBehaviour{
 		private static final long serialVersionUID = 1L;
 
-		public CleanShootBehaviour(Agent arg0) {
-			super(arg0, 500);
+		public CleanShootBehaviour(Agent arg0, int timer) {
+			super(arg0, timer);
 		}
 
 		@Override
 		protected void onWake() {
 			super.onWake();
-			tryShootBehaviour = NOT_TRYING_BEHAVIOUR;
+//			tryShootBehaviour = NOT_TRYING_BEHAVIOUR;
+			tryBehaviour = NOT_TRYING_BEHAVIOUR;
 		}
 	}
 	
@@ -442,7 +522,7 @@ public class PlayerAgentBDI extends SingleCapabilityAgent {
 		private static final long serialVersionUID = 1L;
 
 		public CleanLostBallBehaviour(Agent arg0) {
-			super(arg0, 500);
+			super(arg0, BIG_BEHAVIOUR_DELAY);
 		}
 
 		@Override

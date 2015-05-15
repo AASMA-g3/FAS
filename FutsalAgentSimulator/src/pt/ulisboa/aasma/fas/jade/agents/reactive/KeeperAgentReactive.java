@@ -12,79 +12,22 @@ import pt.ulisboa.aasma.fas.jade.game.Player;
 public class KeeperAgentReactive extends PlayerAgentReactive {
 	
 	private static final long serialVersionUID = 1L;
+
+	public KeeperAgentReactive(Game game, Player player) {
+		super(game, player);
+	}
 	
 	@Override
 	protected void setup() {
 		super.setup();
-
-		this.addBehaviour(new ReceiveInformBehaviour(this));
-	}
-	
-	/**
-	 * This Behaviour receives general information about the game flow
-	 * @author Fábio
-	 *
-	 */
-	protected class ReceiveInformBehaviour extends CyclicBehaviour{
-		private static final long serialVersionUID = 1L;
-
-		public ReceiveInformBehaviour(Agent agent) {
-			super(agent);
-		}
-		
-		@Override
-		public void action() {
-			ACLMessage msg = this.myAgent.receive(MessageTemplate.MatchPerformative(ACLMessage.INFORM));
-			if(msg == null)
-				block();
-			else{
-				switch (msg.getOntology()) {
-					case AgentMessages.START_GAME:
-						gameStarted = true;
-						addBehaviour(new MainCycle(this.myAgent));
-						break;
-					case AgentMessages.END_GAME:
-						doDelete();
-						break;
-					case AgentMessages.PAUSE_GAME:
-						gameStarted = false;
-						if (player.getTeam() == Player.TEAM_A)
-							player.setGoal(Player.TEAM_A_KEEPER_XPOS + 2, Game.GOAL_Y_MED);
-						else
-							player.getPlayerMovement().setGoal(Player.TEAM_B_KEEPER_XPOS - 2, Game.GOAL_Y_MED);;
-						break;
-					case AgentMessages.RESTART_GAME:
-//						tryCatchBehaviour = NOT_TRYING_BEHAVIOUR;
-//						tryReceiveBehaviour = NOT_TRYING_BEHAVIOUR;
-//						tryTackleBehaviour = NOT_TRYING_BEHAVIOUR;
-//						tryInterceptBehaviour = NOT_TRYING_BEHAVIOUR;
-//						tryPassBehaviour = NOT_TRYING_BEHAVIOUR;
-//						tryShootBehaviour = NOT_TRYING_BEHAVIOUR;
-						tryBehaviour = PlayerAgentReactive.NOT_TRYING_BEHAVIOUR;
-						gameStarted = true;
-						lostTheBall = false;
-						break;
-					case AgentMessages.LOST_BALL:
-						lostTheBall = true;
-						myAgent.addBehaviour(new CleanLostBallBehaviour(myAgent));
-						break;
-					default:
-						break;
-				}
-			}
-		}
 	}
 
 	protected class MainCycle extends CyclicBehaviour {
 		private static final long serialVersionUID = 1L;
 		
-		public MainCycle(Agent agent) {
-			super(agent);
-			
-			if (player.getTeam() == Player.TEAM_A)
-				player.setGoal(Player.TEAM_A_KEEPER_XPOS, Game.GOAL_Y_MED);
-			else
-				player.setGoal(Player.TEAM_B_KEEPER_XPOS, Game.GOAL_Y_MED);
+		public MainCycle(Agent a) {
+			super(a);
+			// TODO Auto-generated constructor stub
 		}
 
 		@Override

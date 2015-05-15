@@ -9,6 +9,7 @@ import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import pt.ulisboa.aasma.fas.exceptions.FutsalAgentSimulatorException;
 import pt.ulisboa.aasma.fas.jade.agents.AgentMessages;
+import pt.ulisboa.aasma.fas.jade.agents.reactive.DefenderAgentReactive.MainCycle;
 import pt.ulisboa.aasma.fas.jade.game.Ball;
 import pt.ulisboa.aasma.fas.jade.game.Game;
 import pt.ulisboa.aasma.fas.jade.game.Player;
@@ -36,45 +37,21 @@ public class PlayerAgentReactive extends Agent {
 	
 	protected static AID ballAgent = new AID("Ball", AID.ISLOCALNAME);
 	protected Game match;
-	Player player;
+	protected Player player;
 	protected Boolean gameStarted = false;
-	
-//	protected int tryCatchBehaviour = NOT_TRYING_BEHAVIOUR;
-//	protected int tryReceiveBehaviour = NOT_TRYING_BEHAVIOUR;
-//	protected int tryTackleBehaviour = NOT_TRYING_BEHAVIOUR;
-//	protected int tryInterceptBehaviour = NOT_TRYING_BEHAVIOUR;
-//	protected int tryPassBehaviour = NOT_TRYING_BEHAVIOUR;
-//	protected int tryShootBehaviour = NOT_TRYING_BEHAVIOUR;
 	
 	protected int tryBehaviour = NOT_TRYING_BEHAVIOUR;
 	
 	protected boolean lostTheBall = false;
+	
+	public PlayerAgentReactive(Game game, Player player) {
+		super();
+		this.match = game;
+		this.player = player;
 
-	/**
-	 * Set's up the agents, checking the existence of the Agent in the game structure
-	 * Also adds the behaviour to listen to the END_GAME message
-	 */
-	@Override
-	protected void setup() {
-		super.setup();
-		
-		Object[] args = getArguments();
-		if (args == null || args.length == 0){
-			System.out.println("Please input correct arguments.");
-			return;
-		}else{
-			match = (Game) args[0];
-		}
-		
-		try{
-			player = match.getPlayer(getLocalName());
-		} catch (FutsalAgentSimulatorException f){
-			System.out.println(f.getMessage());
-			return;
-		}
-		
 		addBehaviour(new ReceiveAgreeBehaviour(this));
 		addBehaviour(new ReceiveRefuseBehaviour(this));
+		addBehaviour(new ReceiveInformBehaviour(this));
 	}
 	
 	/**
@@ -391,6 +368,62 @@ public class PlayerAgentReactive extends Agent {
 					break;
 				default:
 					break;
+				}
+			}
+		}
+	}
+	
+	
+	/**
+	 * This Behaviour receives general information about the game flow
+	 * @author Fábio
+	 *
+	 */
+	protected class ReceiveInformBehaviour extends CyclicBehaviour{
+		private static final long serialVersionUID = 1L;
+
+		public ReceiveInformBehaviour(Agent agent) {
+			super(agent);
+		}
+		
+		@Override
+		public void action() {
+			ACLMessage msg = this.myAgent.receive(MessageTemplate.MatchPerformative(ACLMessage.INFORM));
+			if(msg == null)
+				block();
+			else{
+				switch (msg.getOntology()) {
+					case AgentMessages.START_GAME:
+						gameStarted = true;
+						if(player.getPosition().equals(Player.KEEPER)){
+							KeeperAgentReactive pa = (KeeperAgentReactive)myAgent;
+							myAgent.addBehaviour(pa.new MainCycle(myAgent));
+						} else if(player.getPosition().equals(Player.DEFENDER)){
+							DefenderAgentReactive pa = (DefenderAgentReactive)myAgent;
+							myAgent.addBehaviour(pa.new MainCycle(myAgent));
+						} else if(player.getPosition().equals(Player.STRIKER)){
+							StrikerAgentReactive pa = (StrikerAgentReactive)myAgent;
+							myAgent.addBehaviour(pa.new MainCycle(myAgent));
+						} 
+						break;
+					case AgentMessages.END_GAME:
+						doDelete();
+						break;
+					case AgentMessages.PAUSE_GAME:
+						gameStarted = false;
+						player.setNewGoal(Player.NEW_GOAL_POSITION_AREA);
+						break;
+					case AgentMessages.RESTART_GAME:
+						tryBehaviour = PlayerAgentReactive.NOT_TRYING_BEHAVIOUR;
+						gameStarted = true;
+						lostTheBall = false;
+						break;
+					case AgentMessages.LOST_BALL:
+						lostTheBall = true;
+						myAgent.addBehaviour(new CleanLostBallBehaviour(myAgent));
+						break;
+					default:
+						break;
 				}
 			}
 		}

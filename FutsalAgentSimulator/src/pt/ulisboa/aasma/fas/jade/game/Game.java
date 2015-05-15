@@ -42,7 +42,7 @@ public class Game {
 		this.TeamAScore = 0;
 		this.TeamBScore = 0;
 		
-		ArrayList<String> names = getRandomNames();
+	//	ArrayList<String> names = getRandomNames();
 		
 		this.teamA.add(new Player("Red1", ratios
 				.get(4), ratios.get(2), ratios.get(0),

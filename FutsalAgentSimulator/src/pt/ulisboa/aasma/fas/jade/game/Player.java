@@ -312,6 +312,24 @@ public class Player {
 		return furthestPlayer;
 	}
 
+	public Player getFurthestAllyOpenPlayer(ArrayList<Player> teamA, ArrayList<Player> teamB, String position){
+		ArrayList<Player> openPlayers = this.getOpenAllyPlayers(teamA, teamB);
+		if(openPlayers.isEmpty()){
+			return null;
+		}
+		
+		Player furthestPlayer = null;
+		for (Player player : openPlayers) {
+			if(!player.position.equals(position)) continue;
+			if(furthestPlayer == null){
+				furthestPlayer = player;
+				continue;
+			}
+			furthestPlayer = getFurthestPlayer(furthestPlayer, player);	
+		}
+		return furthestPlayer;
+	}
+	
 	public Player getFurthestAllyPlayer(ArrayList<Player> teamA, ArrayList<Player> teamB){
 		
 		Player furthestPlayer = null;
@@ -337,7 +355,33 @@ public class Player {
 		
 		return furthestPlayer;
 	}
-
+	
+	public Player getFurthestAllyPlayer(ArrayList<Player> teamA, ArrayList<Player> teamB, String position){
+		
+		Player furthestPlayer = null;
+		if(this.team == TEAM_A){
+			for (Player player : teamA) {
+				if(!player.position.equals(position)) continue;
+				if(furthestPlayer == null){
+					furthestPlayer = player;
+					continue;
+				}
+				furthestPlayer = getClosestPlayer(furthestPlayer, player);	
+			}	
+		} else {
+			for (Player player : teamB) {
+				if(!player.position.equals(position)) continue;
+				if(furthestPlayer == null){
+					furthestPlayer = player;
+					continue;
+				}
+				furthestPlayer = getFurthestPlayer(furthestPlayer, player);	
+			}	
+		}
+		
+		return furthestPlayer;
+	}
+	
 	public Player getFurthestEnemyPlayer(ArrayList<Player> teamA, ArrayList<Player> teamB){
 		
 		Player furthestPlayer = null;
@@ -353,6 +397,32 @@ public class Player {
 		} else {
 			for (Player player : teamB) {
 				if(player.position.equals(Player.KEEPER)) continue;
+				if(furthestPlayer == null){
+					furthestPlayer = player;
+					continue;
+				}
+				furthestPlayer = getFurthestPlayer(furthestPlayer, player);	
+			}	
+		}
+		
+		return furthestPlayer;
+	}
+	
+	public Player getFurthestEnemyPlayer(ArrayList<Player> teamA, ArrayList<Player> teamB, String position){
+		
+		Player furthestPlayer = null;
+		if(this.team == TEAM_B){
+			for (Player player : teamA) {
+				if(!player.position.equals(position)) continue;
+				if(furthestPlayer == null){
+					furthestPlayer = player;
+					continue;
+				}
+				furthestPlayer = getFurthestPlayer(furthestPlayer, player);	
+			}	
+		} else {
+			for (Player player : teamB) {
+				if(!player.position.equals(position)) continue;
 				if(furthestPlayer == null){
 					furthestPlayer = player;
 					continue;
@@ -397,6 +467,24 @@ public class Player {
 		return nearestPlayer;
 	}
 	
+	public Player getNearestAllyOpenPlayer(ArrayList<Player> teamA, ArrayList<Player> teamB, String position){
+		ArrayList<Player> openPlayers = this.getOpenAllyPlayers(teamA, teamB);
+		if(openPlayers.isEmpty()){
+			return null;
+		}
+		
+		Player nearestPlayer = null;
+		for (Player player : openPlayers) {
+			if(!player.position.equals(position)) continue;
+			if(nearestPlayer == null){
+				nearestPlayer = player;
+				continue;
+			}
+			nearestPlayer = getClosestPlayer(nearestPlayer, player);	
+		}
+		return nearestPlayer;
+	}
+	
 	public Player getNearestAllyPlayer(ArrayList<Player> teamA, ArrayList<Player> teamB){
 		
 		Player nearestPlayer = null;
@@ -412,6 +500,32 @@ public class Player {
 		} else {
 			for (Player player : teamB) {
 				if(player.position.equals(Player.KEEPER)) continue;
+				if(nearestPlayer == null){
+					nearestPlayer = player;
+					continue;
+				}
+				nearestPlayer = getClosestPlayer(nearestPlayer, player);	
+			}	
+		}
+		
+		return nearestPlayer;
+	}
+	
+	public Player getNearestAllyPlayer(ArrayList<Player> teamA, ArrayList<Player> teamB, String position){
+		
+		Player nearestPlayer = null;
+		if(this.team == TEAM_A){
+			for (Player player : teamA) {
+				if(!player.position.equals(position)) continue;
+				if(nearestPlayer == null){
+					nearestPlayer = player;
+					continue;
+				}
+				nearestPlayer = getClosestPlayer(nearestPlayer, player);	
+			}	
+		} else {
+			for (Player player : teamB) {
+				if(!player.position.equals(position)) continue;
 				if(nearestPlayer == null){
 					nearestPlayer = player;
 					continue;
@@ -449,6 +563,32 @@ public class Player {
 		return nearestPlayer;
 	}
 	
+	public Player getNearestEnemyPlayer(ArrayList<Player> teamA, ArrayList<Player> teamB, String position){
+	
+		Player nearestPlayer = null;
+		if(this.team == TEAM_B){
+			for (Player player : teamA) {
+				if(!player.position.equals(position)) continue;
+				if(nearestPlayer == null){
+					nearestPlayer = player;
+					continue;
+				}
+				nearestPlayer = getClosestPlayer(nearestPlayer, player);	
+			}	
+		} else {
+			for (Player player : teamB) {
+				if(!player.position.equals(position)) continue;
+				if(nearestPlayer == null){
+					nearestPlayer = player;
+					continue;
+				}
+				nearestPlayer = getClosestPlayer(nearestPlayer, player);	
+			}	
+		}
+		
+		return nearestPlayer;
+	}
+	
 	public Player getNearestEnemyPlayerOnQuadrant(ArrayList<Player> teamA, ArrayList<Player> teamB){
 		ArrayList<Player> enemiesOnQuadrant = this.getEnemyPlayersOnQuadrant(teamA, teamB);
 		if(enemiesOnQuadrant.isEmpty()){
@@ -458,6 +598,24 @@ public class Player {
 		Player nearestPlayer = null;
 		for (Player player : enemiesOnQuadrant) {
 			if(player.position.equals(Player.KEEPER)) continue;
+			if(nearestPlayer == null){
+				nearestPlayer = player;
+				continue;
+			}
+			nearestPlayer = getClosestPlayer(nearestPlayer, player);	
+		}
+		return nearestPlayer;
+	}
+	
+	public Player getNearestEnemyPlayerOnQuadrant(ArrayList<Player> teamA, ArrayList<Player> teamB, String position){
+		ArrayList<Player> enemiesOnQuadrant = this.getEnemyPlayersOnQuadrant(teamA, teamB);
+		if(enemiesOnQuadrant.isEmpty()){
+			return null;
+		}
+		
+		Player nearestPlayer = null;
+		for (Player player : enemiesOnQuadrant) {
+			if(!player.position.equals(position)) continue;
 			if(nearestPlayer == null){
 				nearestPlayer = player;
 				continue;
@@ -565,10 +723,6 @@ public class Player {
 	
 	public int getPassingRatio() {
 		return passingRatio;
-	}
-
-	public PlayerMovement getPlayerMovement() {
-		return playerMovement;
 	}
 	
 	public int getPlayerNumber() {
@@ -1088,5 +1242,9 @@ public class Player {
 	
 	public double y(){
 		return playerMovement.y();
+	}
+
+	public PlayerMovement getPlayerMovement() {
+		return playerMovement;
 	}
 }
