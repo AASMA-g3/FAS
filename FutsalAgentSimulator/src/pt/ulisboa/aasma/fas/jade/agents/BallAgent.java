@@ -23,8 +23,6 @@ public class BallAgent extends Agent{
 	private Game match;
 	private Ball ball;
 	
-	private boolean catched = false;
-	
 	@Override
 	protected void setup() {
 		super.setup();
@@ -41,9 +39,7 @@ public class BallAgent extends Agent{
 		
 		this.addBehaviour(new ReceiveRequestBehaviour(this));
 		this.addBehaviour(new EndGameBehaviour());
-		double prob = Math.round(Math.random()*100);
-		double direction = 0.0f;
-		if (prob <= 50) direction = 180.0f;
+		double direction = Math.round(Math.random()*360);
 		ball.updateCurrentMovement(Ball.INTENSITY_SHORT_PASS, direction, 20.0f, 10.0f, match.getGameTime()/1000.0f);
 	}
 	
@@ -167,6 +163,7 @@ public class BallAgent extends Agent{
 				msg.addReceiver(new AID(p1.getName(), AID.ISLOCALNAME));
 				msg.setOntology(AgentMessages.SHOOT);
 				send(msg);
+				ball.setCatched(false);
 	//			System.out.println(myAgent.getName() + ": Shoot!" );
 			}else {
 				msg = new ACLMessage(ACLMessage.REFUSE);
@@ -203,6 +200,7 @@ public class BallAgent extends Agent{
 				msg.addReceiver(new AID(p1.getName(), AID.ISLOCALNAME));
 				msg.setOntology(AgentMessages.PASS);
 				send(msg);
+				ball.setCatched(false);
 	//			System.out.println(myAgent.getName() + ": Pass!" );
 			} else{
 				msg = new ACLMessage(ACLMessage.REFUSE);
@@ -242,6 +240,7 @@ public class BallAgent extends Agent{
 					msg.addReceiver(new AID(player.getName(), AID.ISLOCALNAME));
 					msg.setOntology(AgentMessages.TRY_CATCH);
 					send(msg);
+					ball.setCatched(true);
 //					System.out.println(myAgent.getName() + ": Catch!" );
 					return;
 				}
@@ -314,7 +313,7 @@ public class BallAgent extends Agent{
 			ACLMessage msg;
 //			int prob = (int)(Math.random()*100);
 			
-			if(ball.hasOwner() && !ball.getOwner().getName().equals(p1)
+			if(ball.hasOwner() && !ball.isCatched() && !ball.getOwner().getName().equals(p1)
 					&& (ball.getOwner().getDribblingRatio() > p1.getDefendingRatio())){
 				
 				msg = new ACLMessage(ACLMessage.AGREE);

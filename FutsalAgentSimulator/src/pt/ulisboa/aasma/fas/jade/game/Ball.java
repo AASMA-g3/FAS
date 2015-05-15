@@ -8,6 +8,10 @@ public class Ball {
 	public static final int INTENSITY_SHORT_PASS = 6;
 	public static final int INTENSITY_RUN = 2;
 
+	private boolean catched = false;
+	
+
+
 	public static final Player NO_OWNER = null;
 	
 	private Player owner;
@@ -22,6 +26,14 @@ public class Ball {
 	
 	public BallMovement getCurrentMovement() {
 		return currentMovement;
+	}
+	
+	public boolean isCatched() {
+		return catched;
+	}
+
+	public void setCatched(boolean catched) {
+		this.catched = catched;
 	}
 	
 	public double x(){

@@ -8,7 +8,7 @@ import pt.ulisboa.aasma.fas.j2d.PlayerGraphic;
 public class PlayerMovement {
 
 	public static final double STANDARD_VELOCITY = 5.0f;
-	public static final double STAMINA_DECAY = 0.2f;
+	public static final double STAMINA_DECAY = 0.02f;
 
 	
 	private final Lock playerVelLock = new ReentrantLock();

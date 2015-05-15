@@ -1,98 +1,14 @@
 package pt.ulisboa.aasma.fas.jade.agents.bdi;
 
-import jade.core.Agent;
-import jade.core.behaviours.CyclicBehaviour;
-import jade.lang.acl.ACLMessage;
-import jade.lang.acl.MessageTemplate;
-import pt.ulisboa.aasma.fas.jade.agents.AgentMessages;
-import pt.ulisboa.aasma.fas.jade.game.Ball;
 import pt.ulisboa.aasma.fas.jade.game.Game;
 import pt.ulisboa.aasma.fas.jade.game.Player;
 
 public class StrikerAgentBDI extends PlayerAgentBDI {
 	
 	private static final long serialVersionUID = 1L;
-//	private Boolean moving = false;	
 
-	public StrikerAgentBDI(Game game){
-		super(game);
-
-		this.addBehaviour(new ReceiveInformBehaviour(this));
+	public StrikerAgentBDI(Game game, Player player){
+		super(game, player);
 	}
 	
-	
-	/**
-	 * This Behaviour receives general information about the game flow
-	 * @author Fábio
-	 *
-	 */
-	protected class ReceiveInformBehaviour extends CyclicBehaviour{
-		private static final long serialVersionUID = 1L;
-
-		public ReceiveInformBehaviour(Agent agent) {
-			super(agent);
-		}
-		
-		@Override
-		public void action() {
-			ACLMessage msg = this.myAgent.receive(MessageTemplate.MatchPerformative(ACLMessage.INFORM));
-			if(msg == null)
-				block();
-			else{
-				switch (msg.getOntology()) {
-					case AgentMessages.START_GAME:
-						gameStarted = true;
-						addBehaviour(new MainCycle());
-						break;
-					case AgentMessages.END_GAME:
-						System.out.println("vou morrer!");
-						doDelete();
-						break;
-					case AgentMessages.PAUSE_GAME:
-						gameStarted = false;
-						player.setNewGoal(Player.NEW_GOAL_POSITION_AREA);
-						break;
-					case AgentMessages.RESTART_GAME:
-						gameStarted = true;
-						break;
-					default:
-						break;
-				}
-			}
-		}
-	}
-	
-	protected class MainCycle extends CyclicBehaviour {
-		private static final long serialVersionUID = 1L;
-
-		@Override
-		public void action() {
-			
-			if (gameStarted){
-			Ball ball = match.getBall();
-			/*if(moving && (player.getPlayerMovement().getGoalX() - player.x()) < 0.8
-					&& (player.getPlayerMovement().getGoalY() - player.y()) < 0.8){
-				moving = false;
-				
-			}else if(!moving){
-				player.resetCoords();
-				moving = true;
-			}*/
-			
-			player.setGoal(ball.x(), ball.y());
-			
-			/*Ball ball = match.getBall();
-
-			double distance = ball.getDistanceToBall(player);
-		
-			if((distance < 1.0f) && !(hasBall) && (tryCatchBehaviour == null)){
-					tryCatchBehaviour = new TryCatchBehaviour(this.myAgent);
-					this.myAgent.addBehaviour(tryCatchBehaviour);
-			} else {
-				player.getPlayerMovement().setGoal(ball.x(), ball.y());
-			}
-			*/
-			}
-		}
-	}
 }

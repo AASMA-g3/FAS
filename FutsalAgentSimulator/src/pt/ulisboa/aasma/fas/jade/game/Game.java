@@ -7,7 +7,7 @@ import pt.ulisboa.aasma.fas.exceptions.PlayerDoesNotExistException;
 
 public class Game {
 
-	public static final double GAME_TIME = 500000.0f;
+	public static final double GAME_TIME = 120000.0f;
 	
 	public static final int LIMIT_X = 40;
 	public static final int LIMIT_Y = 20;
@@ -42,7 +42,7 @@ public class Game {
 		this.TeamAScore = 0;
 		this.TeamBScore = 0;
 		
-		ArrayList<String> names = getRandomNames();
+	//	ArrayList<String> names = getRandomNames();
 		
 		this.teamA.add(new Player("Red1", ratios
 				.get(4), ratios.get(2), ratios.get(0),

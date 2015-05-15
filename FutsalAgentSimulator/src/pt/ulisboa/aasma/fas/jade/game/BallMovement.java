@@ -165,13 +165,13 @@ public class BallMovement {
 		if (X < 0.0f){
 			if(!((X > -1.0f) && (y() > Game.GOAL_Y_MIN) && (y() < Game.GOAL_Y_MAX))){
 				X = 0.0f;
-				vx0 = -vx0;
+//				vx0 = -vx0;
 			}
 		}
 		if (X > Game.LIMIT_X){
 			if(!((X > (Game.LIMIT_X + 1.0f)) && (y() > Game.GOAL_Y_MIN) && (y() < Game.GOAL_Y_MAX))){
 				X = Game.LIMIT_X;
-				vx0 = -vx0;
+//				vx0 = -vx0;
 			}
 		}
 		return X;
@@ -202,11 +202,11 @@ public class BallMovement {
 			
 		if (Y < 0.0f){
 			Y = 0.0f;
-			vy0 = -vy0;
+//			vy0 = -vy0;
 		}
 		if (Y > Game.LIMIT_Y){
 			Y = Game.LIMIT_Y;
-			vy0 = -vy0;
+//			vy0 = -vy0;
 		}
 
 		return Y;

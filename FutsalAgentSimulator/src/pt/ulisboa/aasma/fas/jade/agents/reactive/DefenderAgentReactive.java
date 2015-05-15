@@ -1,110 +1,48 @@
 package pt.ulisboa.aasma.fas.jade.agents.reactive;
 
-import pt.ulisboa.aasma.fas.jade.agents.AgentMessages;
-import pt.ulisboa.aasma.fas.jade.agents.reactive.PlayerAgentReactive.CleanLostBallBehaviour;
 import pt.ulisboa.aasma.fas.jade.game.Ball;
 import pt.ulisboa.aasma.fas.jade.game.Game;
 import pt.ulisboa.aasma.fas.jade.game.Player;
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
-import jade.lang.acl.ACLMessage;
-import jade.lang.acl.MessageTemplate;
 
 public class DefenderAgentReactive extends PlayerAgentReactive {
 	
 	private static final long serialVersionUID = 1L;
 	
+	public DefenderAgentReactive(Game game, Player player) {
+		super(game, player);
+	}
+	
 	@Override
 	protected void setup() {
 		super.setup();
-		
-		this.addBehaviour(new ReceiveInformBehaviour(this));
-	}
-	
-	/**
-	 * This Behaviour receives general information about the game flow
-	 * @author Fábio
-	 *
-	 */
-	protected class ReceiveInformBehaviour extends CyclicBehaviour{
-		private static final long serialVersionUID = 1L;
-
-		public ReceiveInformBehaviour(Agent agent) {
-			super(agent);
-			
-		}
-		
-		@Override
-		public void action() {
-			ACLMessage msg = this.myAgent.receive(MessageTemplate.MatchPerformative(ACLMessage.INFORM));
-			if(msg == null)
-				block();
-			else{
-				switch (msg.getOntology()) {
-					case AgentMessages.START_GAME:
-						gameStarted = true;
-						addBehaviour(new MainCycle());
-						break;
-					case AgentMessages.END_GAME:
-						doDelete();
-						break;
-					case AgentMessages.PAUSE_GAME:
-						gameStarted = false;
-						player.setNewGoal(Player.NEW_GOAL_POSITION_AREA);
-						break;
-					case AgentMessages.RESTART_GAME:
-//						tryCatchBehaviour = NOT_TRYING_BEHAVIOUR;
-//						tryReceiveBehaviour = NOT_TRYING_BEHAVIOUR;
-//						tryTackleBehaviour = NOT_TRYING_BEHAVIOUR;
-//						tryInterceptBehaviour = NOT_TRYING_BEHAVIOUR;
-//						tryPassBehaviour = NOT_TRYING_BEHAVIOUR;
-//						tryShootBehaviour = NOT_TRYING_BEHAVIOUR;
-						tryBehaviour = PlayerAgentReactive.NOT_TRYING_BEHAVIOUR;
-						gameStarted = true;
-						lostTheBall = false;
-						break;
-					case AgentMessages.LOST_BALL:
-						lostTheBall = true;
-						myAgent.addBehaviour(new CleanLostBallBehaviour(myAgent));
-						break;
-					default:
-						break;
-				}
-			}
-		}
 	}
 	
 	protected class MainCycle extends CyclicBehaviour {
 		private static final long serialVersionUID = 1L;
+		
+		public MainCycle(Agent a) {
+			super(a);
+		}
 
 		@Override
 		public void action() {
 			Ball ball = match.getBall();
+			Player p1 = player.getFurthestAllyOpenPlayer(match.getTeamA(), match.getTeamB());
 			
 			if (gameStarted && !lostTheBall && tryBehaviour == PlayerAgentReactive.NOT_TRYING_BEHAVIOUR){
-				if(player.hasBall()
-//						&& tryBehaviour == PlayerAgent.NOT_TRYING_BEHAVIOUR
-//						&& tryTackleBehaviour == PlayerAgent.NOT_TRYING_BEHAVIOUR
-//						&& tryPassBehaviour == PlayerAgent.NOT_TRYING_BEHAVIOUR
-//						&& tryShootBehaviour == PlayerAgent.NOT_TRYING_BEHAVIOUR
-						){
-					//pass
-					Player p1 = player.getFurthestAllyOpenPlayer(match.getTeamA(), match.getTeamB());
-					if(p1 != null){
+				if(player.hasBall() && p1 != null){
 						myAgent.addBehaviour(new PassBallBehaviour(myAgent, p1));
-					}else{
+						
 						p1 = player.getFurthestAllyPlayer(match.getTeamA(), match.getTeamB());
 						myAgent.addBehaviour(new PassBallBehaviour(myAgent, p1));
-					}
+//				}else if(){
+					
 				}else if(ball.isOnQuadrant(player.getQuadrant()) 
 						&& ball.enemyHasBall(player.getTeam())){
 					//Chase and Tackle
-					if(player.isAroundBall(ball)
-//							&& tryBehaviour == PlayerAgent.NOT_TRYING_BEHAVIOUR
-//							&& tryTackleBehaviour == PlayerAgent.NOT_TRYING_BEHAVIOUR
-//							&& tryPassBehaviour == PlayerAgent.NOT_TRYING_BEHAVIOUR
-//							&& tryShootBehaviour == PlayerAgent.NOT_TRYING_BEHAVIOUR
-							){
+					if(player.isAroundBall(ball)){
 						myAgent.addBehaviour(new TryTackleBehaviour(myAgent));
 					}else{
 						player.getPlayerMovement().setGoal(ball.x(), ball.y());
@@ -112,18 +50,14 @@ public class DefenderAgentReactive extends PlayerAgentReactive {
 				}else if(ball.isOnQuadrant(player.getQuadrant()) && 
 						!ball.enemyHasBall(player.getTeam())){
 					//chase and receive
-					if(player.isAroundBall(ball) 
-//							&& tryBehaviour == PlayerAgent.NOT_TRYING_BEHAVIOUR 
-//							&& tryReceiveBehaviour == PlayerAgent.NOT_TRYING_BEHAVIOUR
-//							&& tryPassBehaviour != PlayerAgent.NOT_TRYING_BEHAVIOUR
-//							&& tryShootBehaviour != PlayerAgent.NOT_TRYING_BEHAVIOUR
-							){
+					if(player.isAroundBall(ball)){
 						myAgent.addBehaviour(new TryReceiveBehaviour(myAgent));
 					}else{
 						player.getPlayerMovement().setGoal(ball.x(), ball.y());
 					}
 				}else{ //The ball is not on the quadrant
-					player.setNewGoal(Player.NEW_GOAL_DEFENDER_DEFENSE);
+					if(player.isOnGoal())
+						player.setNewGoal(Player.NEW_GOAL_DEFENDER_DEFENSE);
 				}
 			}
 		}
